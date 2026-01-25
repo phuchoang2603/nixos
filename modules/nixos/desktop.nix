@@ -54,7 +54,6 @@
 
     # File manager
     nautilus
-    file-roller
 
     # Screenshot/Recording
     grim
@@ -64,7 +63,6 @@
 
     # Display management
     nwg-displays
-    kanshi           # Auto display configuration
 
     # Theming
     pywal
@@ -81,14 +79,8 @@
     libsForQt5.qt5ct
     qt6Packages.qt6ct
 
-    # Cursor theme
-    bibata-cursors
-
     # Authentication agent
     polkit_gnome
-
-    # Network applet
-    networkmanagerapplet
 
     # Bluetooth applet
     blueman

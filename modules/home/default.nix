@@ -16,7 +16,7 @@
 
   # Home Manager configuration
   home = {
-    stateVersion = "24.05";
+    stateVersion = "25.11";
   };
 
   # Let Home Manager manage itself

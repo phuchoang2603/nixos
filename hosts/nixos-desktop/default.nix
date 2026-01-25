@@ -5,8 +5,8 @@
 {
   imports = [
     ./hardware-configuration.nix
+    ./nvidia.nix  # Include NVIDIA module for this host
     ../../modules/nixos
-    ../../modules/nixos/hardware/nvidia.nix  # Include NVIDIA module for this host
   ];
 
   # Hostname

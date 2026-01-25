@@ -69,7 +69,7 @@
     enableDefaultPackages = true;
     packages = with pkgs; [
       # Nerd Fonts
-      nerd-fonts.caskaydia-cove
+      nerd-fonts.caskaydia-mono
 
       # System fonts
       noto-fonts
@@ -82,7 +82,7 @@
       defaultFonts = {
         serif = [ "Noto Serif" ];
         sansSerif = [ "Noto Sans" ];
-        monospace = [ "CaskaydiaCove Nerd Font" ];
+        monospace = [ "CaskaydiaMono Nerd Font" ];
         emoji = [ "Noto Color Emoji" ];
       };
     };

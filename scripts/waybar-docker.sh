@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Check if the Docker daemon is running
 if ! docker info &>/dev/null; then

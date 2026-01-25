@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 todoist_command="${TODOIST_BIN:-todoist}"
 

@@ -61,7 +61,5 @@ in
     "ghostty/theme" = {
       source = config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/ghostty/theme";
     };
-
-    # Spicetify is managed by spicetify-nix (no dotfiles here)
   };
 }

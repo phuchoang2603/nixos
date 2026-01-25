@@ -43,9 +43,6 @@
 
     # Enable DRM kernel mode setting
     LIBVA_DRIVER_NAME = "nvidia";
-
-    # For Electron apps
-    ELECTRON_OZONE_PLATFORM_HINT = "auto";
   };
 
   # Kernel parameters for NVIDIA

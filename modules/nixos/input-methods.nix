@@ -8,9 +8,9 @@
     fcitx5 = {
       waylandFrontend = true;
       addons = with pkgs; [
-        fcitx5-unikey      # Vietnamese input
+        qt6Packages.fcitx5-unikey # Vietnamese input
         fcitx5-gtk         # GTK integration
-        fcitx5-configtool  # Configuration tool
+        qt6Packages.fcitx5-configtool # Configuration tool
       ];
     };
   };

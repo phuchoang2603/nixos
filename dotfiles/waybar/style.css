@@ -1,0 +1,56 @@
+@import "./waybar.css";
+
+* {
+  font-family: CaskaydiaMono Nerd Font;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+window#waybar {
+  background: transparent;
+  border: 0px;
+}
+
+#clock,
+#custom-docker,
+#custom-todoist,
+#workspaces button,
+#mpris,
+#tray,
+#system {
+  background-color: @color0;
+  border: 1px solid @color1;
+  color: @color1;
+  margin: 2px;
+  padding: 4px 8px;
+  border-radius: 12px;
+}
+
+#clock,
+#system,
+#workspaces button.active {
+  background-color: @color1;
+  border: 1px solid @color0;
+  color: @color0;
+}
+
+#memory,
+#pulseaudio,
+#battery {
+  margin-left: 8px;
+}
+
+#workspaces button.active {
+  padding: 4px 36px;
+}
+
+tooltip {
+  background-color: @color0;
+  border: 1px solid @color1;
+  padding: 2px;
+}
+
+tooltip label {
+  color: @color1;
+  padding: 2px;
+}

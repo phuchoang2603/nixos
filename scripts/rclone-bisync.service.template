@@ -1,0 +1,25 @@
+[Unit]
+Description=Rclone Bisync for %I (OneDrive)
+Documentation=man:rclone(1)
+AssertPathIsDirectory=%h/%I
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/run/current-system/sw/bin/rclone bisync \
+    {{ONEDRIVE_REMOTE_NAME}}:{{ONEDRIVE_LIBRARY_BASE}}/%I \
+    %h/%I \
+    --create-empty-src-dirs \
+    --compare size,modtime,checksum \
+    --slow-hash-sync-only \
+    --resilient \
+    --recover \
+    --fix-case \
+    --conflict-resolve newer \
+    --conflict-loser delete \
+    -MvP \
+    --check-access \
+    --config="%h/.config/rclone/rclone.conf"
+
+[Install]
+WantedBy=default.target

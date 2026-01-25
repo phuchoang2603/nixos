@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+
+# Path to your new grid theme
+GRID_THEME="$HOME/.config/rofi/grid.rasi"
+# Path to your wallpapers
+WALLPAPER_DIR="$HOME/Pictures/Wallpapers"
+# Destination for backgrounds
+BACKGROUND_DEST_DIR="$HOME/.local/share/backgrounds"
+BACKGROUND_DEST_PATH="$BACKGROUND_DEST_DIR/current.png"
+
+ROFI="${ROFI:-rofi}"
+rofi_flags="-normal-window"
+
+# Check if wallpaper directory exists
+if [ ! -d "$WALLPAPER_DIR" ]; then
+  $ROFI $rofi_flags -e "Wallpaper directory not found: $WALLPAPER_DIR"
+  exit 1
+fi
+
+# Generate entries using printf for reliability
+generate_entries() {
+  find "$WALLPAPER_DIR" -type f \( -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.png" -o -iname "*.gif" \) |
+    while read -r wallpaper; do
+      filename=$(basename "$wallpaper")
+      # Use printf for safer escape sequence handling
+      printf "%s\0icon\x1fthumbnail://%s\n" "$filename" "$wallpaper"
+    done
+}
+
+# Check if any wallpapers were found
+if ! find "$WALLPAPER_DIR" -type f \( -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.png" -o -iname "*.gif" \) -print -quit | grep -q .; then
+  $ROFI $rofi_flags -e "No wallpapers found in $WALLPAPER_DIR"
+  exit 1
+fi
+
+# Let the user choose a wallpaper. Rofi will output the filename.
+chosen_filename=$(generate_entries | $ROFI $rofi_flags -theme "$GRID_THEME" -dmenu -i -p "Wallpaper")
+
+# If a wallpaper was chosen, apply it
+if [ -n "$chosen_filename" ]; then
+  chosen_wallpaper_path="$WALLPAPER_DIR/$chosen_filename"
+
+  # Run pywal to generate colors from the chosen wallpaper
+  wal -i "$chosen_wallpaper_path" -s -t
+
+  # Copy wallpaper directly to backgrounds directory
+  mkdir -p "$BACKGROUND_DEST_DIR"
+  cp "$chosen_wallpaper_path" "$BACKGROUND_DEST_PATH"
+
+  # Optional: Obsidian appearance (best-effort; path is machine-specific)
+  if [ -f "$HOME/repos/personal/obsidian/.obsidian/appearance.json" ]; then
+    cp ~/.cache/wal/colors-obsidian-appearance.json "$HOME/repos/personal/obsidian/.obsidian/appearance.json" || true
+  fi
+
+  # Restart services and reload apps
+  systemctl --user restart hyprpaper.service
+  systemctl --user restart mako.service
+  systemctl --user restart waybar.service
+  if command -v spicetify >/dev/null 2>&1; then
+    spicetify apply
+  fi
+
+  notify-send "Theme Switcher" "Wallpaper changed and theme applied"
+fi
+
+exit 0

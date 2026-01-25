@@ -1,8 +1,11 @@
-{ pkgs, lib, ... }:
+{ pkgs, lib, config, ... }:
 
 {
   programs.zsh = {
     enable = true;
+
+    # Silence upcoming default change warning; keep legacy behavior.
+    dotDir = config.home.homeDirectory;
 
     history = {
       size = 50000;
@@ -47,7 +50,7 @@
       TERM = "xterm-256color";
     };
 
-    initExtra = ''
+    initContent = ''
       # Vi mode timeout
       export KEYTIMEOUT=1
 
@@ -55,7 +58,7 @@
       function zle-keymap-select {
         if [[ ''${KEYMAP} == vicmd ]] || [[ $1 = 'block' ]]; then
           echo -ne '\e[1 q'
-        elif [[ ''${KEYMAP} == main ]] || [[ ''${KEYMAP} == viins ]] || [[ ''${KEYMAP} = '' ]] || [[ $1 = 'beam' ]]; then
+        elif [[ ''${KEYMAP} == main ]] || [[ ''${KEYMAP} == viins ]] || [[ -z ''${KEYMAP} ]] || [[ $1 = 'beam' ]]; then
           echo -ne '\e[5 q'
         fi
       }

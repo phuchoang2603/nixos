@@ -69,12 +69,12 @@
     enableDefaultPackages = true;
     packages = with pkgs; [
       # Nerd Fonts
-      (nerdfonts.override { fonts = [ "CascadiaCode"]; })
+      nerd-fonts.caskaydia-cove
 
       # System fonts
       noto-fonts
       noto-fonts-cjk-sans
-      noto-fonts-emoji
+      noto-fonts-color-emoji
     ];
 
     fontconfig = {

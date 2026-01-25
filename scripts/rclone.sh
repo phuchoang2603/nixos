@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Define paths
 # These variables will be substituted into the template files
 ONEDRIVE_REMOTE_NAME="onedrive"

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Usage: brightness.sh <up|down>
 
 # Send notification with current brightness level

@@ -50,7 +50,7 @@
     libnotify
 
     # Application launcher
-    rofi-wayland
+    rofi
 
     # File manager
     nautilus
@@ -79,13 +79,13 @@
     qt5.qtwayland
     qt6.qtwayland
     libsForQt5.qt5ct
-    qt6ct
+    qt6Packages.qt6ct
 
     # Cursor theme
     bibata-cursors
 
     # Authentication agent
-    polkit-kde-agent
+    polkit_gnome
 
     # Network applet
     networkmanagerapplet
@@ -102,6 +102,18 @@
 
   # Security/Authentication
   security.polkit.enable = true;
+
+  # Polkit agent (needed for GUI auth prompts on Hyprland)
+  systemd.user.services.polkit-gnome-authentication-agent-1 = {
+    description = "Polkit GNOME Authentication Agent";
+    wantedBy = [ "graphical-session.target" ];
+    after = [ "graphical-session.target" ];
+    serviceConfig = {
+      Type = "simple";
+      ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
+      Restart = "on-failure";
+    };
+  };
 
   # Session variables for Wayland
   environment.sessionVariables = {

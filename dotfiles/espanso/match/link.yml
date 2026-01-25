@@ -1,0 +1,12 @@
+matches:
+  - trigger: "l.yt"
+    replace: "https://www.youtube.com/@phuchoangxuan1089"
+
+  - trigger: "l.gh"
+    replace: "https://github.com/phuchoang2603"
+
+  - trigger: "l.lk"
+    replace: "https://www.linkedin.com/in/phuchoang2603/"
+
+  - trigger: "l.fb"
+    replace: "https://www.facebook.com/phuchoang2603/"

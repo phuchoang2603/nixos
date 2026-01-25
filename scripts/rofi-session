@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# Use default 'rofi' if not set
+ROFI="${ROFI:-rofi}"
+
+# Always use normal window mode for rofi
+rofi_flags="-normal-window"
+
+entries="Log Out\x00icon\x1fsystem-log-out
+Reboot\x00icon\x1fsystem-reboot
+Shutdown\x00icon\x1fsystem-shutdown
+Suspend\x00icon\x1fsystem-suspend
+Hibernate\x00icon\x1fsystem-suspend-hibernate"
+
+declare -A commands=(
+    ["Log Out"]="playerctl pause; loginctl lock-session"
+    ["Reboot"]="systemctl reboot"
+    ["Shutdown"]="systemctl poweroff"
+    ["Suspend"]="systemctl suspend"
+    ["Hibernate"]="systemctl hibernate"
+)
+
+while choice=$(echo -en "$entries" | $ROFI $rofi_flags -dmenu -i -p "Session"); do
+    eval "${commands[$choice]}"
+    exit 0
+done
+
+exit 1

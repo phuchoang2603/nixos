@@ -23,7 +23,7 @@
 
     # Use the open source kernel module (for Turing and newer GPUs)
     # Set to false if you have an older GPU
-    open = false;
+    open = true;
 
     # Enable nvidia-settings GUI
     nvidiaSettings = true;

@@ -1,9 +1,5 @@
 { pkgs, lib, config, inputs, ... }:
 
-# Spicetify configuration using spicetify-nix
-# The color.ini file is managed by pywal and symlinked via dotfiles.nix
-# spicetify-nix handles the Spotify installation and theming structure
-
 let
   spicePkgs = inputs.spicetify-nix.legacyPackages.${pkgs.system};
 in
@@ -18,9 +14,9 @@ in
 
     # Enable useful extensions
     enabledExtensions = with spicePkgs.extensions; [
-      adblock
+      adblockify
       hidePodcasts
-      shuffle
+      history
     ];
   };
 }

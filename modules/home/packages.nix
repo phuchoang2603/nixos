@@ -16,6 +16,7 @@
     rustc
     cargo
     terraform
+    gcc
 
     # Git tools
     lazygit

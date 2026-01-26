@@ -6,7 +6,7 @@
     package = pkgs.rofi;
     
     # Configuration settings
-    modes = [ "window" "drun" "run" "ssh" "keys" "filebrowser" "combi" ];
+    modes = [ "window" "drun" "run" "ssh" "keys" "combi" ];
     cycle = true;
     font = "CaskaydiaMono Nerd Font 10";
     terminal = "ghostty";
@@ -16,14 +16,6 @@
     
     # Mode display names
     extraConfig = {
-      display-window = "Windows";
-      display-run = "Run";
-      display-ssh = "SSH";
-      display-drun = "Apps";
-      display-combi = "Combi";
-      display-keys = "Keys";
-      display-filebrowser = "Files";
-      
       # Display formatting
       drun-display-format = "{name} [<span weight='light' size='small'><i>({generic})</i></span>]";
       window-format = "{w} · {c} · {t}";
@@ -64,19 +56,6 @@
       disable-history = false;
       sorting-method = "normal";
       max-history-size = 25;
-      
-      # Mode-specific configurations
-      "run.drun" = {
-        fallback-icon = "application-x-addon";
-      };
-      "filebrowser" = {
-        directories-first = true;
-        sorting-method = "name";
-      };
-      "timeout" = {
-        action = "kb-cancel";
-        delay = 0;
-      };
     };
     
     # Theme configuration with stylix colors
@@ -281,8 +260,8 @@
         text-color = "inherit";
         highlight = "inherit";
         cursor = "inherit";
-        vertical-align = 0.5;
-        horizontal-align = 0.0;
+        
+        
       };
 
       # Mode switcher
@@ -333,8 +312,8 @@
         border-color = "#${colors.base0A}";
         background-color = "#${colors.base01}";
         text-color = "#${colors.base05}";
-        vertical-align = 0.5;
-        horizontal-align = 0.0;
+        
+        
         highlight = "none";
         placeholder-color = "#${colors.base05}";
         blink = true;

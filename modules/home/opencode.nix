@@ -8,7 +8,6 @@
     # Basic configuration
     settings = {
       "$schema" = "https://opencode.ai/config.json";
-      theme = "opencode";
       
       # TUI settings
       tui = {

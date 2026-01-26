@@ -18,7 +18,8 @@
     ./hyprlock.nix
     ./hypridle.nix
     ./opencode.nix
-    ./dotfiles.nix
+    ./espanso.nix
+    ./lazyvim.nix
   ];
 
   # Home Manager configuration

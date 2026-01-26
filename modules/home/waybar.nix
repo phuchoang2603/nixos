@@ -1,8 +1,5 @@
 { pkgs, lib, config, ... }:
 
-let
-  inherit (config.lib.stylix) colors;
-in
 {
   programs.waybar = {
     enable = true;
@@ -90,7 +87,9 @@ in
       };
     }];
 
-    style = ''
+    style = let
+      inherit (config.lib.stylix) colors;
+    in ''
       * {
         font-family: CaskaydiaMono Nerd Font;
         font-weight: 700;

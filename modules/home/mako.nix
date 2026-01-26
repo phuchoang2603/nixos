@@ -4,12 +4,12 @@
   programs.mako = {
     enable = true;
     
-    # Use Stylix colors - these will be automatically generated
+    # Use Stylix colors with transparency
     backgroundColor = "#${config.lib.stylix.colors.base00}DD";  # with transparency
     textColor = "#${config.lib.stylix.colors.base05}";
     borderColor = "#${config.lib.stylix.colors.base0A}";
     
-    # Styling
+    # Your custom styling
     width = 420;
     height = 110;
     padding = 8;

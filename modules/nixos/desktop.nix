@@ -1,7 +1,7 @@
 { pkgs, lib, config, ... }:
 
 {
-  # Hyprland (no UWSM)
+  # Hyprland (system-level)
   programs.hyprland = {
     enable = true;
     xwayland.enable = true;
@@ -31,10 +31,6 @@
 
   # Security/Authentication
   security.polkit.enable = true;
-
-  # Hyprland core services
-  programs.waybar.enable = true;
-  services.hypridle.enable = true;
 
   # Polkit agent (needed for GUI auth prompts on Hyprland)
   systemd.user.services.polkit-gnome-authentication-agent-1 = {

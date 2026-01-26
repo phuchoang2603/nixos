@@ -25,6 +25,7 @@
     wlsunset
     wlr-randr
     hyprpicker
+    libnotify
 
     # Qt theming
     qt5.qtwayland
@@ -44,10 +45,7 @@
     gnome-clocks
     baobab           # Disk usage analyzer
     sushi
-    espanso-wayland
     localsend
-    polkit_gnome
     blueman
   ];
-
 }

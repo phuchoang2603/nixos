@@ -54,7 +54,6 @@
     QT_QPA_PLATFORM = "wayland;xcb";
     QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
     QT_AUTO_SCREEN_SCALE_FACTOR = "1";
-    GTK_THEME = "Adwaita-dark";
     GDK_BACKEND = "wayland,*";
     SDL_VIDEODRIVER = "wayland";
     CLUTTER_BACKEND = "wayland";
@@ -74,4 +73,27 @@
 
   # Thumbnail service
   services.tumbler.enable = true;
+
+  # Fcitx5 input method with Vietnamese support
+  i18n.inputMethod = {
+    enable = true;
+    type = "fcitx5";
+    fcitx5 = {
+      waylandFrontend = true;
+      addons = with pkgs; [
+        qt6Packages.fcitx5-unikey # Vietnamese input
+        fcitx5-gtk         # GTK integration
+        qt6Packages.fcitx5-configtool # Configuration tool
+      ];
+    };
+  };
+
+  # Environment variables for input method
+  environment.sessionVariables = {
+    # GTK_IM_MODULE = "fcitx";
+    QT_IM_MODULE = "fcitx";
+    XMODIFIERS = "@im=fcitx";
+    SDL_IM_MODULE = "fcitx";
+    GLFW_IM_MODULE = "ibus";  # For some apps that don't support fcitx directly
+  };
 }

@@ -26,54 +26,50 @@ It is organized around small, composable modules under `modules/` and thin host 
 - `nixosConfigurations.nixos-desktop`
 - `darwinConfigurations.macbook`
 
-Home Manager is wired into both via the `home-manager.*Modules.home-manager` module and `users.${user} = import ./modules/home`.
+Home Manager is wired into both via the `home-manager.*Modules.home-manager` module and
+host-specific profiles:
+
+- `users.${user} = import ./modules/home/profiles/desktop.nix` (NixOS desktop)
+- `users.${user} = import ./modules/home/profiles/gui.nix` (macbook)
 
 ## NixOS Modules
 
 `modules/nixos/default.nix` imports:
 
-- `modules/nixos/system.nix`
+- `modules/nixos/base/default.nix`
   - bootloader + kernel
   - locale/timezone
   - user `felix`
   - flakes enabled + GC defaults
   - fonts and minimal base packages
-- `modules/nixos/desktop.nix`
+- `modules/nixos/desktop/default.nix`
   - Hyprland session (greetd + tuigreet)
   - portals, polkit, keyring
   - desktop essentials (waybar/mako/rofi/nautilus/etc)
-- `modules/nixos/apps.nix`
+  - input methods via `modules/nixos/desktop/input-methods.nix`
+- `modules/nixos/apps/default.nix`
   - GUI apps (Edge, VS Code, Obsidian, LibreOffice, CopyQ, Sushi, LocalSend, etc)
-- `modules/nixos/services.nix`
+- `modules/nixos/services/default.nix`
   - pipewire, bluetooth
   - docker
   - tailscale
-  - printing/avahi/udisks/upower/thermald/fwupd
-- `modules/nixos/input-methods.nix`
-  - fcitx5 + Vietnamese (unikey)
+  - avahi/udisks/fwupd/openssh
 - `modules/nixos/hardware/nvidia.nix`
   - NVIDIA driver defaults for Wayland/Hyprland (imported only by NVIDIA hosts)
 
-## Home Manager Modules
+## Home Manager Profiles
 
-`modules/home/default.nix` imports:
+Profiles live under `modules/home/profiles/`:
 
-- `modules/home/packages.nix`: main CLI toolset (neovim, kubernetes tools, ripgrep/fd, todoist, etc)
-- `modules/home/shell.nix`: zsh config, aliases, functions, completions (includes `zsh-completions`)
-- `modules/home/programs.nix`: HM-managed programs (atuin/fzf/zoxide/bat/eza)
-- `modules/home/git.nix`: git identity + defaults
-- `modules/home/starship.nix`: prompt config
-- `modules/home/tmux.nix`: tmux config + plugins
-- `modules/home/yazi.nix`: yazi config
-- `modules/home/ghostty.nix`: ghostty config
-- `modules/home/spicetify.nix`: spicetify-nix integration
-- `modules/home/dotfiles.nix`: symlinks repo dotfiles into `~/.config`
+- `cli.nix`: base CLI toolset (packages, shell, git, starship, tmux, yazi, opencode, neovim)
+- `gui.nix`: extends `cli.nix` with shared UI (stylix, spicetify)
+- `desktop.nix`: extends `gui.nix` with desktop UI (ghostty, rofi, mako, waybar, hyprland,
+  hyprpaper, hyprlock, hypridle, espanso)
 
-### Dotfiles
+Module files are grouped by scope:
 
-`modules/home/dotfiles.nix` uses `mkOutOfStoreSymlink` to link `dotfiles/` into `~/.config`.
-
-This is intentional for configs that are edited/updated outside of Home Manager (e.g. pywal-driven theming assets).
+- `modules/home/cli/`: CLI modules + `nvim-config`
+- `modules/home/desktop/`: desktop modules (stylix, Hyprland, UI apps, etc.)
 
 ## macOS (nix-darwin)
 

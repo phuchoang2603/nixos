@@ -3,7 +3,7 @@
 {
   stylix = {
     enable = true;
-    image = ../../current.png;
+    image = ../../../current.png;
     polarity = "dark";
     
     fonts = {
@@ -32,17 +32,15 @@
     };
     
     targets = {
+      neovim = {
+        enable = true;
+        plugin = "base16-nvim";
+      };
       rofi = {
         enable = false;  # We'll use our custom rofi.nix instead
       };
-      mako = {
-        enable = false;  # We'll use our custom mako.nix instead
-      };
       waybar = {
         enable = false;  # We'll use our custom waybar.nix instead
-      };
-      hyprlock = {
-        enable = false;  # We'll use our custom hyprlock.nix instead
       };
     };
   };

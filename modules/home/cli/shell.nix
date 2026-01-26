@@ -123,6 +123,7 @@
       # fzf-tab configuration
       zstyle ':fzf-tab:*' switch-group '<' '>'
       zstyle ':fzf-tab:complete:*' fzf-flags --preview-window hidden
+      zstyle ':fzf-tab:*' menu no
     '';
 
     plugins = [

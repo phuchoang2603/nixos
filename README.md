@@ -66,6 +66,11 @@ Profiles live under `modules/home/profiles/`:
 - `desktop.nix`: extends `cli.nix` with desktop UI (stylix theming, ghostty, rofi, mako,
   waybar, hyprland, hyprpaper, hyprlock, hypridle, espanso)
 
+Module files are grouped by scope:
+
+- `modules/home/cli/`: CLI modules + `nvim-config`
+- `modules/home/desktop/`: desktop modules (stylix, Hyprland, UI apps, etc.)
+
 ## macOS (nix-darwin)
 
 `modules/darwin/default.nix` imports:

@@ -25,7 +25,6 @@
     wlsunset
     wlr-randr
     hyprpicker
-    nwg-displays
 
     # Qt theming
     qt5.qtwayland

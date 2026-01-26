@@ -18,9 +18,11 @@
       url = "github:Gerg-L/spicetify-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    stylix.url = "github:danth/stylix";
   };
 
-  outputs = { self, nixpkgs, home-manager, nix-darwin, spicetify-nix, ... }@inputs:
+  outputs = { self, nixpkgs, home-manager, nix-darwin, spicetify-nix, stylix, ... }@inputs:
     let
       # User configuration
       user = "felix";
@@ -43,12 +45,14 @@
           modules = [
             ./hosts/nixos-desktop
             home-manager.nixosModules.home-manager
+            inputs.stylix.nixosModules.stylix
             {
               home-manager = {
                 useGlobalPkgs = true;
                 useUserPackages = true;
                 extraSpecialArgs = mkSpecialArgs linuxSystem;
                 users.${user} = import ./modules/home;
+                sharedModules = [ inputs.stylix.homeManagerModules.stylix ];
                 backupFileExtension = "backup";
               };
             }

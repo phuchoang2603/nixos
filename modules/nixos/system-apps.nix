@@ -5,8 +5,7 @@
     # Browsers
     microsoft-edge
 
-    # Theming
-    pywal16
+
 
     # Development
     vscode
@@ -84,16 +83,9 @@
     # Display management
     nwg-displays
 
-    # Theming
-    pywal
-
-    # GTK theming
-    gtk3
-    gtk4
+    # GTK theming (handled by Stylix)
     adwaita-icon-theme
     papirus-icon-theme
-    gnome-themes-extra
-    arc-theme
 
     # Qt theming
     qt5.qtwayland

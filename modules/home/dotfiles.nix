@@ -1,7 +1,6 @@
 { pkgs, lib, config, ... }:
 
 # Symlink dotfiles that need to be managed outside of Home Manager
-# These are primarily files that pywal writes to for dynamic theming
 
 let
   dotfilesPath = "${config.home.homeDirectory}/.config/nix/dotfiles";
@@ -9,25 +8,25 @@ in
 {
   # XDG config file symlinks
   xdg.configFile = {
-    # Hyprland configuration (pywal writes colors.conf)
+    # Hyprland configuration (managed by Nix)
     "hypr" = {
       source = config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/hypr";
       recursive = true;
     };
 
-    # Waybar (pywal writes waybar.css colors)
+    # Waybar (theming managed by Stylix)
     "waybar" = {
       source = config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/waybar";
       recursive = true;
     };
 
-    # Mako notifications (pywal writes colors)
+    # Mako notifications (theming managed by Stylix)
     "mako" = {
       source = config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/mako";
       recursive = true;
     };
 
-    # Rofi launcher (pywal writes colors.rasi)
+    # Rofi launcher (theming managed by Stylix)
     "rofi" = {
       source = config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/rofi";
       recursive = true;
@@ -51,11 +50,7 @@ in
       recursive = true;
     };
 
-    # Pywal templates and cache
-    "wal" = {
-      source = config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/wal";
-      recursive = true;
-    };
+
 
     # OpenCode configuration
     "opencode" = {

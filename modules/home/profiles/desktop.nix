@@ -12,5 +12,6 @@
     ../desktop/hyprlock.nix
     ../desktop/hypridle.nix
     ../desktop/espanso.nix
+    ../desktop/wlsunset.nix
   ];
 }

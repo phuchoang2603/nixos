@@ -30,7 +30,7 @@ Home Manager is wired into both via the `home-manager.*Modules.home-manager` mod
 host-specific profiles:
 
 - `users.${user} = import ./modules/home/profiles/desktop.nix` (NixOS desktop)
-- `users.${user} = import ./modules/home/profiles/cli.nix` (macbook)
+- `users.${user} = import ./modules/home/profiles/gui.nix` (macbook)
 
 ## NixOS Modules
 
@@ -63,8 +63,9 @@ host-specific profiles:
 Profiles live under `modules/home/profiles/`:
 
 - `cli.nix`: base CLI toolset (packages, shell, git, starship, tmux, yazi, opencode, neovim)
-- `desktop.nix`: extends `cli.nix` with desktop UI (stylix theming, ghostty, rofi, mako,
-  waybar, hyprland, hyprpaper, hyprlock, hypridle, espanso)
+- `gui.nix`: extends `cli.nix` with shared UI (stylix, spicetify)
+- `desktop.nix`: extends `gui.nix` with desktop UI (ghostty, rofi, mako, waybar, hyprland,
+  hyprpaper, hyprlock, hypridle, espanso)
 
 Module files are grouped by scope:
 

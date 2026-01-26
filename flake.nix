@@ -77,8 +77,8 @@
                 useGlobalPkgs = true;
                 useUserPackages = true;
                 extraSpecialArgs = mkSpecialArgs darwinSystem;
-                users.${user} = import ./modules/home/profiles/cli.nix;
-                sharedModules = [];
+                users.${user} = import ./modules/home/profiles/gui.nix;
+                sharedModules = [ inputs.stylix.homeModules.stylix ];
               };
             }
           ];

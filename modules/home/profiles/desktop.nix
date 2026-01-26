@@ -2,8 +2,7 @@
 
 {
   imports = [
-    ./cli.nix
-    ../desktop/theming.nix
+    ./gui.nix
     ../desktop/ghostty.nix
     ../desktop/rofi.nix
     ../desktop/mako.nix

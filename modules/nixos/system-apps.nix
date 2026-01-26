@@ -44,9 +44,7 @@
     gnome-clocks
     baobab           # Disk usage analyzer
     sushi
-    espanso-wayland
     localsend
-    polkit_gnome
     blueman
   ];
 

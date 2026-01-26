@@ -9,8 +9,8 @@ in
   programs.spicetify = {
     enable = true;
 
-    # Use the Sleek theme - pywal will write colors to color.ini
     theme = spicePkgs.themes.sleek;
+    colorScheme = "UltraBlack";
 
     # Enable useful extensions
     enabledExtensions = with spicePkgs.extensions; [

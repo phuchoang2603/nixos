@@ -51,6 +51,7 @@
 
     # Application launcher
     rofi
+    rofi-calc
 
     # File manager
     nautilus

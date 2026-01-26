@@ -85,9 +85,6 @@
       # KUBECONFIG - merge all kube config files
       export KUBECONFIG=$(find ~/.kube -name "*.yml" 2>/dev/null | tr '\n' ':' | sed 's/:$//')
 
-      # Scripts PATH
-      export PATH="$HOME/.config/nix/scripts:$HOME/.spicetify:$HOME/.krew/bin:$PATH"
-
       # kubectl completion
       if command -v kubectl &>/dev/null; then
         source <(kubectl completion zsh)

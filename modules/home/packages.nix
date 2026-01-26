@@ -20,7 +20,6 @@
 
     # Git tools
     lazygit
-    gh
 
     # Monitoring
     fastfetch

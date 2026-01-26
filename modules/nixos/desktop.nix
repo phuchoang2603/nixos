@@ -96,6 +96,10 @@
   # Security/Authentication
   security.polkit.enable = true;
 
+  # Hyprland core services
+  programs.waybar.enable = true;
+  services.hypridle.enable = true;
+
   # Polkit agent (needed for GUI auth prompts on Hyprland)
   systemd.user.services.polkit-gnome-authentication-agent-1 = {
     description = "Polkit GNOME Authentication Agent";

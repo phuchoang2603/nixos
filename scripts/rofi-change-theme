@@ -47,10 +47,12 @@ if [ -n "$chosen_filename" ]; then
   mkdir -p "$BACKGROUND_DEST_DIR"
   cp "$chosen_wallpaper_path" "$BACKGROUND_DEST_PATH"
 
-  # Optional: Obsidian appearance (best-effort; path is machine-specific)
-  if [ -f "$HOME/repos/personal/obsidian/.obsidian/appearance.json" ]; then
-    cp ~/.cache/wal/colors-obsidian-appearance.json "$HOME/repos/personal/obsidian/.obsidian/appearance.json" || true
-  fi
+  # Copy pywal-generated configs to app config locations
+  cp ~/.cache/wal/colors-hyprland.conf ~/.config/nix/dotfiles/hypr/colors.conf
+  cp ~/.cache/wal/colors-ghostty ~/.config/nix/dotfiles/ghostty/theme
+  cp ~/.cache/wal/colors-waybar.css ~/.config/nix/dotfiles/waybar/waybar.css
+  cp ~/.cache/wal/colors-rofi-temp.rasi ~/.config/nix/dotfiles/rofi/colors.rasi
+  cp ~/.cache/wal/colors-mako-temp ~/.config/nix/dotfiles/mako/colors
 
   # Restart services and reload apps
   systemctl --user restart hyprpaper.service

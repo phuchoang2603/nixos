@@ -1,5 +1,12 @@
-{ pkgs, config, ... }:
+{ pkgs, config, lib, osConfig ? null, ... }:
 
+let
+  hostName =
+    if osConfig != null && osConfig ? networking && osConfig.networking ? hostName
+    then osConfig.networking.hostName
+    else "";
+  isNixosDesktop = hostName == "nixos-desktop";
+in
 {
   wayland.windowManager.hyprland = {
     enable = true;
@@ -255,6 +262,25 @@
         "match:class ^(org.gnome.Nautilus)$, tile on"
         "match:class ^(com.obsproject.Studio)$, tile on"
         "match:class ^(obsidian|microsoft-edge)$, opacity 1 override"
+      ];
+    } // lib.mkIf isNixosDesktop {
+      # Host-specific display layout (nixos-desktop)
+      monitor = [
+        "HDMI-A-1,1920x1080@60.0,0x342,1.0"
+        "DP-1,1920x1080@60.0,1920x0,1.0"
+        "DP-1,transform,1"
+      ];
+      workspace = [
+        "1,monitor:HDMI-A-1"
+        "2,monitor:HDMI-A-1"
+        "3,monitor:HDMI-A-1"
+        "4,monitor:HDMI-A-1"
+        "5,monitor:HDMI-A-1"
+        "6,monitor:HDMI-A-1"
+        "7,monitor:HDMI-A-1"
+        "8,monitor:HDMI-A-1"
+        "9,monitor:HDMI-A-1"
+        "10,monitor:HDMI-A-1"
       ];
     };
   };

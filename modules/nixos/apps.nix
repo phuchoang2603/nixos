@@ -22,7 +22,6 @@
     wayland-utils
     wayland-protocols
     wl-clipboard
-    wlsunset
     wlr-randr
     hyprpicker
     libnotify

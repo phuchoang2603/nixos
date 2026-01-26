@@ -1,6 +1,10 @@
 { pkgs, lib, config, ... }:
 
 {
+  imports = [
+    ./input-methods.nix
+  ];
+
   # Hyprland (system-level)
   programs.hyprland = {
     enable = true;

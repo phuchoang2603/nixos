@@ -3,7 +3,7 @@
 {
   stylix = {
     enable = true;
-    image = ../../current.png;
+    image = ../../../current.png;
     polarity = "dark";
     
     fonts = {

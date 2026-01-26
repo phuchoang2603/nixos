@@ -36,25 +36,24 @@ host-specific profiles:
 
 `modules/nixos/default.nix` imports:
 
-- `modules/nixos/system.nix`
+- `modules/nixos/base/default.nix`
   - bootloader + kernel
   - locale/timezone
   - user `felix`
   - flakes enabled + GC defaults
   - fonts and minimal base packages
-- `modules/nixos/desktop.nix`
+- `modules/nixos/desktop/default.nix`
   - Hyprland session (greetd + tuigreet)
   - portals, polkit, keyring
   - desktop essentials (waybar/mako/rofi/nautilus/etc)
-- `modules/nixos/apps.nix`
+  - input methods via `modules/nixos/desktop/input-methods.nix`
+- `modules/nixos/apps/default.nix`
   - GUI apps (Edge, VS Code, Obsidian, LibreOffice, CopyQ, Sushi, LocalSend, etc)
-- `modules/nixos/services.nix`
+- `modules/nixos/services/default.nix`
   - pipewire, bluetooth
   - docker
   - tailscale
-  - printing/avahi/udisks/upower/thermald/fwupd
-- `modules/nixos/input-methods.nix`
-  - fcitx5 + Vietnamese (unikey)
+  - avahi/udisks/fwupd/openssh
 - `modules/nixos/hardware/nvidia.nix`
   - NVIDIA driver defaults for Wayland/Hyprland (imported only by NVIDIA hosts)
 

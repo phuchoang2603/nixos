@@ -2,9 +2,9 @@
 
 {
   imports = [
-    ./system.nix
-    ./desktop.nix
-    ./system-apps.nix
-    ./input-methods.nix
+    ./base
+    ./desktop
+    ./apps
+    ./services
   ];
 }

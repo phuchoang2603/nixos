@@ -8,11 +8,6 @@ in
 {
   # XDG config file symlinks
   xdg.configFile = {
-    # Hyprland configuration (managed by Nix)
-    "hypr" = {
-      source = config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/hypr";
-      recursive = true;
-    };
 
     # Neovim configuration
     "nvim" = {
@@ -25,14 +20,6 @@ in
       source = config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/espanso";
       recursive = true;
     };
-
-    # Fcitx5 input method
-    "fcitx5" = {
-      source = config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/fcitx5";
-      recursive = true;
-    };
-
-
 
     # OpenCode configuration
     "opencode" = {

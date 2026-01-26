@@ -7,83 +7,115 @@
     settings = [{
       layer = "top";
       position = "top";
-      height = 24;
-      output = [
-        "eDP-1"
-        "HDMI-A-1"
-        "DP-1"
-      ];
+      spacing = 0;
+      height = 0;
+      output = "HDMI-A-1";
+      margin-top = 2;
       
-      modules-left = [ "hyprland/workspaces" ];
-      modules-center = [ "clock" ];
-      modules-right = [ "pulseaudio" "memory" "battery" "tray" ];
+      modules-left = ["clock" "custom/todoist" "custom/docker"];
+      modules-center = ["hyprland/workspaces"];
+      modules-right = ["mpris" "tray" "group/system"];
       
       "hyprland/workspaces" = {
-        format = "{icon}";
-        format-icons = {
-          default = "";
-          active = "";
-          urgent = "";
-        };
-        on-click = "activate";
-        on-scroll-up = "hyprctl dispatch workspace e+1";
-        on-scroll-down = "hyprctl dispatch workspace e-1";
+        disable-scroll = true;
+        all-outputs = true;
+        tooltip = false;
       };
 
       "clock" = {
-        format = "{:%H:%M}";
-        tooltip-format = "{:%Y-%m-%d | %A}";
+        format = " {:%H:%M - %a, %b %d}";
+        tooltip = true;
+        tooltip-format = "";
+        on-click = "gnome-calendar";
       };
 
-      "pulseaudio" = {
-        format = "{icon} {volume}%";
-        format-bluetooth = "{icon} {volume}%";
-        format-muted = "";
-        format-icons = {
-          headphone = "";
-          hands-free = "";
-          headset = "";
-          phone = "";
-          portable = "";
-          car = "";
-          default = [ "" "" "" ];
+      "cpu" = {
+        format = "󰍛 {avg_frequency}GHz";
+        interval = 5;
+        states = {
+          critical = 60;
         };
-        on-click = "pavucontrol";
+        tooltip = true;
+        on-click = "gnome-system-monitor";
       };
 
       "memory" = {
-        interval = 30;
-        format = "󰍛 {percentage}%";
+        format = "  {used:0.1f}GB";
+        interval = 15;
+        tooltip = true;
+        tooltip-format = "Used: {used:0.1f}GB / {total:0.1f}GB\nSwap: {swapUsed:0.1f}GB / {swapTotal:0.1f}GB";
+        on-click = "gnome-system-monitor";
+      };
+
+      "pulseaudio" = {
+        format = " {volume}%";
+        format-muted = "󰝟 muted";
+        scroll-step = 5;
+        on-click = "pavucontrol";
+        tooltip-format = "Playing at {volume}%";
+        ignored-sinks = ["Easy Effects Sink"];
       };
 
       "battery" = {
-        states = {
-          warning = 30;
-          critical = 15;
-        };
         format = "{icon} {capacity}%";
-        format-charging = "⚡ {capacity}%";
-        format-plugged = " {capacity}%";
-        format-icons = [ "" "" "" "" "" ];
+        format-discharging = "{icon} {capacity}%";
+        format-charging = "{icon} {capacity}%";
+        format-plugged = "";
+        format-icons = {
+          charging = ["󰢜" "󰂆" "󰂇" "󰂈" "󰢝" "󰂉" "󰢞" "󰂊" "󰂋" "󰂅"];
+          default = ["󰁺" "󰁻" "󰁼" "󰁽" "󰁾" "󰁿" "󰂀" "󰂁" "󰂂" "󰁹"];
+        };
+        format-full = "Charged ";
+        tooltip-format-discharging = "{power:>1.0f}W↓ {capacity}%";
+        tooltip-format-charging = "{power:>1.0f}W↑ {capacity}%";
+        interval = 5;
+        states = {
+          warning = 20;
+          critical = 10;
+        };
+      };
+
+      "group/system" = {
+        orientation = "inherit";
+        modules = ["cpu" "memory" "pulseaudio" "battery"];
+      };
+
+      "mpris" = {
+        format = "{status_icon} {dynamic}";
+        dynamic-len = 15;
+        dynamic-separator = " - ";
+        dynamic-order = ["title" "artist" "album"];
+        dynamic-importance-order = ["title" "artist" "album"];
+        status-icons = {
+          playing = "";
+          paused = "";
+          stopped = "";
+        };
+        player = "spotify";
+        on-click = "playerctl play-pause --player=spotify";
+        enable-tooltip-len-limits = true;
       };
 
       "tray" = {
-        icon-size = 16;
         spacing = 8;
+        tooltip = false;
       };
 
-      "custom-docker" = {
-        exec = "$HOME/.config/nix/scripts/waybar-docker.sh";
-        format = "{}";
+      "custom/docker" = {
+        format = "🐳 {}";
         return-type = "json";
-        interval = 5;
+        exec = "waybar-docker.sh";
+        interval = 15;
+        tooltip = true;
+        on-click = "ghostty -e lazydocker";
       };
 
-      "custom-todoist" = {
-        exec = "$HOME/.config/nix/scripts/waybar-todoist.sh";
-        format = "󱸚 {}";
+      "custom/todoist" = {
+        format = " {}";
         return-type = "json";
-        interval = 300;
+        exec = "waybar-todoist.sh";
+        interval = 60;
+        tooltip = true;
       };
     }];
 
@@ -94,7 +126,6 @@
         font-family: CaskaydiaMono Nerd Font;
         font-weight: 700;
         font-size: 14px;
-        color: #${colors.base05};
       }
 
       window#waybar {
@@ -106,12 +137,8 @@
       #custom-docker,
       #custom-todoist,
       #workspaces button,
-      #pulseaudio,
-      #memory,
-      #battery,
       #tray,
-      #custom-pulse,
-      #network {
+      #system {
         background-color: #${colors.base00};
         border: 1px solid #${colors.base0A};
         color: #${colors.base0A};
@@ -121,24 +148,21 @@
       }
 
       #clock,
+      #system,
       #workspaces button.active {
         background-color: #${colors.base0A};
         border: 1px solid #${colors.base00};
         color: #${colors.base00};
       }
 
-      #pulseaudio,
       #memory,
+      #pulseaudio,
       #battery {
         margin-left: 8px;
       }
 
       #workspaces button.active {
         padding: 4px 36px;
-      }
-
-      #workspaces button:hover {
-        background-color: #${colors.base01};
       }
 
       tooltip {

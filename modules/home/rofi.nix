@@ -4,6 +4,46 @@
   programs.rofi = {
     enable = true;
     package = pkgs.rofi;
+    extraConfig = {
+      modes = "window,drun,run,ssh,keys,filebrowser,keys,combi";
+      display-window = "Windows";
+      display-run = "Run";
+      display-ssh = "SSH";
+      display-drun = "Apps";
+      display-combi = "Combi";
+      display-keys = "Keys";
+      display-filebrowser = "Files";
+      drun-display-format = "{name} [<span weight='light' size='small'><i>({generic})</i></span>]";
+      window-format = "{w} · {c} · {t}";
+      combi-modes = "window,drun,ssh";
+      combi-hide-mode-prefix = false;
+      case-sensitive = false;
+      cycle = true;
+      filter = "";
+      scroll-method = 0;
+      normalize-match = true;
+      show-icons = true;
+      icon-theme = "Papirus";
+      steal-focus = true;
+      terminal = "ghostty";
+      font = "CaskaydiaMono Nerd Font 10";
+      sort = false;
+      threads = 0;
+      click-to-exit = true;
+      dpi = 1;
+      matching = "normal";
+      tokenize = true;
+      ssh-client = "ssh";
+      ssh-command = "ghostty -e ssh {host}";
+      parse-hosts = true;
+      parse-known-hosts = true;
+      run-command = "{cmd}";
+      run-list-command = "";
+      run-shell-command = "{terminal} -e {cmd}";
+      disable-history = false;
+      sorting-method = "normal";
+      max-history-size = 25;
+    };
     theme = let
       inherit (config.lib.stylix) colors;
     in ''
@@ -262,6 +302,17 @@
           background-color:            ${colors.base00};
           text-color:                  ${colors.base05};
       }
+      run.drun = {
+        fallback-icon = "application-x-addon";
+      };
+      filebrowser = {
+        directories-first = true;
+        sorting-method = "name";
+      };
+      timeout = {
+        action = "kb-cancel";
+        delay = 0;
+      };
     '';
   };
 }

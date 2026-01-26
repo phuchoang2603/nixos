@@ -64,29 +64,8 @@
     options = "--delete-older-than 7d";
   };
 
-  # Fonts
-  fonts = {
-    enableDefaultPackages = true;
-    packages = with pkgs; [
-      # Nerd Fonts
-      nerd-fonts.caskaydia-mono
-
-      # System fonts
-      noto-fonts
-      noto-fonts-cjk-sans
-      noto-fonts-color-emoji
-    ];
-
-    fontconfig = {
-      enable = true;
-      defaultFonts = {
-        serif = [ "Noto Serif" ];
-        sansSerif = [ "Noto Sans" ];
-        monospace = [ "CaskaydiaMono Nerd Font" ];
-        emoji = [ "Noto Color Emoji" ];
-      };
-    };
-  };
+  # Fonts managed by Stylix
+  fonts.fontconfig.enable = true;
 
   # System packages (minimal - most are in home-manager)
   environment.systemPackages = with pkgs; [

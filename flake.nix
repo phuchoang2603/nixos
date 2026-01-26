@@ -21,15 +21,9 @@
 
     stylix.url = "github:danth/stylix";
     stylix.inputs.nixpkgs.follows = "nixpkgs";
-
-    lazyvim-nix = {
-      url = "github:pfassina/lazyvim-nix";
-      # You can pin to a specific version if needed:
-      # url = "github:pfassina/lazyvim-nix/v15.13.0";
-    };
   };
 
-  outputs = { self, nixpkgs, home-manager, nix-darwin, spicetify-nix, stylix, lazyvim-nix, ... }@inputs:
+  outputs = { self, nixpkgs, home-manager, nix-darwin, spicetify-nix, stylix, ... }@inputs:
     let
       # User configuration
       user = "felix";
@@ -43,8 +37,6 @@
         inherit inputs user;
       };
       
-      # Import lazyvim-nix home manager module
-      lazyvimModule = lazyvim-nix.homeManagerModules.default;
     in
     {
       # NixOS configurations
@@ -64,7 +56,6 @@
                 users.${user} = import ./modules/home;
                 sharedModules = [ 
                   inputs.stylix.homeModules.stylix
-                  lazyvimModule
                 ];
                 backupFileExtension = "backup";
               };
@@ -87,7 +78,7 @@
                 useUserPackages = true;
                 extraSpecialArgs = mkSpecialArgs darwinSystem;
                 users.${user} = import ./modules/home;
-                sharedModules = [ lazyvimModule ];
+                sharedModules = [];
               };
             }
           ];

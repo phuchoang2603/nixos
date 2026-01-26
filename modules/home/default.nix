@@ -19,7 +19,7 @@
     ./hypridle.nix
     ./opencode.nix
     ./espanso.nix
-    ./lazyvim.nix
+    ./neovim.nix
   ];
 
   # Home Manager configuration

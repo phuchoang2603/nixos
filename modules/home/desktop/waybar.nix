@@ -137,6 +137,7 @@
       #custom-docker,
       #custom-todoist,
       #workspaces button,
+      #mpris,
       #tray,
       #system {
         background-color: #${colors.base00};

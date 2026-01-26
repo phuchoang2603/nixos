@@ -23,7 +23,7 @@ generate_entries() {
     while read -r wallpaper; do
       filename=$(basename "$wallpaper")
       # Use printf for safer escape sequence handling
-      printf "%s\0icon\x1fthumbnail://%s\n" "$filename" "$wallpaper"
+      printf "%s\0icon\x1f%s\n" "$filename" "$wallpaper"
     done
 }
 
@@ -46,13 +46,6 @@ if [ -n "$chosen_filename" ]; then
   # Copy wallpaper directly to backgrounds directory
   mkdir -p "$BACKGROUND_DEST_DIR"
   cp "$chosen_wallpaper_path" "$BACKGROUND_DEST_PATH"
-
-  # Copy pywal-generated configs to app config locations
-  cp ~/.cache/wal/colors-hyprland.conf ~/.config/nix/dotfiles/hypr/colors.conf
-  cp ~/.cache/wal/colors-ghostty ~/.config/nix/dotfiles/ghostty/theme
-  cp ~/.cache/wal/colors-waybar.css ~/.config/nix/dotfiles/waybar/waybar.css
-  cp ~/.cache/wal/colors-rofi-temp.rasi ~/.config/nix/dotfiles/rofi/colors.rasi
-  cp ~/.cache/wal/colors-mako-temp ~/.config/nix/dotfiles/mako/colors
 
   # Restart services and reload apps
   systemctl --user restart hyprpaper.service

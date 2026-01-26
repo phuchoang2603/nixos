@@ -57,11 +57,6 @@ in
       recursive = true;
     };
 
-    # Ghostty theme file only (config is managed by Home Manager)
-    "ghostty/theme" = {
-      source = config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/ghostty/theme";
-    };
-
     # OpenCode configuration
     "opencode" = {
       source = config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/opencode";

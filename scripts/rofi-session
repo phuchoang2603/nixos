@@ -12,7 +12,7 @@ Suspend\x00icon\x1fsystem-suspend
 Hibernate\x00icon\x1fsystem-suspend-hibernate"
 
 declare -A commands=(
-    ["Log Out"]="playerctl pause; loginctl lock-session"
+    ["Log Out"]="playerctl pause; hyprlock"
     ["Reboot"]="systemctl reboot"
     ["Shutdown"]="systemctl poweroff"
     ["Suspend"]="systemctl suspend"

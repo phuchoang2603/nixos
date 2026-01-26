@@ -1,4 +1,4 @@
-@import "./waybar.css";
+@import "~/.cache/wal/colors-waybar.css";
 
 * {
   font-family: CaskaydiaMono Nerd Font;

@@ -34,7 +34,7 @@
     targets = {
       neovim = {
         enable = true;
-        plugin = "mini.base16";
+        plugin = "base16-nvim";
       };
       rofi = {
         enable = false;  # We'll use our custom rofi.nix instead

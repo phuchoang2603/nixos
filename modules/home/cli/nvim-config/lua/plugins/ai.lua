@@ -30,7 +30,7 @@ return {
           require("opencode").select()
         end,
         mode = { "n", "x" },
-        desc = "Execute opencode action...",
+        desc = "Execute opencode action…",
       },
       {
         "<leader>og",

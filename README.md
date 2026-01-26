@@ -26,7 +26,11 @@ It is organized around small, composable modules under `modules/` and thin host 
 - `nixosConfigurations.nixos-desktop`
 - `darwinConfigurations.macbook`
 
-Home Manager is wired into both via the `home-manager.*Modules.home-manager` module and `users.${user} = import ./modules/home`.
+Home Manager is wired into both via the `home-manager.*Modules.home-manager` module and
+host-specific profiles:
+
+- `users.${user} = import ./modules/home/profiles/desktop.nix` (NixOS desktop)
+- `users.${user} = import ./modules/home/profiles/cli.nix` (macbook)
 
 ## NixOS Modules
 
@@ -54,26 +58,13 @@ Home Manager is wired into both via the `home-manager.*Modules.home-manager` mod
 - `modules/nixos/hardware/nvidia.nix`
   - NVIDIA driver defaults for Wayland/Hyprland (imported only by NVIDIA hosts)
 
-## Home Manager Modules
+## Home Manager Profiles
 
-`modules/home/default.nix` imports:
+Profiles live under `modules/home/profiles/`:
 
-- `modules/home/packages.nix`: main CLI toolset (neovim, kubernetes tools, ripgrep/fd, todoist, etc)
-- `modules/home/shell.nix`: zsh config, aliases, functions, completions (includes `zsh-completions`)
-- `modules/home/programs.nix`: HM-managed programs (atuin/fzf/zoxide/bat/eza)
-- `modules/home/git.nix`: git identity + defaults
-- `modules/home/starship.nix`: prompt config
-- `modules/home/tmux.nix`: tmux config + plugins
-- `modules/home/yazi.nix`: yazi config
-- `modules/home/ghostty.nix`: ghostty config
-- `modules/home/spicetify.nix`: spicetify-nix integration
-- `modules/home/dotfiles.nix`: symlinks repo dotfiles into `~/.config`
-
-### Dotfiles
-
-`modules/home/dotfiles.nix` uses `mkOutOfStoreSymlink` to link `dotfiles/` into `~/.config`.
-
-This is intentional for configs that are edited/updated outside of Home Manager (e.g. pywal-driven theming assets).
+- `cli.nix`: base CLI toolset (packages, shell, git, starship, tmux, yazi, opencode, neovim)
+- `desktop.nix`: extends `cli.nix` with desktop UI (stylix theming, ghostty, rofi, mako,
+  waybar, hyprland, hyprpaper, hyprlock, hypridle, espanso)
 
 ## macOS (nix-darwin)
 

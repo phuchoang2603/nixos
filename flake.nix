@@ -53,7 +53,7 @@
                 useGlobalPkgs = true;
                 useUserPackages = true;
                 extraSpecialArgs = mkSpecialArgs linuxSystem;
-                users.${user} = import ./modules/home;
+                users.${user} = import ./modules/home/profiles/desktop.nix;
                 sharedModules = [ 
                   inputs.stylix.homeModules.stylix
                 ];
@@ -77,7 +77,7 @@
                 useGlobalPkgs = true;
                 useUserPackages = true;
                 extraSpecialArgs = mkSpecialArgs darwinSystem;
-                users.${user} = import ./modules/home;
+                users.${user} = import ./modules/home/profiles/cli.nix;
                 sharedModules = [];
               };
             }

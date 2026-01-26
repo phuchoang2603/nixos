@@ -67,18 +67,6 @@
   # Fonts managed by Stylix
   fonts.fontconfig.enable = true;
 
-  # System packages (minimal - most are in home-manager)
-  environment.systemPackages = with pkgs; [
-    vim
-    git
-    wget
-    curl
-    htop
-    pciutils
-    usbutils
-    rclone
-  ];
-
   # Audio - PipeWire
   security.rtkit.enable = true;
   services.pipewire = {

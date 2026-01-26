@@ -8,6 +8,15 @@
     luarocks
     opencode
 
+    # System
+    vim
+    git
+    wget
+    curl
+    unzip
+    pciutils
+    usbutils
+
     # Languages & IaC
     nodejs
     go
@@ -24,6 +33,8 @@
     # Monitoring
     fastfetch
     btop
+    htop
+    nvtop
 
     # File manager dependencies
     ffmpegthumbnailer

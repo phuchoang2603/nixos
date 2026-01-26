@@ -15,7 +15,6 @@
       ];
 
       background = {
-        monitor = "";
         path = "${config.home.homeDirectory}/.config/nix/current.png";
         blur_passes = 3;
         brightness = 0.4;

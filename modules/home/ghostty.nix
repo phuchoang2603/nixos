@@ -18,7 +18,7 @@
       window-padding-x = 10;
       window-padding-y = 10;
 
-      config-file = "${config.home.homeDirectory}/.cache/wal/colors-ghostty";
+      # Colors managed by Stylix - no config-file needed
     };
   };
 }

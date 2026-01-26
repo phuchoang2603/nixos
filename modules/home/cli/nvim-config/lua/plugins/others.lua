@@ -37,7 +37,7 @@ return {
         ["markdownlint-cli2"] = {
           args = {
             "--config",
-            vim.fn.stdpath("config") .. "/lua/plugins/cfg_linters/global.markdownlint-cli2.yaml",
+            vim.fn.stdpath("config") .. "/lua/plugins/cfg_linters/global.markdownlint-cli2.jsonc",
             "--",
           },
         },
@@ -45,10 +45,7 @@ return {
     },
   },
   -- mini.pairs
-  {
-    "nvim-mini/mini.pairs",
-    enabled = true,
-  },
+  { "nvim-mini/mini.pairs", enabled = true, },
   -- gitignore.nvim
   {
     "wintermute-cell/gitignore.nvim",

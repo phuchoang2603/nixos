@@ -5,8 +5,7 @@ GRID_THEME="$HOME/.config/rofi/grid.rasi"
 # Path to your wallpapers
 WALLPAPER_DIR="$HOME/Pictures/Wallpapers"
 # Destination for current wallpaper (in nix config)
-NIX_CONFIG_DIR="$HOME/.config/nix"
-CURRENT_WALLPAPER_PATH="$NIX_CONFIG_DIR/current.png"
+CURRENT_WALLPAPER_PATH="$HOME/.config/nix/current.png"
 
 ROFI="${ROFI:-rofi}"
 rofi_flags="-normal-window"
@@ -42,13 +41,6 @@ if [ -n "$chosen_filename" ]; then
 
   # Copy wallpaper to nix config directory
   cp "$chosen_wallpaper_path" "$CURRENT_WALLPAPER_PATH"
-
-  # Rebuild NixOS configuration to apply new theme
-  if command -v sudo >/dev/null 2>&1; then
-    sudo nixos-rebuild switch
-  else
-    nixos-rebuild switch
-  fi
 
   notify-send "Theme Switcher" "Wallpaper changed and NixOS rebuilt"
 fi

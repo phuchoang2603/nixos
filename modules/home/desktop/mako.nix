@@ -9,12 +9,12 @@
       height = 110;
       padding = 8;
       margin = 2;
-      borderSize = 1;
-      borderRadius = 12;
+      border-size = 1;
+      border-radius = 12;
       anchor = "top-center";
-      defaultTimeout = 5000;
+      default-timeout = 5000;
       icons = true;
-      maxIconSize = 32;
+      max-icon-size = 32;
     };
   };
 }

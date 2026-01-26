@@ -3,15 +3,15 @@
 {
   imports = [
     ./cli.nix
-    ../theming.nix
-    ../ghostty.nix
-    ../rofi.nix
-    ../mako.nix
-    ../waybar.nix
-    ../hyprland.nix
-    ../hyprpaper.nix
-    ../hyprlock.nix
-    ../hypridle.nix
-    ../espanso.nix
+    ../desktop/theming.nix
+    ../desktop/ghostty.nix
+    ../desktop/rofi.nix
+    ../desktop/mako.nix
+    ../desktop/waybar.nix
+    ../desktop/hyprland.nix
+    ../desktop/hyprpaper.nix
+    ../desktop/hyprlock.nix
+    ../desktop/hypridle.nix
+    ../desktop/espanso.nix
   ];
 }

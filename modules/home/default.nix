@@ -2,11 +2,11 @@
 
 {
   imports = [
+    ./theming.nix
     ./packages.nix
     ./shell.nix
     ./git.nix
     ./starship.nix
-    ./programs.nix
     ./tmux.nix
     ./yazi.nix
     ./ghostty.nix

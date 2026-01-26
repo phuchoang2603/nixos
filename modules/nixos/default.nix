@@ -4,7 +4,7 @@
   imports = [
     ./system.nix
     ./desktop.nix
-    ./apps.nix
+    ./system-apps.nix
     ./input-methods.nix
   ];
 }

@@ -4,9 +4,9 @@
 GRID_THEME="$HOME/.config/rofi/grid.rasi"
 # Path to your wallpapers
 WALLPAPER_DIR="$HOME/Pictures/Wallpapers"
-# Destination for backgrounds
-BACKGROUND_DEST_DIR="$HOME/.local/share/backgrounds"
-BACKGROUND_DEST_PATH="$BACKGROUND_DEST_DIR/current.png"
+# Destination for current wallpaper (in nix config)
+NIX_CONFIG_DIR="$HOME/.config/nix"
+CURRENT_WALLPAPER_PATH="$NIX_CONFIG_DIR/current.png"
 
 ROFI="${ROFI:-rofi}"
 rofi_flags="-normal-window"
@@ -40,22 +40,17 @@ chosen_filename=$(generate_entries | $ROFI $rofi_flags -theme "$GRID_THEME" -dme
 if [ -n "$chosen_filename" ]; then
   chosen_wallpaper_path="$WALLPAPER_DIR/$chosen_filename"
 
-  # Run pywal to generate colors from the chosen wallpaper
-  wal -i "$chosen_wallpaper_path" -s -t
+  # Copy wallpaper to nix config directory
+  cp "$chosen_wallpaper_path" "$CURRENT_WALLPAPER_PATH"
 
-  # Copy wallpaper directly to backgrounds directory
-  mkdir -p "$BACKGROUND_DEST_DIR"
-  cp "$chosen_wallpaper_path" "$BACKGROUND_DEST_PATH"
-
-  # Restart services and reload apps
-  systemctl --user restart hyprpaper.service
-  systemctl --user restart mako.service
-  systemctl --user restart waybar.service
-  if command -v spicetify >/dev/null 2>&1; then
-    spicetify apply
+  # Rebuild NixOS configuration to apply new theme
+  if command -v sudo >/dev/null 2>&1; then
+    sudo nixos-rebuild switch
+  else
+    nixos-rebuild switch
   fi
 
-  notify-send "Theme Switcher" "Wallpaper changed and theme applied"
+  notify-send "Theme Switcher" "Wallpaper changed and NixOS rebuilt"
 fi
 
 exit 0

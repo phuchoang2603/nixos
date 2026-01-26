@@ -4,6 +4,7 @@
   programs.rofi = {
     enable = true;
     package = pkgs.rofi;
+    configPath = "${config.xdg.configHome}/rofi/config.hm.rasi";
   };
 
   xdg.configFile."rofi/config.rasi".source = ./rofi-config/config.rasi;

@@ -1,7 +1,7 @@
 { pkgs, lib, config, ... }:
 
 {
-  programs.mako = {
+  services.mako = {
     enable = true;
     
     # Use Stylix colors with transparency

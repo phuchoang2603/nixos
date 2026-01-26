@@ -14,26 +14,6 @@
         { enabled = false; }
       ];
 
-      background = {
-        path = "${config.home.homeDirectory}/.config/nix/current.png";
-        blur_passes = 3;
-        brightness = 0.4;
-      };
-
-      input-field = [
-        { monitor = ""; }
-        { size = "20%, 5%"; }
-        { outline_thickness = 3; }
-        { fade_on_empty = false; }
-        { rounding = 15; }
-        { placeholder_text = "Input password..."; }
-        { fail_text = "$PAMFAIL"; }
-        { dots_spacing = 0.3; }
-        { position = "0, -150"; }
-        { halign = "center"; }
-        { valign = "center"; }
-      ];
-
       label = [
         {
           text = "$TIME";

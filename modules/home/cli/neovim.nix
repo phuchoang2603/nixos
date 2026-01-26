@@ -9,10 +9,6 @@
     withPython3 = true;
     withRuby = false;
 
-    extraPackages = with pkgs; [
-      nodePackages.markdownlint-cli2
-    ];
-
     initLua = lib.mkAfter ''
       require("config.lazy")
     '';

@@ -2,9 +2,9 @@
 
 {
   imports = [
-    ./base
-    ./desktop
-    ./apps
-    ./services
+    ./base.nix
+    ./desktop.nix
+    ./apps.nix
+    ./services.nix
   ];
 }

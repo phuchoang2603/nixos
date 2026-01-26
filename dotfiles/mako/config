@@ -1,4 +1,4 @@
-include=~/.cache/wal/colors-mako-temp
+# Colors managed by Stylix - no include needed
 width=420
 height=110
 padding=8

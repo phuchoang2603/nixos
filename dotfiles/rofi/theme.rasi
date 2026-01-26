@@ -8,7 +8,7 @@
  **/
 
 /*****----- Global Properties -----*****/
-@import                          "~/.cache/wal/colors-rofi-temp.rasi"
+/* Colors managed by Stylix - no import needed */
 
 * {
     border-colour:               var(selected);

@@ -20,6 +20,7 @@
     };
 
     stylix.url = "github:danth/stylix";
+    stylix.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs = { self, nixpkgs, home-manager, nix-darwin, spicetify-nix, stylix, ... }@inputs:
@@ -52,7 +53,7 @@
                 useUserPackages = true;
                 extraSpecialArgs = mkSpecialArgs linuxSystem;
                 users.${user} = import ./modules/home;
-                sharedModules = [ inputs.stylix.homeManagerModules.stylix ];
+                sharedModules = [ inputs.stylix.homeModules.stylix ];
                 backupFileExtension = "backup";
               };
             }

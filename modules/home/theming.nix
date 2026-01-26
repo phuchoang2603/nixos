@@ -1,9 +1,9 @@
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 
 {
   stylix = {
     enable = true;
-    image = ./../../../current.png;
+    image = "${config.home.homeDirectory}/.config/nix/current.png";
     polarity = "dark";
   };
 }

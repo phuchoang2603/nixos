@@ -5,7 +5,6 @@
     enable = true;
     package = pkgs.rofi;
     theme = let
-      # Use Stylix colors - these will be automatically generated
       inherit (config.lib.stylix) colors;
     in ''
       * {

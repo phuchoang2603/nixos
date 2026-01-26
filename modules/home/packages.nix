@@ -6,7 +6,6 @@
     neovim
     tree-sitter
     luarocks
-    opencode
 
     # System
     vim
@@ -34,7 +33,6 @@
     fastfetch
     btop
     htop
-    nvtop
 
     # File manager dependencies
     ffmpegthumbnailer

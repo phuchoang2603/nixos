@@ -14,10 +14,8 @@
     '';
   };
 
-  xdg.configFile."nvim/lua" = {
-    source = ./nvim-config/lua;
+  xdg.configFile."nvim" = {
+    source = ./nvim-config;
     recursive = true;
   };
-
-  xdg.configFile."nvim/stylua.toml".source = ./nvim-config/stylua.toml;
 }

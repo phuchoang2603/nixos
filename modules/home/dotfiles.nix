@@ -14,24 +14,6 @@ in
       recursive = true;
     };
 
-    # Waybar (theming managed by Stylix)
-    "waybar" = {
-      source = config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/waybar";
-      recursive = true;
-    };
-
-    # Mako notifications (theming managed by Stylix)
-    "mako" = {
-      source = config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/mako";
-      recursive = true;
-    };
-
-    # Rofi launcher (theming managed by Stylix)
-    "rofi" = {
-      source = config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/rofi";
-      recursive = true;
-    };
-
     # Neovim configuration
     "nvim" = {
       source = config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/nvim";

@@ -10,6 +10,9 @@
     ./tmux.nix
     ./yazi.nix
     ./ghostty.nix
+    ./rofi.nix
+    ./mako.nix
+    ./waybar.nix
     ./spicetify.nix
     ./dotfiles.nix
   ];

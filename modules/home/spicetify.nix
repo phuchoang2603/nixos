@@ -9,8 +9,8 @@ in
   programs.spicetify = {
     enable = true;
 
-    theme = spicePkgs.themes.sleek;
-    colorScheme = "UltraBlack";
+    # theme = spicePkgs.themes.sleek;
+    # colorScheme = "UltraBlack";
 
     # Enable useful extensions
     enabledExtensions = with spicePkgs.extensions; [

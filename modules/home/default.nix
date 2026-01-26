@@ -13,7 +13,6 @@
     ./rofi.nix
     ./mako.nix
     ./waybar.nix
-    ./spicetify.nix
     ./dotfiles.nix
   ];
 

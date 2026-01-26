@@ -3,6 +3,10 @@
 {
   programs.rofi = {
     enable = true;
+    plugins = with pkgs; [
+      rofi-calc
+      rofi-emoji
+    ];
     package = pkgs.rofi;
     configPath = "${config.xdg.configHome}/rofi/config.hm.rasi";
   };

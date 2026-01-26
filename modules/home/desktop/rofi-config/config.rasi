@@ -1,5 +1,5 @@
 configuration {
-	modes: "window,drun,run,ssh,keys,filebrowser,keys,combi,calc";
+	modes: "window,drun,run,ssh,keys,filebrowser,keys,combi,calc,emoji";
 	/*---------- Display setting ----------*/
 	display-window: "Windows";
 	display-run: "Run";

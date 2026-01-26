@@ -42,9 +42,6 @@
       waybar = {
         enable = false;  # We'll use our custom waybar.nix instead
       };
-      hyprlock = {
-        enable = false;  # We'll use our custom hyprlock.nix instead
-      };
     };
   };
 }

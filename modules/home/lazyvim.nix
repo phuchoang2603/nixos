@@ -21,7 +21,7 @@
         helm.enable = true;
         json.enable = true;
         markdown.enable = true;
-        nushell.enable = true;
+        nix.enable = true;
         python.enable = true;
         terraform.enable = true;
         tex.enable = true;

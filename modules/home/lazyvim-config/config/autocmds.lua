@@ -17,21 +17,6 @@ vim.api.nvim_create_autocmd({ "BufNewFile", "BufReadPost" }, {
   end,
 })
 
-local hyprlang_lsp = vim.api.nvim_create_augroup("HyprlangLsp", { clear = true })
-
-vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
-  group = hyprlang_lsp,
-  pattern = { "*.hl", "hypr*.conf" },
-  callback = function(event)
-    print(string.format("starting hyprls for %s", vim.inspect(event)))
-    vim.lsp.start({
-      name = "hyprlang",
-      cmd = { "hyprls" },
-      root_dir = vim.fn.getcwd(),
-    })
-  end,
-})
-
 local function set_transparent_background()
   vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
   vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })

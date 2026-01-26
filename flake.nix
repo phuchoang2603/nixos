@@ -36,6 +36,21 @@
       mkSpecialArgs = system: {
         inherit inputs user;
       };
+
+      mkHomeConfiguration = { system, profile, homeDirectory }:
+        home-manager.lib.homeManagerConfiguration {
+          pkgs = import nixpkgs { inherit system; };
+          extraSpecialArgs = mkSpecialArgs system;
+          modules = [
+            profile
+            inputs.stylix.homeModules.stylix
+            {
+              home.username = user;
+              home.homeDirectory = homeDirectory;
+              nixpkgs.config.allowUnfree = true;
+            }
+          ];
+        };
       
     in
     {
@@ -82,6 +97,20 @@
               };
             }
           ];
+        };
+      };
+
+      homeConfigurations = {
+        "${user}@nixos-desktop" = mkHomeConfiguration {
+          system = linuxSystem;
+          profile = ./modules/home/profiles/desktop.nix;
+          homeDirectory = "/home/${user}";
+        };
+
+        "${user}@macbook" = mkHomeConfiguration {
+          system = darwinSystem;
+          profile = ./modules/home/profiles/gui.nix;
+          homeDirectory = "/Users/${user}";
         };
       };
     };

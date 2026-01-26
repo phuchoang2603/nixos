@@ -82,3 +82,15 @@ sudo nixos-rebuild switch --flake .#nixos-desktop
 ```bash
 darwin-rebuild switch --flake .#macbook
 ```
+
+### Home Manager (fast for Stylix/wallpaper changes)
+
+Use this when you only change Home Manager settings like the Stylix image.
+
+```bash
+home-manager switch --flake .#felix@nixos-desktop
+```
+
+```bash
+home-manager switch --flake .#felix@macbook
+```

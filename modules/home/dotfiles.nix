@@ -21,10 +21,6 @@ in
       recursive = true;
     };
 
-    # OpenCode configuration
-    "opencode" = {
-      source = config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/opencode";
-      recursive = true;
-    };
+
   };
 }

@@ -17,6 +17,7 @@
     ./hyprpaper.nix
     ./hyprlock.nix
     ./hypridle.nix
+    ./opencode.nix
     ./dotfiles.nix
   ];
 

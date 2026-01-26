@@ -178,25 +178,6 @@
         "type": "github"
       }
     },
-    "lazyvim-nix": {
-      "inputs": {
-        "flake-utils": "flake-utils",
-        "nixpkgs": "nixpkgs"
-      },
-      "locked": {
-        "lastModified": 1769047368,
-        "narHash": "sha256-GoGdNME8jCc4BnlsVgdIkCKo2QWjz1RFa5qDYrMOlXY=",
-        "owner": "pfassina",
-        "repo": "lazyvim-nix",
-        "rev": "36495fe978074b6c8a875e630d7fd7267f562401",
-        "type": "github"
-      },
-      "original": {
-        "owner": "pfassina",
-        "repo": "lazyvim-nix",
-        "type": "github"
-      }
-    },
     "nix-darwin": {
       "inputs": {
         "nixpkgs": [
@@ -277,7 +258,6 @@
     "root": {
       "inputs": {
         "home-manager": "home-manager",
-        "lazyvim-nix": "lazyvim-nix",
         "nix-darwin": "nix-darwin",
         "nixpkgs": "nixpkgs_2",
         "spicetify-nix": "spicetify-nix",

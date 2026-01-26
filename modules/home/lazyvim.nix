@@ -21,7 +21,7 @@
         helm.enable = true;
         json.enable = true;
         markdown.enable = true;
-        nix.enable = true;
+        nushell.enable = true;
         python.enable = true;
         terraform.enable = true;
         tex.enable = true;
@@ -42,29 +42,17 @@
         mini-surround.enable = true;
       };
     };
-    
-    # Custom configuration
-    config = {
-      options = ''
-        vim.opt.wrap = true
-        vim.opt.scrolloff = 16
-        vim.opt.swapfile = false
-        vim.opt.clipboard = "unnamedplus"
-      '';
-      
-      keymaps = ''
-        -- Move cursor in Insert Mode using Alt
-        vim.keymap.set("i", "<A-h>", "<Left>", { desc = "Move Cursor Left" })
-        vim.keymap.set("i", "<A-j>", "<Down>", { desc = "Move Cursor Down" })
-        vim.keymap.set("i", "<A-k>", "<Up>", { desc = "Move Cursor Up" })
-        vim.keymap.set("i", "<A-l>", "<Right>", { desc = "Move Cursor Right" })
-        
-        -- Turn off default leader l for lazy
-        vim.keymap.set("n", "<leader>L", "<cmd>Lazy<cr>", { desc = "Lazy" })
-      '';
-    };
+
+    # LazyVim configuration files (ported from dotfiles)
+    configFiles = ./lazyvim-config;
     
     # Additional packages if needed
     extraPackages = with pkgs; [];
   };
+
+  xdg.configFile."nvim/stylua.toml".text = ''
+    indent_type = "Spaces"
+    indent_width = 2
+    column_width = 120
+  '';
 }

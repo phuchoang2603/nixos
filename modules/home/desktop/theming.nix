@@ -46,4 +46,5 @@
         enable = false;  # We'll use our custom hyprlock.nix instead
       };
     };
-  }
+  };
+}

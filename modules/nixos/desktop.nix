@@ -54,7 +54,6 @@
     QT_QPA_PLATFORM = "wayland;xcb";
     QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
     QT_AUTO_SCREEN_SCALE_FACTOR = "1";
-    GTK_THEME = "Adwaita-dark";
     GDK_BACKEND = "wayland,*";
     SDL_VIDEODRIVER = "wayland";
     CLUTTER_BACKEND = "wayland";

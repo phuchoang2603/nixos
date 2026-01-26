@@ -49,6 +49,7 @@
                 useUserPackages = true;
                 extraSpecialArgs = mkSpecialArgs linuxSystem;
                 users.${user} = import ./modules/home;
+                backupFileExtension = "backup";
               };
             }
           ];

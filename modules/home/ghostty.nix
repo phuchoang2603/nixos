@@ -18,9 +18,7 @@
       window-padding-x = 10;
       window-padding-y = 10;
 
-      # Theme colors - imported from pywal-generated theme file
-      # This file is managed by pywal and symlinked via dotfiles.nix
-      config-file = "~/.config/ghostty/theme";
+      config-file = "${config.home.homeDirectory}/.cache/wal/colors-ghostty";
     };
   };
 }

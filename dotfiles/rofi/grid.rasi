@@ -8,7 +8,7 @@
  **/
 
 /*****----- Global Properties -----*****/
-@import                           "colors.rasi"
+@import                           "~/.cache/wal/colors-rofi-temp.rasi"
 
 * {
     border-colour:                 var(selected);

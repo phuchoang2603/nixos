@@ -4,7 +4,6 @@
   stylix = {
     enable = true;
     image = ../../../current.png;
-    base16Scheme = ./base16-scheme.yaml;
     polarity = "dark";
     
     fonts = {

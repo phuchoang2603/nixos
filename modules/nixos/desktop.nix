@@ -26,70 +26,6 @@
     config.common.default = "*";
   };
 
-  # Desktop environment packages
-  environment.systemPackages = with pkgs; [
-    # Wayland essentials
-    wayland
-    wayland-utils
-    wayland-protocols
-    wl-clipboard
-    wlr-randr
-    wlsunset
-
-    # Hyprland ecosystem
-    hyprpaper        # Wallpaper
-    hyprlock         # Lock screen
-    hypridle         # Idle daemon
-    hyprpicker       # Color picker
-
-    # Status bar
-    waybar
-
-    # Notifications
-    mako
-    libnotify
-
-    # Application launcher
-    rofi
-    rofi-calc
-
-    # File manager
-    nautilus
-
-    # Screenshot/Recording
-    grim
-    slurp
-    swappy
-    wf-recorder
-
-    # Display management
-    nwg-displays
-
-    # Theming
-    pywal
-
-    # GTK theming
-    gtk3
-    gtk4
-    adwaita-icon-theme
-    papirus-icon-theme
-
-    # Qt theming
-    qt5.qtwayland
-    qt6.qtwayland
-    libsForQt5.qt5ct
-    qt6Packages.qt6ct
-
-    # Authentication agent
-    polkit_gnome
-
-    # Bluetooth applet
-    blueman
-
-    # Media controls
-    playerctl
-  ];
-
   # Enable dconf for GTK settings
   programs.dconf.enable = true;
 
@@ -122,6 +58,7 @@
     QT_QPA_PLATFORM = "wayland;xcb";
     QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
     QT_AUTO_SCREEN_SCALE_FACTOR = "1";
+    GTK_THEME = "Adwaita-dark";
     GDK_BACKEND = "wayland,*";
     SDL_VIDEODRIVER = "wayland";
     CLUTTER_BACKEND = "wayland";

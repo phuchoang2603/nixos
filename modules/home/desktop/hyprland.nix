@@ -196,8 +196,6 @@ in
         "SUPER SHIFT, A, exec, hyprshot -m region --raw | swappy -f -"
         "SUPER SHIFT, S, exec, hyprshot -m region"
         "SUPER SHIFT, W, exec, hyprshot -m window"
-        "SUPER SHIFT, O, exec, hypr-ocr.sh"
-        ", Print, exec, hyprshot -m output"
         "SUPER, h, movefocus, l"
         "SUPER, l, movefocus, r"
         "SUPER, k, movefocus, u"

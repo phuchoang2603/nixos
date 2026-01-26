@@ -23,7 +23,6 @@
     wayland-protocols
     wl-clipboard
     wlr-randr
-    hyprpicker
     libnotify
 
     # Qt theming
@@ -33,6 +32,8 @@
     qt6Packages.qt6ct
 
     # Screenshot/Recording
+    hyprpicker
+    hyprshot
     grim
     slurp
     swappy

@@ -267,7 +267,7 @@ in
       # Host-specific display layout (nixos-desktop)
       monitor = [
         "HDMI-A-1,1920x1080@60.0,0x342,1.0"
-        "DP-1,1920x1080@60.0,1920x0,1.0"
+        "DP-1,1920x1080@60.0,1920x0,1.5"
         "DP-1,transform,1"
       ];
       workspace = [

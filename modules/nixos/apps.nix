@@ -25,6 +25,7 @@
     wlsunset
     wlr-randr
     hyprpicker
+    libnotify
 
     # Qt theming
     qt5.qtwayland

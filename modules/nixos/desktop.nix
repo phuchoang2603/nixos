@@ -1,4 +1,4 @@
-{ pkgs, lib, config, ... }:
+{ pkgs, ... }:
 
 {
   # Hyprland (system-level)
@@ -7,13 +7,24 @@
     xwayland.enable = true;
   };
 
-  # Login manager (TTY) for Hyprland
-  services.greetd = {
-    enable = true;
-    settings.default_session = {
-      user = "greeter";
-      command = "${pkgs.tuigreet}/bin/tuigreet --time --cmd start-hyprland";
+  services = {
+    # Login manager (TTY) for Hyprland
+    greetd = {
+      enable = true;
+      settings.default_session = {
+        user = "greeter";
+        command = "${pkgs.tuigreet}/bin/tuigreet --time --cmd start-hyprland";
+      };
     };
+
+    # Enable GNOME keyring for secrets
+    gnome.gnome-keyring.enable = true;
+
+    # Enable GVFS for trash and other virtual filesystems
+    gvfs.enable = true;
+
+    # Thumbnail service
+    tumbler.enable = true;
   };
 
   # XDG portal for screen sharing, file picker, etc.
@@ -30,7 +41,11 @@
   programs.dconf.enable = true;
 
   # Security/Authentication
-  security.polkit.enable = true;
+  security = {
+    polkit.enable = true;
+    pam.services.login.enableGnomeKeyring = true;
+    pam.services.greetd.enableGnomeKeyring = true;
+  };
 
   # Polkit agent (needed for GUI auth prompts on Hyprland)
   systemd.user.services.polkit-gnome-authentication-agent-1 = {
@@ -63,17 +78,6 @@
     PATH = "./bin:$HOME/.local/bin:$HOME/.config/nix/scripts:$PATH";
   };
 
-  # Enable GNOME keyring for secrets
-  services.gnome.gnome-keyring.enable = true;
-  security.pam.services.login.enableGnomeKeyring = true;
-  security.pam.services.greetd.enableGnomeKeyring = true;
-
-  # Enable GVFS for trash and other virtual filesystems
-  services.gvfs.enable = true;
-
-  # Thumbnail service
-  services.tumbler.enable = true;
-
   # Fcitx5 input method with Vietnamese support
   i18n.inputMethod = {
     enable = true;
@@ -82,7 +86,7 @@
       waylandFrontend = true;
       addons = with pkgs; [
         qt6Packages.fcitx5-unikey # Vietnamese input
-        fcitx5-gtk         # GTK integration
+        fcitx5-gtk # GTK integration
         qt6Packages.fcitx5-configtool # Configuration tool
       ];
     };
@@ -94,6 +98,6 @@
     QT_IM_MODULE = "fcitx";
     XMODIFIERS = "@im=fcitx";
     SDL_IM_MODULE = "fcitx";
-    GLFW_IM_MODULE = "ibus";  # For some apps that don't support fcitx directly
+    GLFW_IM_MODULE = "ibus"; # For some apps that don't support fcitx directly
   };
 }

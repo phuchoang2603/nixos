@@ -1,4 +1,4 @@
-{ pkgs, lib, config, ... }:
+{ pkgs, ... }:
 
 {
   environment.systemPackages = with pkgs; [
@@ -40,10 +40,10 @@
     wf-recorder
 
     # Utilities
-    mission-center   # Task manager
+    mission-center # Task manager
     gnome-calculator
     gnome-clocks
-    baobab           # Disk usage analyzer
+    baobab # Disk usage analyzer
     sushi
     localsend
     blueman

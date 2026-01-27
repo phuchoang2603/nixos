@@ -23,7 +23,16 @@
     stylix.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = { self, nixpkgs, home-manager, nix-darwin, spicetify-nix, stylix, ... }@inputs:
+  outputs =
+    {
+      self,
+      nixpkgs,
+      home-manager,
+      nix-darwin,
+      spicetify-nix,
+      stylix,
+      ...
+    }@inputs:
     let
       # User configuration
       user = "felix";
@@ -36,22 +45,6 @@
       mkSpecialArgs = system: {
         inherit inputs user;
       };
-
-      mkHomeConfiguration = { system, profile, homeDirectory }:
-        home-manager.lib.homeManagerConfiguration {
-          pkgs = import nixpkgs { inherit system; };
-          extraSpecialArgs = mkSpecialArgs system;
-          modules = [
-            profile
-            inputs.stylix.homeModules.stylix
-            {
-              home.username = user;
-              home.homeDirectory = homeDirectory;
-              nixpkgs.config.allowUnfree = true;
-            }
-          ];
-        };
-      
     in
     {
       # NixOS configurations
@@ -69,7 +62,7 @@
                 useUserPackages = true;
                 extraSpecialArgs = mkSpecialArgs linuxSystem;
                 users.${user} = import ./modules/home/profiles/desktop.nix;
-                sharedModules = [ 
+                sharedModules = [
                   inputs.stylix.homeModules.stylix
                 ];
                 backupFileExtension = "backup";
@@ -97,20 +90,6 @@
               };
             }
           ];
-        };
-      };
-
-      homeConfigurations = {
-        "${user}@nixos-desktop" = mkHomeConfiguration {
-          system = linuxSystem;
-          profile = ./modules/home/profiles/desktop.nix;
-          homeDirectory = "/home/${user}";
-        };
-
-        "${user}@macbook" = mkHomeConfiguration {
-          system = darwinSystem;
-          profile = ./modules/home/profiles/gui.nix;
-          homeDirectory = "/Users/${user}";
         };
       };
     };

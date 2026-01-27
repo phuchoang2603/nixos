@@ -1,4 +1,10 @@
-{ pkgs, lib, config, user, ... }:
+{
+  pkgs,
+  lib,
+  config,
+  user,
+  ...
+}:
 
 {
   # Boot configuration
@@ -10,6 +16,7 @@
 
     # Enable latest kernel for better hardware support
     kernelPackages = pkgs.linuxPackages_latest;
+    kernelModules = [ "uinput" ];
   };
 
   # Networking
@@ -40,7 +47,15 @@
   users.users.${user} = {
     isNormalUser = true;
     description = user;
-    extraGroups = [ "networkmanager" "wheel" "docker" "video" "audio" ];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+      "docker"
+      "input"
+      "uinput"
+      "video"
+      "audio"
+    ];
     shell = pkgs.zsh;
   };
 
@@ -52,7 +67,10 @@
 
   # Enable flakes
   nix.settings = {
-    experimental-features = [ "nix-command" "flakes" ];
+    experimental-features = [
+      "nix-command"
+      "flakes"
+    ];
     # Auto-optimize store
     auto-optimise-store = true;
   };

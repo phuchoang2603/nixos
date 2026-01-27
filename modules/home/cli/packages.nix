@@ -5,6 +5,8 @@
     # Editors & Dev
     tree-sitter
     luarocks
+    statix
+    nixfmt-rfc-style
 
     # System
     vim

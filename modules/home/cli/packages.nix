@@ -6,7 +6,7 @@
     tree-sitter
     luarocks
     statix
-    nixfmt-rfc-style
+    nixfmt
 
     # System
     vim

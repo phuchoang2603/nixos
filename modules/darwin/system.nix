@@ -1,4 +1,9 @@
-{ pkgs, lib, config, ... }:
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}:
 
 # macOS system configuration placeholder
 # TODO: Expand this when setting up macOS
@@ -38,16 +43,21 @@
 
   # Nix settings
   nix.settings = {
-    experimental-features = [ "nix-command" "flakes" ];
+    experimental-features = [
+      "nix-command"
+      "flakes"
+    ];
     auto-optimise-store = true;
   };
 
-  # Allow unfree packages
-  nixpkgs.config.allowUnfree = true;
-
   # Fonts
   fonts.packages = with pkgs; [
-    (nerdfonts.override { fonts = [ "CascadiaCode" "JetBrainsMono" ]; })
+    (nerdfonts.override {
+      fonts = [
+        "CascadiaCode"
+        "JetBrainsMono"
+      ];
+    })
     inter
   ];
 }

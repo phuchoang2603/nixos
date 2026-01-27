@@ -31,7 +31,6 @@
     gopls
     terraform-ls
     yaml-language-server
-    ansible-language-server
     clang-tools
     cmake-language-server
     dockerfile-language-server-nodejs

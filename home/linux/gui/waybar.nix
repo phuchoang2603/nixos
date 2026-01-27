@@ -171,74 +171,76 @@ in
     description = "Waybar output/monitor name for this host.";
   };
 
-  programs.waybar = {
-    enable = true;
+  config = {
+    programs.waybar = {
+      enable = true;
 
-    systemd.enable = true;
+      systemd.enable = true;
 
-    settings = [
-      waybarConfig
-    ];
+      settings = [
+        waybarConfig
+      ];
 
-    style =
-      let
-        inherit (config.lib.stylix) colors;
-      in
-      ''
-        * {
-          font-family: CaskaydiaMono Nerd Font;
-          font-weight: 700;
-          font-size: 14px;
-        }
+      style =
+        let
+          inherit (config.lib.stylix) colors;
+        in
+        ''
+          * {
+            font-family: CaskaydiaMono Nerd Font;
+            font-weight: 700;
+            font-size: 14px;
+          }
 
-        window#waybar {
-          background: transparent;
-          border: 0px;
-        }
+          window#waybar {
+            background: transparent;
+            border: 0px;
+          }
 
-        #clock,
-        #custom-docker,
-        #custom-todoist,
-        #workspaces button,
-        #mpris,
-        #tray,
-        #system {
-          background-color: #${colors.base00};
-          border: 1px solid #${colors.base0A};
-          color: #${colors.base0A};
-          margin: 2px;
-          padding: 4px 8px;
-          border-radius: 12px;
-        }
+          #clock,
+          #custom-docker,
+          #custom-todoist,
+          #workspaces button,
+          #mpris,
+          #tray,
+          #system {
+            background-color: #${colors.base00};
+            border: 1px solid #${colors.base0A};
+            color: #${colors.base0A};
+            margin: 2px;
+            padding: 4px 8px;
+            border-radius: 12px;
+          }
 
-        #clock,
-        #system,
-        #workspaces button.active {
-          background-color: #${colors.base0A};
-          border: 1px solid #${colors.base00};
-          color: #${colors.base00};
-        }
+          #clock,
+          #system,
+          #workspaces button.active {
+            background-color: #${colors.base0A};
+            border: 1px solid #${colors.base00};
+            color: #${colors.base00};
+          }
 
-        #memory,
-        #pulseaudio,
-        #battery {
-          margin-left: 8px;
-        }
+          #memory,
+          #pulseaudio,
+          #battery {
+            margin-left: 8px;
+          }
 
-        #workspaces button.active {
-          padding: 4px 36px;
-        }
+          #workspaces button.active {
+            padding: 4px 36px;
+          }
 
-        tooltip {
-          background-color: #${colors.base00};
-          border: 1px solid #${colors.base0A};
-          padding: 2px;
-        }
+          tooltip {
+            background-color: #${colors.base00};
+            border: 1px solid #${colors.base0A};
+            padding: 2px;
+          }
 
-        tooltip label {
-          color: #${colors.base0A};
-          padding: 2px;
-        }
-      '';
+          tooltip label {
+            color: #${colors.base0A};
+            padding: 2px;
+          }
+        '';
+    };
   };
 }

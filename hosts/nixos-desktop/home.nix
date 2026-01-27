@@ -1,6 +1,8 @@
 { ... }:
 
 {
+  my.waybar.output = "HDMI-A-1";
+
   wayland.windowManager.hyprland.settings = {
     monitor = [
       "HDMI-A-1,1920x1080@60.0,0x342,1.0"

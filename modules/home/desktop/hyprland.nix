@@ -1,4 +1,10 @@
-{ pkgs, config, lib, osConfig ? null, ... }:
+{
+  pkgs,
+  config,
+  lib,
+  osConfig ? null,
+  ...
+}:
 
 let
   hostName = osConfig.networking.hostName;
@@ -8,7 +14,7 @@ in
   wayland.windowManager.hyprland = {
     enable = true;
     xwayland.enable = true;
-    
+
     settings = {
       # Variables
       "$browser" = "microsoft-edge";
@@ -21,7 +27,6 @@ in
       # Autostart
       exec-once = [
         "dbus-update-activation-environment --systemd --all"
-        "hypr-desktop-portal.sh"
         "fcitx5 -d"
         "copyq --start-server"
       ];
@@ -44,11 +49,11 @@ in
 
       decoration = {
         rounding = 12;
-        
+
         blur = {
           enabled = false;
         };
-        
+
         shadow = {
           enabled = false;
         };
@@ -56,7 +61,7 @@ in
         active_opacity = 0.9;
         inactive_opacity = 0.8;
         fullscreen_opacity = 1.0;
-        
+
         dim_inactive = false;
         dim_strength = 0.1;
         dim_special = 0;
@@ -248,7 +253,8 @@ in
         "match:class ^(com.obsproject.Studio)$, tile on"
         "match:class ^(obsidian|microsoft-edge|org.gnome.NautilusPreviewer)$, opacity 1 override"
       ];
-    } // lib.optionalAttrs isNixosDesktop {
+    }
+    // lib.optionalAttrs isNixosDesktop {
       # Host-specific display layout (nixos-desktop)
       monitor = [
         "HDMI-A-1,1920x1080@60.0,0x342,1.0"

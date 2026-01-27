@@ -57,6 +57,9 @@
             home-manager.nixosModules.home-manager
             inputs.stylix.nixosModules.stylix
             {
+              # Allow unfree packages
+              nixpkgs.config.allowUnfree = true;
+
               home-manager = {
                 useGlobalPkgs = true;
                 useUserPackages = true;
@@ -81,6 +84,9 @@
             ./hosts/macbook
             home-manager.darwinModules.home-manager
             {
+              # Allow unfree packages
+              nixpkgs.config.allowUnfree = true;
+
               home-manager = {
                 useGlobalPkgs = true;
                 useUserPackages = true;

@@ -6,28 +6,16 @@
     package = pkgs.espanso;
     waylandSupport = true;
     x11Support = false;
-    
+
     # Main configuration
     configs = {
-      # Toggle key
-      toggle_key = "ALT";
-      
-      # Injection backend
-      backend = "Auto";
-      
-      # Auto-restart on file change
-      auto_restart = true;
-      
-      # Clipboard threshold
-      clipboard_threshold = 100;
-      
-      # Regex buffer size
-      max_regex_buffer_size = 30;
-      
-      # Search shortcut
-      search_shortcut = "ALT+SPACE";
+      default = {
+        toggle_key = "ALT";
+        auto_restart = true;
+        search_shortcut = "ALT+SPACE";
+      };
     };
-    
+
     # Match configurations
     matches = {
       # Base matches (available everywhere)
@@ -36,155 +24,165 @@
           # Current date
           {
             trigger = ":date";
-            replace = ''{{mydate}}'';
-            vars = [{
-              name = "mydate";
-              type = "date";
-              params = {
-                format = "%Y-%m-%d";
-              };
-            }];
+            replace = "{{mydate}}";
+            vars = [
+              {
+                name = "mydate";
+                type = "date";
+                params = {
+                  format = "%Y-%m-%d";
+                };
+              }
+            ];
           }
           # Shell command output
           {
             trigger = ":shell";
-            replace = ''{{output}}'';
-            vars = [{
-              name = "output";
-              type = "shell";
-              params = {
-                cmd = "echo 'Hello from your shell'";
-              };
-            }];
+            replace = "{{output}}";
+            vars = [
+              {
+                name = "output";
+                type = "shell";
+                params = {
+                  cmd = "echo 'Hello from your shell'";
+                };
+              }
+            ];
           }
         ];
       };
-      
+
       # Personal information
       "personal" = {
         matches = [
           {
             trigger = ":name";
-            replace = ''Felix Hoang'';
+            replace = "Felix Hoang";
           }
           {
             trigger = ":fname";
-            replace = ''Felix'';
+            replace = "Felix";
           }
           {
             trigger = ":lname";
-            replace = ''Hoang'';
+            replace = "Hoang";
           }
           {
             trigger = ":uname";
-            replace = ''phuchoang2603'';
+            replace = "phuchoang2603";
           }
           {
             trigger = ":uid";
-            replace = ''83765874'';
+            replace = "83765874";
           }
           {
             trigger = ":phone";
-            replace = ''8136097656'';
+            replace = "8136097656";
           }
           {
             trigger = ":addr";
-            replace = ''12810 University Club Dr, #203 Tampa, Florida, 33612 United States'';
+            replace = "12810 University Club Dr, #203 Tampa, Florida, 33612 United States";
           }
           {
             trigger = ":street";
-            replace = ''12810 University Club Dr'';
+            replace = "12810 University Club Dr";
           }
           {
             trigger = ":school";
-            replace = ''University of South Florida'';
+            replace = "University of South Florida";
           }
           {
             trigger = ":gmail";
-            replace = ''xuanphuc.a1gv@gmail.com'';
+            replace = "xuanphuc.a1gv@gmail.com";
           }
           {
             trigger = ":omail";
-            replace = ''phuchoang@usf.edu'';
+            replace = "phuchoang@usf.edu";
           }
         ];
       };
-      
+
       # Social media links
       "link" = {
         matches = [
           {
             trigger = "l.yt";
-            replace = ''https://www.youtube.com/@phuchoangxuan1089'';
+            replace = "https://www.youtube.com/@phuchoangxuan1089";
           }
           {
             trigger = "l.gh";
-            replace = ''https://github.com/phuchoang2603'';
+            replace = "https://github.com/phuchoang2603";
           }
           {
             trigger = "l.lk";
-            replace = ''https://www.linkedin.com/in/phuchoang2603/'';
+            replace = "https://www.linkedin.com/in/phuchoang2603/";
           }
           {
             trigger = "l.fb";
-            replace = ''https://www.facebook.com/phuchoang2603/'';
+            replace = "https://www.facebook.com/phuchoang2603/";
           }
         ];
       };
-      
+
       # Obsidian-specific expansions
       "obsidian" = {
         matches = [
           {
             trigger = "o.yt";
             replace = ''{{< youtubeLite id="{{clipb}}" label="Video demo" >}}'';
-            vars = [{
-              name = "clipb";
-              type = "clipboard";
-            }];
+            vars = [
+              {
+                name = "clipb";
+                type = "clipboard";
+              }
+            ];
           }
           {
             trigger = "o.gh";
             replace = ''{{< github repo="{{clipb}}" showThumbnail=true >}}'';
-            vars = [{
-              name = "clipb";
-              type = "clipboard";
-            }];
+            vars = [
+              {
+                name = "clipb";
+                type = "clipboard";
+              }
+            ];
           }
         ];
       };
-      
+
       # Kaomoji (emoji) expansions
       "kaomoji" = {
         matches = [
           {
             trigger = "k.joy";
             replace = "{{output}}";
-            vars = [{
-              name = "output";
-              type = "random";
-              params = {
-                choices = [
-                  "(* ^ ω ^)"
-                  "(´ ∀ ` *)"
-                  "☆*:.｡.o(≧▽≦)o.｡.:*☆"
-                  "(o^▽^o)"
-                  "(⌒▽⌒)☆"
-                  "<(￣︶￣)>"
-                  "。.:☆*:･'(*⌒―⌒*)))"
-                  "ヽ(・∀・)ﾉ"
-                  "(´｡• ω •｡`)"
-                  "(￣ω￣)"
-                  "｀;:゛;｀;･(°ε° )"
-                  "(o･ω･o)"
-                  "(＠＾◡＾)"
-                  "ヽ(*・ω・)ﾉ"
-                  "(o_ _)ﾉ彡☆"
-                  "(^人^)"
-                  "(o´▽`o)"
-                ];
-              };
-            }];
+            vars = [
+              {
+                name = "output";
+                type = "random";
+                params = {
+                  choices = [
+                    "(* ^ ω ^)"
+                    "(´ ∀ ` *)"
+                    "☆*:.｡.o(≧▽≦)o.｡.:*☆"
+                    "(o^▽^o)"
+                    "(⌒▽⌒)☆"
+                    "<(￣︶￣)>"
+                    "。.:☆*:･'(*⌒―⌒*)))"
+                    "ヽ(・∀・)ﾉ"
+                    "(´｡• ω •｡`)"
+                    "(￣ω￣)"
+                    "｀;:゛;｀;･(°ε° )"
+                    "(o･ω･o)"
+                    "(＠＾◡＾)"
+                    "ヽ(*・ω・)ﾉ"
+                    "(o_ _)ﾉ彡☆"
+                    "(^人^)"
+                    "(o´▽`o)"
+                  ];
+                };
+              }
+            ];
           }
         ];
       };

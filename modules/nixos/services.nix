@@ -1,4 +1,9 @@
-{ pkgs, lib, config, ... }:
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}:
 
 {
   # Audio - PipeWire
@@ -50,6 +55,11 @@
 
   # USB automounting
   services.udisks2.enable = true;
+
+  # Set up udev rules for uinput
+  services.udev.extraRules = ''
+    KERNEL=="uinput", GROUP="input", MODE="0660"
+  '';
 
   # Firmware updates
   services.fwupd.enable = true;

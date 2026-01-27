@@ -1,20 +1,49 @@
 {
-  pkgs,
-  lib,
-  config,
-  ...
-}:
-
-{
-  # Audio - PipeWire
   security.rtkit.enable = true;
-  services.pipewire = {
-    enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    pulse.enable = true;
-    jack.enable = true;
-    wireplumber.enable = true;
+  services = {
+    # Audio - PipeWire
+    pipewire = {
+      enable = true;
+      alsa.enable = true;
+      alsa.support32Bit = true;
+      pulse.enable = true;
+      jack.enable = true;
+      wireplumber.enable = true;
+    };
+    blueman.enable = true;
+
+    # Tailscale VPN
+    tailscale = {
+      enable = true;
+      useRoutingFeatures = "client";
+    };
+
+    # Avahi for network discovery
+    avahi = {
+      enable = true;
+      nssmdns4 = true;
+      openFirewall = true;
+    };
+
+    # USB automounting
+    udisks2.enable = true;
+
+    # Set up udev rules for uinput
+    udev.extraRules = ''
+      KERNEL=="uinput", GROUP="input", MODE="0660"
+    '';
+
+    # Firmware updates
+    fwupd.enable = true;
+
+    # SSH (optional - enable if needed)
+    openssh = {
+      enable = true;
+      settings = {
+        PasswordAuthentication = true;
+        PermitRootLogin = "no";
+      };
+    };
   };
 
   # Bluetooth
@@ -28,7 +57,6 @@
       };
     };
   };
-  services.blueman.enable = true;
 
   # Docker
   virtualisation.docker = {
@@ -37,39 +65,6 @@
     autoPrune = {
       enable = true;
       dates = "weekly";
-    };
-  };
-
-  # Tailscale VPN
-  services.tailscale = {
-    enable = true;
-    useRoutingFeatures = "client";
-  };
-
-  # Avahi for network discovery
-  services.avahi = {
-    enable = true;
-    nssmdns4 = true;
-    openFirewall = true;
-  };
-
-  # USB automounting
-  services.udisks2.enable = true;
-
-  # Set up udev rules for uinput
-  services.udev.extraRules = ''
-    KERNEL=="uinput", GROUP="input", MODE="0660"
-  '';
-
-  # Firmware updates
-  services.fwupd.enable = true;
-
-  # SSH (optional - enable if needed)
-  services.openssh = {
-    enable = true;
-    settings = {
-      PasswordAuthentication = true;
-      PermitRootLogin = "no";
     };
   };
 }

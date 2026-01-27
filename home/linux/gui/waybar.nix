@@ -5,170 +5,181 @@
   ...
 }:
 
+let
+  waybarOutput = config.my.waybar.output;
+  waybarConfig =
+    {
+      layer = "top";
+      position = "top";
+      spacing = 0;
+      height = 0;
+      margin-top = 2;
+
+      modules-left = [
+        "clock"
+        "custom/todoist"
+        "custom/docker"
+      ];
+      modules-center = [ "hyprland/workspaces" ];
+      modules-right = [
+        "mpris"
+        "tray"
+        "group/system"
+      ];
+
+      "hyprland/workspaces" = {
+        disable-scroll = true;
+        all-outputs = true;
+        tooltip = false;
+      };
+
+      "clock" = {
+        format = " {:%H:%M - %a, %b %d}";
+        tooltip = true;
+        tooltip-format = "";
+        on-click = "gnome-calendar";
+      };
+
+      "cpu" = {
+        format = "󰍛 {avg_frequency}GHz";
+        interval = 5;
+        states = {
+          critical = 60;
+        };
+        tooltip = true;
+        on-click = "gnome-system-monitor";
+      };
+
+      "memory" = {
+        format = "  {used:0.1f}GB";
+        interval = 15;
+        tooltip = true;
+        tooltip-format = "Used: {used:0.1f}GB / {total:0.1f}GB\nSwap: {swapUsed:0.1f}GB / {swapTotal:0.1f}GB";
+        on-click = "gnome-system-monitor";
+      };
+
+      "pulseaudio" = {
+        format = " {volume}%";
+        format-muted = "󰝟 muted";
+        scroll-step = 5;
+        on-click = "pavucontrol";
+        tooltip-format = "Playing at {volume}%";
+        ignored-sinks = [ "Easy Effects Sink" ];
+      };
+
+      "battery" = {
+        format = "{icon} {capacity}%";
+        format-discharging = "{icon} {capacity}%";
+        format-charging = "{icon} {capacity}%";
+        format-plugged = "";
+        format-icons = {
+          charging = [
+            "󰢜"
+            "󰂆"
+            "󰂇"
+            "󰂈"
+            "󰢝"
+            "󰂉"
+            "󰢞"
+            "󰂊"
+            "󰂋"
+            "󰂅"
+          ];
+          default = [
+            "󰁺"
+            "󰁻"
+            "󰁼"
+            "󰁽"
+            "󰁾"
+            "󰁿"
+            "󰂀"
+            "󰂁"
+            "󰂂"
+            "󰁹"
+          ];
+        };
+        format-full = "Charged ";
+        tooltip-format-discharging = "{power:>1.0f}W↓ {capacity}%";
+        tooltip-format-charging = "{power:>1.0f}W↑ {capacity}%";
+        interval = 5;
+        states = {
+          warning = 20;
+          critical = 10;
+        };
+      };
+
+      "group/system" = {
+        orientation = "inherit";
+        modules = [
+          "cpu"
+          "memory"
+          "pulseaudio"
+          "battery"
+        ];
+      };
+
+      "mpris" = {
+        format = "{status_icon} {dynamic}";
+        dynamic-len = 15;
+        dynamic-separator = " - ";
+        dynamic-order = [
+          "title"
+          "artist"
+          "album"
+        ];
+        dynamic-importance-order = [
+          "title"
+          "artist"
+          "album"
+        ];
+        status-icons = {
+          playing = "";
+          paused = "";
+          stopped = "";
+        };
+        player = "spotify";
+        on-click = "playerctl play-pause --player=spotify";
+        enable-tooltip-len-limits = true;
+      };
+
+      "tray" = {
+        spacing = 8;
+        tooltip = false;
+      };
+
+      "custom/docker" = {
+        format = "🐳 {}";
+        return-type = "json";
+        exec = "waybar-docker.sh";
+        interval = 15;
+        tooltip = true;
+        on-click = "ghostty -e lazydocker";
+      };
+
+      "custom/todoist" = {
+        format = " {}";
+        return-type = "json";
+        exec = "waybar-todoist.sh";
+        interval = 60;
+        tooltip = true;
+      };
+    }
+    // lib.optionalAttrs (waybarOutput != null) { output = waybarOutput; };
+in
 {
+  options.my.waybar.output = lib.mkOption {
+    type = lib.types.nullOr lib.types.str;
+    default = null;
+    description = "Waybar output/monitor name for this host.";
+  };
+
   programs.waybar = {
     enable = true;
 
     systemd.enable = true;
 
     settings = [
-      {
-        layer = "top";
-        position = "top";
-        spacing = 0;
-        height = 0;
-        output = "HDMI-A-1";
-        margin-top = 2;
-
-        modules-left = [
-          "clock"
-          "custom/todoist"
-          "custom/docker"
-        ];
-        modules-center = [ "hyprland/workspaces" ];
-        modules-right = [
-          "mpris"
-          "tray"
-          "group/system"
-        ];
-
-        "hyprland/workspaces" = {
-          disable-scroll = true;
-          all-outputs = true;
-          tooltip = false;
-        };
-
-        "clock" = {
-          format = " {:%H:%M - %a, %b %d}";
-          tooltip = true;
-          tooltip-format = "";
-          on-click = "gnome-calendar";
-        };
-
-        "cpu" = {
-          format = "󰍛 {avg_frequency}GHz";
-          interval = 5;
-          states = {
-            critical = 60;
-          };
-          tooltip = true;
-          on-click = "gnome-system-monitor";
-        };
-
-        "memory" = {
-          format = "  {used:0.1f}GB";
-          interval = 15;
-          tooltip = true;
-          tooltip-format = "Used: {used:0.1f}GB / {total:0.1f}GB\nSwap: {swapUsed:0.1f}GB / {swapTotal:0.1f}GB";
-          on-click = "gnome-system-monitor";
-        };
-
-        "pulseaudio" = {
-          format = " {volume}%";
-          format-muted = "󰝟 muted";
-          scroll-step = 5;
-          on-click = "pavucontrol";
-          tooltip-format = "Playing at {volume}%";
-          ignored-sinks = [ "Easy Effects Sink" ];
-        };
-
-        "battery" = {
-          format = "{icon} {capacity}%";
-          format-discharging = "{icon} {capacity}%";
-          format-charging = "{icon} {capacity}%";
-          format-plugged = "";
-          format-icons = {
-            charging = [
-              "󰢜"
-              "󰂆"
-              "󰂇"
-              "󰂈"
-              "󰢝"
-              "󰂉"
-              "󰢞"
-              "󰂊"
-              "󰂋"
-              "󰂅"
-            ];
-            default = [
-              "󰁺"
-              "󰁻"
-              "󰁼"
-              "󰁽"
-              "󰁾"
-              "󰁿"
-              "󰂀"
-              "󰂁"
-              "󰂂"
-              "󰁹"
-            ];
-          };
-          format-full = "Charged ";
-          tooltip-format-discharging = "{power:>1.0f}W↓ {capacity}%";
-          tooltip-format-charging = "{power:>1.0f}W↑ {capacity}%";
-          interval = 5;
-          states = {
-            warning = 20;
-            critical = 10;
-          };
-        };
-
-        "group/system" = {
-          orientation = "inherit";
-          modules = [
-            "cpu"
-            "memory"
-            "pulseaudio"
-            "battery"
-          ];
-        };
-
-        "mpris" = {
-          format = "{status_icon} {dynamic}";
-          dynamic-len = 15;
-          dynamic-separator = " - ";
-          dynamic-order = [
-            "title"
-            "artist"
-            "album"
-          ];
-          dynamic-importance-order = [
-            "title"
-            "artist"
-            "album"
-          ];
-          status-icons = {
-            playing = "";
-            paused = "";
-            stopped = "";
-          };
-          player = "spotify";
-          on-click = "playerctl play-pause --player=spotify";
-          enable-tooltip-len-limits = true;
-        };
-
-        "tray" = {
-          spacing = 8;
-          tooltip = false;
-        };
-
-        "custom/docker" = {
-          format = "🐳 {}";
-          return-type = "json";
-          exec = "waybar-docker.sh";
-          interval = 15;
-          tooltip = true;
-          on-click = "ghostty -e lazydocker";
-        };
-
-        "custom/todoist" = {
-          format = " {}";
-          return-type = "json";
-          exec = "waybar-todoist.sh";
-          interval = 60;
-          tooltip = true;
-        };
-      }
+      waybarConfig
     ];
 
     style =

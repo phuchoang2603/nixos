@@ -1,10 +1,7 @@
 { pkgs, config, lib, osConfig ? null, ... }:
 
 let
-  hostName =
-    if osConfig != null && osConfig ? networking && osConfig.networking ? hostName
-    then osConfig.networking.hostName
-    else "";
+  hostName = osConfig.networking.hostName;
   isNixosDesktop = hostName == "nixos-desktop";
 in
 {
@@ -239,7 +236,7 @@ in
       windowrule = [
         "match:class (.*), float on"
         "match:class (.*), center on"
-        "match:class (.*), size 80% 80%"
+        "match:class (.*), size 95% 95%"
         "match:class ^(microsoft-edge)$, workspace 1"
         "match:class ^(com.mitchellh.ghostty)$, workspace 2"
         "match:class ^(code|libreoffice.*)$, workspace 3"
@@ -259,7 +256,7 @@ in
         "match:class ^(obsidian)$, tile on"
         "match:class ^(org.gnome.Nautilus)$, tile on"
         "match:class ^(com.obsproject.Studio)$, tile on"
-        "match:class ^(obsidian|microsoft-edge)$, opacity 1 override"
+        "match:class ^(obsidian|microsoft-edge|org.gnome.NautilusPreviewer)$, opacity 1 override"
       ];
     } // lib.optionalAttrs isNixosDesktop {
       # Host-specific display layout (nixos-desktop)

@@ -11,7 +11,7 @@ configuration {
 	drun-display-format:        "{name} [<span weight='light' size='small'><i>({generic})</i></span>]";
 	window-format:              "{w} · {c} · {t}";
 	/*---------- Combi settings ----------*/
-  combi-modes: "window,drun,ssh";
+  combi-modes: "window,drun,ssh,emoji";
 	combi-hide-mode-prefix: false;
 /*	combi-display-format: "{mode} {text}";*/
 	/*---------- General setting ----------*/

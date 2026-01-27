@@ -7,7 +7,11 @@
 
     settings = {
       mgr = {
-        ratio = [ 1 4 3 ];
+        ratio = [
+          1
+          4
+          3
+        ];
         sort_by = "alphabetical";
         sort_sensitive = false;
         sort_reverse = false;
@@ -17,7 +21,10 @@
         show_hidden = true;
         show_symlink = true;
         scrolloff = 5;
-        mouse_events = [ "click" "scroll" ];
+        mouse_events = [
+          "click"
+          "scroll"
+        ];
         title_format = "Yazi: {cwd}";
       };
 
@@ -31,66 +38,220 @@
         image_filter = "triangle";
         image_quality = 75;
         ueberzug_scale = 1;
-        ueberzug_offset = [ 0 0 0 0 ];
+        ueberzug_offset = [
+          0
+          0
+          0
+          0
+        ];
       };
 
       opener = {
         edit = [
-          { run = "\${EDITOR:-vi} %s"; desc = "$EDITOR"; "for" = "unix"; block = true; }
-          { run = "code %s"; desc = "code"; "for" = "windows"; orphan = true; }
-          { run = "code -w %s"; desc = "code (block)"; "for" = "windows"; block = true; }
+          {
+            run = "\${EDITOR:-vi} %s";
+            desc = "$EDITOR";
+            "for" = "unix";
+            block = true;
+          }
+          {
+            run = "code %s";
+            desc = "code";
+            "for" = "windows";
+            orphan = true;
+          }
+          {
+            run = "code -w %s";
+            desc = "code (block)";
+            "for" = "windows";
+            block = true;
+          }
         ];
         play = [
-          { run = "xdg-open %s1"; desc = "Play"; "for" = "linux"; orphan = true; }
-          { run = "open %s"; desc = "Play"; "for" = "macos"; }
-          { run = "start \"\" %s1"; desc = "Play"; "for" = "windows"; orphan = true; }
-          { run = "termux-open %s1"; desc = "Play"; "for" = "android"; }
-          { run = "mediainfo %s1; echo 'Press enter to exit'; read _"; block = true; desc = "Show media info"; "for" = "unix"; }
-          { run = "mediainfo %s1 & pause"; block = true; desc = "Show media info"; "for" = "windows"; }
+          {
+            run = "xdg-open %s1";
+            desc = "Play";
+            "for" = "linux";
+            orphan = true;
+          }
+          {
+            run = "open %s";
+            desc = "Play";
+            "for" = "macos";
+          }
+          {
+            run = "start \"\" %s1";
+            desc = "Play";
+            "for" = "windows";
+            orphan = true;
+          }
+          {
+            run = "termux-open %s1";
+            desc = "Play";
+            "for" = "android";
+          }
+          {
+            run = "mediainfo %s1; echo 'Press enter to exit'; read _";
+            block = true;
+            desc = "Show media info";
+            "for" = "unix";
+          }
+          {
+            run = "mediainfo %s1 & pause";
+            block = true;
+            desc = "Show media info";
+            "for" = "windows";
+          }
         ];
         open = [
-          { run = "xdg-open %s1"; desc = "Open"; "for" = "linux"; }
-          { run = "open %s"; desc = "Open"; "for" = "macos"; }
-          { run = "start \"\" %s1"; desc = "Open"; "for" = "windows"; orphan = true; }
-          { run = "termux-open %s1"; desc = "Open"; "for" = "android"; }
+          {
+            run = "xdg-open %s1";
+            desc = "Open";
+            "for" = "linux";
+          }
+          {
+            run = "open %s";
+            desc = "Open";
+            "for" = "macos";
+          }
+          {
+            run = "start \"\" %s1";
+            desc = "Open";
+            "for" = "windows";
+            orphan = true;
+          }
+          {
+            run = "termux-open %s1";
+            desc = "Open";
+            "for" = "android";
+          }
         ];
         reveal = [
-          { run = "xdg-open %d1"; desc = "Reveal"; "for" = "linux"; }
-          { run = "open -R %s1"; desc = "Reveal"; "for" = "macos"; }
-          { run = "explorer /select,%s1"; desc = "Reveal"; "for" = "windows"; orphan = true; }
-          { run = "termux-open %d1"; desc = "Reveal"; "for" = "android"; }
-          { run = "clear; exiftool %s1; echo 'Press enter to exit'; read _"; desc = "Show EXIF"; "for" = "unix"; block = true; }
+          {
+            run = "xdg-open %d1";
+            desc = "Reveal";
+            "for" = "linux";
+          }
+          {
+            run = "open -R %s1";
+            desc = "Reveal";
+            "for" = "macos";
+          }
+          {
+            run = "explorer /select,%s1";
+            desc = "Reveal";
+            "for" = "windows";
+            orphan = true;
+          }
+          {
+            run = "termux-open %d1";
+            desc = "Reveal";
+            "for" = "android";
+          }
+          {
+            run = "clear; exiftool %s1; echo 'Press enter to exit'; read _";
+            desc = "Show EXIF";
+            "for" = "unix";
+            block = true;
+          }
         ];
         extract = [
-          { run = "ya pub extract --list %s"; desc = "Extract here"; }
+          {
+            run = "ya pub extract --list %s";
+            desc = "Extract here";
+          }
         ];
         download = [
-          { run = "ya emit download --open %S"; desc = "Download and open"; }
-          { run = "ya emit download %S"; desc = "Download"; }
+          {
+            run = "ya emit download --open %S";
+            desc = "Download and open";
+          }
+          {
+            run = "ya emit download %S";
+            desc = "Download";
+          }
         ];
       };
 
       open = {
         rules = [
           # Folder
-          { url = "*/"; use = [ "edit" "open" "reveal" ]; }
+          {
+            url = "*/";
+            use = [
+              "edit"
+              "open"
+              "reveal"
+            ];
+          }
           # Text
-          { mime = "text/*"; use = [ "edit" "reveal" ]; }
+          {
+            mime = "text/*";
+            use = [
+              "edit"
+              "reveal"
+            ];
+          }
           # Image
-          { mime = "image/*"; use = [ "open" "reveal" ]; }
+          {
+            mime = "image/*";
+            use = [
+              "open"
+              "reveal"
+            ];
+          }
           # Media
-          { mime = "{audio,video}/*"; use = [ "play" "reveal" ]; }
+          {
+            mime = "{audio,video}/*";
+            use = [
+              "play"
+              "reveal"
+            ];
+          }
           # Archive
-          { mime = "application/{zip,rar,7z*,tar,gzip,xz,zstd,bzip*,lzma,compress,archive,cpio,arj,xar,ms-cab*}"; use = [ "extract" "reveal" ]; }
+          {
+            mime = "application/{zip,rar,7z*,tar,gzip,xz,zstd,bzip*,lzma,compress,archive,cpio,arj,xar,ms-cab*}";
+            use = [
+              "extract"
+              "reveal"
+            ];
+          }
           # JSON
-          { mime = "application/{json,ndjson}"; use = [ "edit" "reveal" ]; }
-          { mime = "*/javascript"; use = [ "edit" "reveal" ]; }
+          {
+            mime = "application/{json,ndjson}";
+            use = [
+              "edit"
+              "reveal"
+            ];
+          }
+          {
+            mime = "*/javascript";
+            use = [
+              "edit"
+              "reveal"
+            ];
+          }
           # Empty file
-          { mime = "inode/empty"; use = [ "edit" "reveal" ]; }
+          {
+            mime = "inode/empty";
+            use = [
+              "edit"
+              "reveal"
+            ];
+          }
           # Virtual file system
-          { mime = "vfs/{absent,stale}"; use = "download"; }
+          {
+            mime = "vfs/{absent,stale}";
+            use = "download";
+          }
           # Fallback
-          { url = "*"; use = [ "open" "reveal" ]; }
+          {
+            url = "*";
+            use = [
+              "open"
+              "reveal"
+            ];
+          }
         ];
       };
 
@@ -99,59 +260,191 @@
         macro_workers = 10;
         bizarre_retry = 3;
         image_alloc = 536870912; # 512MB
-        image_bound = [ 10000 10000 ];
+        image_bound = [
+          10000
+          10000
+        ];
         suppress_preload = false;
       };
 
       plugin = {
         fetchers = [
-          { id = "mime"; url = "*/"; run = "mime.dir"; prio = "high"; }
-          { id = "mime"; url = "local://*"; run = "mime.local"; prio = "high"; }
-          { id = "mime"; url = "remote://*"; run = "mime.remote"; prio = "high"; }
+          {
+            id = "mime";
+            url = "*/";
+            run = "mime.dir";
+            prio = "high";
+          }
+          {
+            id = "mime";
+            url = "local://*";
+            run = "mime.local";
+            prio = "high";
+          }
+          {
+            id = "mime";
+            url = "remote://*";
+            run = "mime.remote";
+            prio = "high";
+          }
         ];
         spotters = [
-          { url = "*/"; run = "folder"; }
-          { mime = "text/*"; run = "code"; }
-          { mime = "application/{mbox,javascript,wine-extension-ini}"; run = "code"; }
-          { mime = "image/{avif,hei?,jxl}"; run = "magick"; }
-          { mime = "image/svg+xml"; run = "svg"; }
-          { mime = "image/*"; run = "image"; }
-          { mime = "video/*"; run = "video"; }
-          { mime = "vfs/*"; run = "vfs"; }
-          { mime = "null/*"; run = "null"; }
-          { url = "*"; run = "file"; }
+          {
+            url = "*/";
+            run = "folder";
+          }
+          {
+            mime = "text/*";
+            run = "code";
+          }
+          {
+            mime = "application/{mbox,javascript,wine-extension-ini}";
+            run = "code";
+          }
+          {
+            mime = "image/{avif,hei?,jxl}";
+            run = "magick";
+          }
+          {
+            mime = "image/svg+xml";
+            run = "svg";
+          }
+          {
+            mime = "image/*";
+            run = "image";
+          }
+          {
+            mime = "video/*";
+            run = "video";
+          }
+          {
+            mime = "vfs/*";
+            run = "vfs";
+          }
+          {
+            mime = "null/*";
+            run = "null";
+          }
+          {
+            url = "*";
+            run = "file";
+          }
         ];
         preloaders = [
-          { mime = "image/{avif,hei?,jxl}"; run = "magick"; }
-          { mime = "image/svg+xml"; run = "svg"; }
-          { mime = "image/*"; run = "image"; }
-          { mime = "video/*"; run = "video"; }
-          { mime = "application/pdf"; run = "pdf"; }
-          { mime = "font/*"; run = "font"; }
-          { mime = "application/ms-opentype"; run = "font"; }
+          {
+            mime = "image/{avif,hei?,jxl}";
+            run = "magick";
+          }
+          {
+            mime = "image/svg+xml";
+            run = "svg";
+          }
+          {
+            mime = "image/*";
+            run = "image";
+          }
+          {
+            mime = "video/*";
+            run = "video";
+          }
+          {
+            mime = "application/pdf";
+            run = "pdf";
+          }
+          {
+            mime = "font/*";
+            run = "font";
+          }
+          {
+            mime = "application/ms-opentype";
+            run = "font";
+          }
         ];
         previewers = [
-          { url = "*/"; run = "folder"; }
-          { mime = "text/*"; run = "code"; }
-          { mime = "application/{mbox,javascript,wine-extension-ini}"; run = "code"; }
-          { mime = "application/{json,ndjson}"; run = "json"; }
-          { mime = "image/{avif,hei?,jxl}"; run = "magick"; }
-          { mime = "image/svg+xml"; run = "svg"; }
-          { mime = "image/*"; run = "image"; }
-          { mime = "video/*"; run = "video"; }
-          { mime = "application/pdf"; run = "pdf"; }
-          { mime = "application/{zip,rar,7z*,tar,gzip,xz,zstd,bzip*,lzma,compress,archive,cpio,arj,xar,ms-cab*}"; run = "archive"; }
-          { mime = "application/{debian*-package,redhat-package-manager,rpm,android.package-archive}"; run = "archive"; }
-          { url = "*.{AppImage,appimage}"; run = "archive"; }
-          { mime = "application/{iso9660-image,qemu-disk,ms-wim,apple-diskimage}"; run = "archive"; }
-          { mime = "application/virtualbox-{vhd,vhdx}"; run = "archive"; }
-          { url = "*.{img,fat,ext,ext2,ext3,ext4,squashfs,ntfs,hfs,hfsx}"; run = "archive"; }
-          { mime = "font/*"; run = "font"; }
-          { mime = "application/ms-opentype"; run = "font"; }
-          { mime = "inode/empty"; run = "empty"; }
-          { mime = "vfs/*"; run = "vfs"; }
-          { mime = "null/*"; run = "null"; }
-          { url = "*"; run = "file"; }
+          {
+            url = "*/";
+            run = "folder";
+          }
+          {
+            mime = "text/*";
+            run = "code";
+          }
+          {
+            mime = "application/{mbox,javascript,wine-extension-ini}";
+            run = "code";
+          }
+          {
+            mime = "application/{json,ndjson}";
+            run = "json";
+          }
+          {
+            mime = "image/{avif,hei?,jxl}";
+            run = "magick";
+          }
+          {
+            mime = "image/svg+xml";
+            run = "svg";
+          }
+          {
+            mime = "image/*";
+            run = "image";
+          }
+          {
+            mime = "video/*";
+            run = "video";
+          }
+          {
+            mime = "application/pdf";
+            run = "pdf";
+          }
+          {
+            mime = "application/{zip,rar,7z*,tar,gzip,xz,zstd,bzip*,lzma,compress,archive,cpio,arj,xar,ms-cab*}";
+            run = "archive";
+          }
+          {
+            mime = "application/{debian*-package,redhat-package-manager,rpm,android.package-archive}";
+            run = "archive";
+          }
+          {
+            url = "*.{AppImage,appimage}";
+            run = "archive";
+          }
+          {
+            mime = "application/{iso9660-image,qemu-disk,ms-wim,apple-diskimage}";
+            run = "archive";
+          }
+          {
+            mime = "application/virtualbox-{vhd,vhdx}";
+            run = "archive";
+          }
+          {
+            url = "*.{img,fat,ext,ext2,ext3,ext4,squashfs,ntfs,hfs,hfsx}";
+            run = "archive";
+          }
+          {
+            mime = "font/*";
+            run = "font";
+          }
+          {
+            mime = "application/ms-opentype";
+            run = "font";
+          }
+          {
+            mime = "inode/empty";
+            run = "empty";
+          }
+          {
+            mime = "vfs/*";
+            run = "vfs";
+          }
+          {
+            mime = "null/*";
+            run = "null";
+          }
+          {
+            url = "*";
+            run = "file";
+          }
         ];
       };
 
@@ -159,48 +452,117 @@
         cursor_blink = false;
         cd_title = "Change directory:";
         cd_origin = "top-center";
-        cd_offset = [ 0 2 50 3 ];
-        create_title = [ "Create:" "Create (dir):" ];
+        cd_offset = [
+          0
+          2
+          50
+          3
+        ];
+        create_title = [
+          "Create:"
+          "Create (dir):"
+        ];
         create_origin = "top-center";
-        create_offset = [ 0 2 50 3 ];
+        create_offset = [
+          0
+          2
+          50
+          3
+        ];
         rename_title = "Rename:";
         rename_origin = "hovered";
-        rename_offset = [ 0 1 50 3 ];
+        rename_offset = [
+          0
+          1
+          50
+          3
+        ];
         filter_title = "Filter:";
         filter_origin = "top-center";
-        filter_offset = [ 0 2 50 3 ];
-        find_title = [ "Find next:" "Find previous:" ];
+        filter_offset = [
+          0
+          2
+          50
+          3
+        ];
+        find_title = [
+          "Find next:"
+          "Find previous:"
+        ];
         find_origin = "top-center";
-        find_offset = [ 0 2 50 3 ];
+        find_offset = [
+          0
+          2
+          50
+          3
+        ];
         search_title = "Search via {n}:";
         search_origin = "top-center";
-        search_offset = [ 0 2 50 3 ];
-        shell_title = [ "Shell:" "Shell (block):" ];
+        search_offset = [
+          0
+          2
+          50
+          3
+        ];
+        shell_title = [
+          "Shell:"
+          "Shell (block):"
+        ];
         shell_origin = "top-center";
-        shell_offset = [ 0 2 50 3 ];
+        shell_offset = [
+          0
+          2
+          50
+          3
+        ];
       };
 
       confirm = {
         trash_title = "Trash {n} selected file{s}?";
         trash_origin = "center";
-        trash_offset = [ 0 0 70 20 ];
+        trash_offset = [
+          0
+          0
+          70
+          20
+        ];
         delete_title = "Permanently delete {n} selected file{s}?";
         delete_origin = "center";
-        delete_offset = [ 0 0 70 20 ];
+        delete_offset = [
+          0
+          0
+          70
+          20
+        ];
         overwrite_title = "Overwrite file?";
         overwrite_body = "Will overwrite the following file:";
         overwrite_origin = "center";
-        overwrite_offset = [ 0 0 50 15 ];
+        overwrite_offset = [
+          0
+          0
+          50
+          15
+        ];
         quit_title = "Quit?";
         quit_body = "There are unfinished tasks, quit anyway?\n(Open task manager with default key 'w')";
         quit_origin = "center";
-        quit_offset = [ 0 0 50 15 ];
+        quit_offset = [
+          0
+          0
+          50
+          15
+        ];
       };
 
       pick = {
         open_title = "Open with:";
         open_origin = "hovered";
-        open_offset = [ 0 1 50 7 ];
+        open_offset = [
+          0
+          1
+          50
+          7
+        ];
       };
 
       which = {

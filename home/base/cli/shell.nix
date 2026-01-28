@@ -189,8 +189,6 @@
       # Disable default menu for fzf-tab
       zstyle ':completion:*' menu no
     '';
-
-    zprof.enable = true;
   };
 
   # Enable dircolors for LS_COLORS

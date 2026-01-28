@@ -1,9 +1,15 @@
-{ pkgs, ... }:
+{ pkgs, lib, config, ... }:
 
+let
+  userWallpaper = "${config.xdg.dataHome}/backgrounds/current.png";
+  defaultWallpaper = ../../../current.png;
+  wallpaperPath =
+    if builtins.pathExists userWallpaper then userWallpaper else defaultWallpaper;
+in
 {
   stylix = {
     enable = true;
-    image = ../../../current.png;
+    image = wallpaperPath;
     polarity = "dark";
     
     fonts = {
@@ -44,4 +50,11 @@
       };
     };
   };
+
+  home.activation.ensureWallpaper =
+    lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      if [ ! -f "${userWallpaper}" ]; then
+        ${pkgs.coreutils}/bin/install -Dm644 "${defaultWallpaper}" "${userWallpaper}"
+      fi
+    '';
 }

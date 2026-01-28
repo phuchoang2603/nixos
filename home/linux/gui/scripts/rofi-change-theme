@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 
 XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
-NIX_CONFIG_DIR="${NIX_CONFIG_DIR:-$XDG_CONFIG_HOME/nix}"
+XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
 
 # Path to your new grid theme
 GRID_THEME="${GRID_THEME:-$XDG_CONFIG_HOME/rofi/grid.rasi}"
 # Path to your wallpapers
 WALLPAPER_DIR="${WALLPAPER_DIR:-$HOME/Pictures/Wallpapers}"
 # Destination for current wallpaper (Stylix source)
-CURRENT_WALLPAPER_PATH="${CURRENT_WALLPAPER_PATH:-$NIX_CONFIG_DIR/current.png}"
+CURRENT_WALLPAPER_PATH="${CURRENT_WALLPAPER_PATH:-$XDG_DATA_HOME/backgrounds/current.png}"
 
 ROFI="${ROFI:-rofi}"
 rofi_flags="-normal-window"
@@ -19,7 +19,7 @@ if [ ! -d "$WALLPAPER_DIR" ]; then
   exit 1
 fi
 
-mkdir -p "$NIX_CONFIG_DIR"
+mkdir -p "$(dirname "$CURRENT_WALLPAPER_PATH")"
 
 # Generate entries using printf for reliability
 generate_entries() {

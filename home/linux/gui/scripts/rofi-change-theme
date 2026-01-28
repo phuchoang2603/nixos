@@ -1,11 +1,14 @@
 #!/usr/bin/env bash
 
+XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+NIX_CONFIG_DIR="${NIX_CONFIG_DIR:-$XDG_CONFIG_HOME/nix}"
+
 # Path to your new grid theme
-GRID_THEME="$HOME/.config/rofi/grid.rasi"
+GRID_THEME="${GRID_THEME:-$XDG_CONFIG_HOME/rofi/grid.rasi}"
 # Path to your wallpapers
-WALLPAPER_DIR="$HOME/Pictures/Wallpapers"
-# Destination for current wallpaper (in nix config)
-CURRENT_WALLPAPER_PATH="$HOME/.config/nix/current.png"
+WALLPAPER_DIR="${WALLPAPER_DIR:-$HOME/Pictures/Wallpapers}"
+# Destination for current wallpaper (Stylix source)
+CURRENT_WALLPAPER_PATH="${CURRENT_WALLPAPER_PATH:-$NIX_CONFIG_DIR/current.png}"
 
 ROFI="${ROFI:-rofi}"
 rofi_flags="-normal-window"
@@ -15,6 +18,8 @@ if [ ! -d "$WALLPAPER_DIR" ]; then
   $ROFI $rofi_flags -e "Wallpaper directory not found: $WALLPAPER_DIR"
   exit 1
 fi
+
+mkdir -p "$NIX_CONFIG_DIR"
 
 # Generate entries using printf for reliability
 generate_entries() {
@@ -39,10 +44,10 @@ chosen_filename=$(generate_entries | $ROFI $rofi_flags -theme "$GRID_THEME" -dme
 if [ -n "$chosen_filename" ]; then
   chosen_wallpaper_path="$WALLPAPER_DIR/$chosen_filename"
 
-  # Copy wallpaper to nix config directory
+  # Copy wallpaper to the Stylix source path
   cp "$chosen_wallpaper_path" "$CURRENT_WALLPAPER_PATH"
 
-  notify-send "Theme Switcher" "Wallpaper changed and NixOS rebuilt"
+  notify-send "Theme Switcher" "Wallpaper source updated. Rebuild to apply."
 fi
 
 exit 0

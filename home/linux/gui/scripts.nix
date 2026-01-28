@@ -1,7 +1,7 @@
 { pkgs, ... }:
 
 let
-  scriptDir = ../../../scripts;
+  scriptDir = ./scripts;
 
   hyprBrightness = pkgs.writeShellApplication {
     name = "hypr-brightness";

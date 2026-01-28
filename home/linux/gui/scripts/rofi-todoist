@@ -34,29 +34,35 @@ function notify() {
 # Function to modify an existing task
 function modify_task {
     local taskid="$1"
-    local action=$(printf "Content\nDate\nLabel\nProject" | rofi -dmenu -i -p 'Action' -mesg 'What would you like to modify?' "$ROFI_FLAGS")
+    local action
+    action=$(printf "Content\nDate\nLabel\nProject" | rofi -dmenu -i -p 'Action' -mesg 'What would you like to modify?' "$ROFI_FLAGS")
 
     if [ "$action" = "Date" ]; then
-        local newdate=$(rofi -dmenu -l 0 -p 'Date' -mesg 'Enter new date (e.g., today 9am, empty to clear)' "$ROFI_FLAGS")
+        local newdate
+        newdate=$(rofi -dmenu -l 0 -p 'Date' -mesg 'Enter new date (e.g., today 9am, empty to clear)' "$ROFI_FLAGS")
         "$todoist_command" modify --date "$newdate" "$taskid" && notify 'Task successfully modified.'
 
     elif [ "$action" = "Content" ]; then
-        local newname=$(rofi -dmenu -l 0 -p 'Name' -mesg 'Enter new name' "$ROFI_FLAGS")
-        $todoist_command modify --content "$(echo $newname)" $taskid && notify 'Task successfully modified.'
+        local newname
+        newname=$(rofi -dmenu -l 0 -p 'Name' -mesg 'Enter new name' "$ROFI_FLAGS")
+        "$todoist_command" modify --content "$newname" "$taskid" && notify 'Task successfully modified.'
 
     elif [ "$action" = "Label" ]; then
-        local newlabels=$(rofi -dmenu -l 0 -p 'Labels' -mesg 'Enter new label names (comma separated, empty to clear)' "$ROFI_FLAGS")
+        local newlabels
+        newlabels=$(rofi -dmenu -l 0 -p 'Labels' -mesg 'Enter new label names (comma separated, empty to clear)' "$ROFI_FLAGS")
         "$todoist_command" modify --label-names "$newlabels" "$taskid" && notify 'Task successfully modified.'
 
     elif [ "$action" = "Project" ]; then
-        local newprojectname=$(rofi -dmenu -l 0 -p 'Project' -mesg 'Enter new project name' "$ROFI_FLAGS")
+        local newprojectname
+        newprojectname=$(rofi -dmenu -l 0 -p 'Project' -mesg 'Enter new project name' "$ROFI_FLAGS")
         "$todoist_command" modify --project-name "$newprojectname" "$taskid" && notify "Task project updated to '$newprojectname'."
     fi
 }
 
 # Function for quick adding a task
 function quick_add {
-    local quickterm=$(rofi -dmenu -l 0 -p 'Quick add' -mesg 'Enter Quick Add syntax for new task (e.g., Buy milk !today #Groceries)' "$ROFI_FLAGS")
+    local quickterm
+    quickterm=$(rofi -dmenu -l 0 -p 'Quick add' -mesg 'Enter Quick Add syntax for new task (e.g., Buy milk !today #Groceries)' "$ROFI_FLAGS")
     if [ -z "$quickterm" ]; then
         notify 'Quick Add cancelled.'
         main_menu # Return to main menu
@@ -79,7 +85,8 @@ function task_menu {
     local taskid="$1"
     local taskname="$2" # Pass task name for better prompts
 
-    local action=$(printf "Complete task\nModify task\nDelete task" | rofi -dmenu -i -p "Action for '$taskname'" "$ROFI_FLAGS")
+    local action
+    action=$(printf "Complete task\nModify task\nDelete task" | rofi -dmenu -i -p "Action for '$taskname'" "$ROFI_FLAGS")
 
     # Handle Escape explicitly
     if [ -z "$action" ]; then
@@ -112,7 +119,8 @@ function list_tasks {
     fi
 
     # Format for Rofi: "Task Name (Project, Labels, Date) [ID]"
-    local rofi_list_options=$(echo "$tasklist" | awk -F, '{
+    local rofi_list_options
+    rofi_list_options=$(printf "%s" "$tasklist" | awk -F, '{
         details = "";
         if ($4) details = $4;
         if ($5) details = (details ? details ", " : "") $5;
@@ -123,7 +131,8 @@ function list_tasks {
             printf "%s [%s]\n", $6, $1;
     }')
 
-    local selection=$(echo -e "$rofi_list_options" | rofi -dmenu -i -p 'Task' -mesg 'Pick a task:' "$ROFI_FLAGS")
+    local selection
+    selection=$(printf "%s" "$rofi_list_options" | rofi -dmenu -i -p 'Task' -mesg 'Pick a task:' "$ROFI_FLAGS")
 
     # Handle Escape explicitly
     if [ -z "$selection" ]; then
@@ -131,8 +140,10 @@ function list_tasks {
         return
     fi
 
-    local taskid=$(echo "$selection" | grep -o '\[.*\]' | tr -d '[]')
-    local taskname=$(echo "$selection" | sed 's/ (.*) \[.*\]//' | sed 's/ \[.*\]//')
+    local taskid
+    taskid=$(printf "%s" "$selection" | grep -o '\[.*\]' | tr -d '[]')
+    local taskname
+    taskname=$(printf "%s" "$selection" | sed 's/ (.*) \[.*\]//' | sed 's/ \[.*\]//')
 
     if [[ -z "$taskid" ]]; then
         main_menu
@@ -149,14 +160,18 @@ function list_tasks {
 # Function to list projects
 function list_projects {
     "$todoist_command" sync
-    local projectlist=$("$todoist_command" projects | cut -d' ' -f 2)
+    local projectlist
+    projectlist=$("$todoist_command" projects | cut -d' ' -f 2)
 
-    local rofi_list_options=$(printf "%s" "${projectlist}")
+    local rofi_list_options
+    rofi_list_options=$(printf "%s" "$projectlist")
 
-    local action=$(printf "%s" "$rofi_list_options" | rofi -dmenu -i -p 'Project' -mesg 'Filter by project:' "$ROFI_FLAGS")
+    local action
+    action=$(printf "%s" "$rofi_list_options" | rofi -dmenu -i -p 'Project' -mesg 'Filter by project:' "$ROFI_FLAGS")
 
     # Clean the selected action to remove any invisible characters
-    local clean_action=$(echo "$action" | tr -d '[:cntrl:]')
+    local clean_action
+    clean_action=$(printf "%s" "$action" | tr -d '[:cntrl:]')
 
     # Handle Escape explicitly
     if [ -z "$clean_action" ]; then
@@ -171,14 +186,18 @@ function list_projects {
 # Function to list labels
 function list_labels {
     "$todoist_command" sync
-    local labellist=$("$todoist_command" labels | cut -d' ' -f 2)
+    local labellist
+    labellist=$("$todoist_command" labels | cut -d' ' -f 2)
 
-    local rofi_list_options=$(printf "%s" "${labellist}")
+    local rofi_list_options
+    rofi_list_options=$(printf "%s" "$labellist")
 
-    local action=$(printf "%s" "$rofi_list_options" | rofi -dmenu -i -p 'label' -mesg 'Filter by label:' "$ROFI_FLAGS")
+    local action
+    action=$(printf "%s" "$rofi_list_options" | rofi -dmenu -i -p 'label' -mesg 'Filter by label:' "$ROFI_FLAGS")
 
     # Clean the selected action to remove any invisible characters
-    local clean_action=$(echo "$action" | tr -d '[:cntrl:]')
+    local clean_action
+    clean_action=$(printf "%s" "$action" | tr -d '[:cntrl:]')
 
     # Handle Escape explicitly
     if [ -z "$clean_action" ]; then
@@ -193,7 +212,8 @@ function list_labels {
 # Main menu function
 function main_menu {
     while true; do
-        local action=$(printf "Quick Add task\nList tasks\nToday's tasks\nProjects\nLabels" | rofi -dmenu -i -p 'Pick an action' "$ROFI_FLAGS")
+        local action
+        action=$(printf "Quick Add task\nList tasks\nToday's tasks\nProjects\nLabels" | rofi -dmenu -i -p 'Pick an action' "$ROFI_FLAGS")
 
         if [ -z "$action" ]; then
             exit 0 # Exit the script

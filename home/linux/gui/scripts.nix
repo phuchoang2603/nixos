@@ -41,7 +41,6 @@ let
     runtimeInputs = [
       pkgs.rofi
       pkgs.playerctl
-      pkgs.playerctld
       pkgs.coreutils
     ];
     text = builtins.readFile (scriptDir + "/rofi-playerctl");

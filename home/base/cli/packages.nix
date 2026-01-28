@@ -33,7 +33,7 @@
     yaml-language-server
     clang-tools
     cmake-language-server
-    dockerfile-language-server-nodejs
+    dockerfile-language-server
     helm-ls
     texlab
     taplo

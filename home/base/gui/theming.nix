@@ -38,9 +38,6 @@ in
     };
     
     targets = {
-      gnome-shell = {
-        enable = false;
-      };
       neovim = {
         enable = true;
         plugin = "base16-nvim";

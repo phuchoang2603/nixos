@@ -7,6 +7,8 @@
     xwayland.enable = true;
   };
 
+  stylix.targets."gnome-shell".enable = false;
+
   services = {
     # Login manager (TTY) for Hyprland
     greetd = {

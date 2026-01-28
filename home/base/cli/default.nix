@@ -12,5 +12,6 @@
     ./opencode.nix
     ./neovim.nix
     ./rclone-bisync.nix
+    ./latex.nix
   ];
 }

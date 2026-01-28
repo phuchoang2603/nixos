@@ -1,7 +1,5 @@
 return {
-  -- guess-indent.nvim
   { "nmac427/guess-indent.nvim", opts = { auto_cmd = true, override_editorconfig = true } },
-  -- nvim-spider
   {
     "chrisgrieser/nvim-spider",
     opts = {},
@@ -26,21 +24,20 @@ return {
       },
     },
   },
-  -- mini.pairs
   { "nvim-mini/mini.pairs", enabled = true, },
-  -- gitignore.nvim
   {
     "wintermute-cell/gitignore.nvim",
     config = function()
       require("gitignore")
     end,
   },
-  -- vimtex
   {
     "lervag/vimtex",
     lazy = false, -- we don't want to lazy load VimTeX
     init = function()
       vim.g.maplocalleader = " "
+      vim.g.vimtex_view_method = 'zathura'
+      vim.g.vimtex_view_general_viewer = 'zathura'
     end,
   },
 }

@@ -75,7 +75,7 @@
     MOZ_ENABLE_WAYLAND = "1";
     XCURSOR_SIZE = "24";
     HYPRCURSOR_SIZE = "24";
-    PATH = "./bin:$HOME/.local/bin:$HOME/.config/nix/scripts:$PATH";
+    PATH = "./bin:$HOME/.local/bin:$PATH";
   };
 
   # Fcitx5 input method with Vietnamese support

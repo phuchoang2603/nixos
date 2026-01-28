@@ -34,16 +34,4 @@ if [ -n "$chosen_filename" ]; then
   if [ -d "$NIX_FLAKE_PATH/.git" ]; then
     cd "$NIX_FLAKE_PATH" && git add "$STYLIX_TARGET_IMAGE"
   fi
-
-  if command -v nh &>/dev/null; then
-    notify-send "Theme Switcher" "Wallpaper updated. Rebuilding..."
-
-    if nh os switch --ask "$NIX_FLAKE_PATH"; then
-      notify-send "Theme Switcher" "Style applied successfully!"
-    else
-      notify-send "Theme Switcher" "Rebuild failed!" -u critical
-    fi
-  else
-    notify-send "Theme Switcher" "nh not found. Run rebuild manually."
-  fi
 fi

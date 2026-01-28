@@ -23,18 +23,6 @@ user modules under `home/`, and thin host entrypoints under `hosts/`.
 - `modules/`
   - `modules/nixos/`: NixOS modules (boot, desktop, services, apps, input)
   - `modules/darwin/`: nix-darwin modules (system defaults, homebrew)
-- `scripts/`: helper scripts used by the desktop (waybar/rofi/etc)
-
-## Flake Outputs
-
-- `nixosConfigurations.nixos-desktop`
-- `darwinConfigurations.macbook`
-
-Home Manager is wired into both via the `home-manager.*Modules.home-manager`
-module and host-specific profiles:
-
-- `users.${user}.imports = [ ./home/linux/gui ./hosts/nixos-desktop/home.nix ]` (NixOS desktop)
-- `users.${user}.imports = [ ./home/darwin/gui ]` (macbook)
 
 ## NixOS Modules
 
@@ -63,9 +51,28 @@ module and host-specific profiles:
 
 Profiles live under `home/`:
 
-- `home/base/cli/default.nix`: base CLI toolset (packages, shell, git, starship, tmux, yazi, opencode, neovim)
-- `home/base/gui/default.nix`: shared UI (stylix, ghostty, spicetify)
-- `home/linux/gui/default.nix`: Linux GUI (rofi, mako, waybar, hyprland, hyprpaper, hyprlock, hypridle, espanso)
+- `home/base/cli/default.nix`: base CLI toolset
+  - packages,
+  - shell,
+  - git,
+  - starship,
+  - tmux,
+  - yazi,
+  - opencode,
+  - neovim
+- `home/base/gui/default.nix`: shared UI
+  - stylix,
+  - ghostty,
+  - spicetify
+- `home/linux/gui/default.nix`: Linux GUI
+  - rofi,
+  - mako,
+  - waybar,
+  - hyprland,
+  - hyprpaper,
+  - hyprlock,
+  - hypridle,
+  - espanso
 - `home/darwin/gui/default.nix`: macOS GUI (currently just `base/gui`)
 
 ## Usage

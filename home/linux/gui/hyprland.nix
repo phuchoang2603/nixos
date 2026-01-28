@@ -1,16 +1,4 @@
 {
-  pkgs,
-  config,
-  lib,
-  osConfig ? null,
-  ...
-}:
-
-let
-  hostName = osConfig.networking.hostName;
-  isNixosDesktop = hostName == "nixos-desktop";
-in
-{
   wayland.windowManager.hyprland = {
     enable = true;
     xwayland.enable = true;
@@ -161,12 +149,12 @@ in
 
       # Keybinds
       bindel = [
-        ",XF86AudioRaiseVolume, exec, hypr-volume.sh up"
-        ",XF86AudioLowerVolume, exec, hypr-volume.sh down"
+        ",XF86AudioRaiseVolume, exec, hypr-volume up"
+        ",XF86AudioLowerVolume, exec, hypr-volume down"
         ",XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
         ",XF86AudioMicMute, exec, wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
-        ",XF86MonBrightnessUp, exec, hypr-brightness.sh up"
-        ",XF86MonBrightnessDown, exec, hypr-brightness.sh down"
+        ",XF86MonBrightnessUp, exec, hypr-brightness up"
+        ",XF86MonBrightnessDown, exec, hypr-brightness down"
       ];
 
       bindl = [
@@ -252,26 +240,6 @@ in
         "match:class ^(org.gnome.Nautilus)$, tile on"
         "match:class ^(com.obsproject.Studio)$, tile on"
         "match:class ^(obsidian|microsoft-edge|org.gnome.NautilusPreviewer)$, opacity 1 override"
-      ];
-    }
-    // lib.optionalAttrs isNixosDesktop {
-      # Host-specific display layout (nixos-desktop)
-      monitor = [
-        "HDMI-A-1,1920x1080@60.0,0x342,1.0"
-        "DP-1,1920x1080@60.0,1920x0,1.5"
-        "DP-1,transform,1"
-      ];
-      workspace = [
-        "1,monitor:HDMI-A-1"
-        "2,monitor:HDMI-A-1"
-        "3,monitor:HDMI-A-1"
-        "4,monitor:HDMI-A-1"
-        "5,monitor:HDMI-A-1"
-        "6,monitor:HDMI-A-1"
-        "7,monitor:HDMI-A-1"
-        "8,monitor:HDMI-A-1"
-        "9,monitor:HDMI-A-1"
-        "10,monitor:HDMI-A-1"
       ];
     };
   };

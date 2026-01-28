@@ -2,12 +2,6 @@
 
 {
   home.packages = with pkgs; [
-    # Editors & Dev
-    tree-sitter
-    luarocks
-    statix
-    nixfmt
-
     # System
     vim
     git
@@ -17,17 +11,53 @@
     pciutils
     usbutils
 
-    # Languages & IaC
+    # Languages & Lint $ Formatter
     nodejs
     go
-    python3
     uv
     rustc
     cargo
-    terraform
     gcc
+    tree-sitter
+    luarocks
+    statix
+    nixfmt
 
-    # Git tools
+    # --- LSPs (Language Servers) ---
+    nixd
+    lua-language-server
+    marksman
+    pyright
+    gopls
+    terraform-ls
+    yaml-language-server
+    clang-tools
+    cmake-language-server
+    dockerfile-language-server
+    helm-ls
+    texlab
+    taplo
+    vscode-langservers-extracted
+
+    # --- Formatters ---
+    nixfmt
+    stylua
+    ruff
+    yamlfmt
+    ansible-lint
+    shfmt
+
+    # --- Debuggers ---
+    llvmPackages.lldb
+    delve
+
+    # DevOps
+    kubectl
+    kubernetes-helm
+    kubectx
+    krew
+    terraform
+    lazydocker
     lazygit
 
     # Monitoring
@@ -50,15 +80,6 @@
     # Tmux ecosystem
     gitmux
     sesh
-
-    # Kubernetes
-    kubectl
-    kubernetes-helm
-    kubectx
-    krew
-
-    # Docker
-    lazydocker
   ];
 
   programs = {

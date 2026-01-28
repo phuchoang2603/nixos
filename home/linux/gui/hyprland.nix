@@ -149,12 +149,12 @@
 
       # Keybinds
       bindel = [
-        ",XF86AudioRaiseVolume, exec, hypr-volume.sh up"
-        ",XF86AudioLowerVolume, exec, hypr-volume.sh down"
+        ",XF86AudioRaiseVolume, exec, hypr-volume up"
+        ",XF86AudioLowerVolume, exec, hypr-volume down"
         ",XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
         ",XF86AudioMicMute, exec, wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
-        ",XF86MonBrightnessUp, exec, hypr-brightness.sh up"
-        ",XF86MonBrightnessDown, exec, hypr-brightness.sh down"
+        ",XF86MonBrightnessUp, exec, hypr-brightness up"
+        ",XF86MonBrightnessDown, exec, hypr-brightness down"
       ];
 
       bindl = [

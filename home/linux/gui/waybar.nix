@@ -148,7 +148,7 @@ let
     "custom/docker" = {
       format = "🐳 {}";
       return-type = "json";
-      exec = "waybar-docker.sh";
+      exec = "waybar-docker";
       interval = 15;
       tooltip = true;
       on-click = "ghostty -e lazydocker";
@@ -157,7 +157,7 @@ let
     "custom/todoist" = {
       format = " {}";
       return-type = "json";
-      exec = "waybar-todoist.sh";
+      exec = "waybar-todoist";
       interval = 60;
       tooltip = true;
     };

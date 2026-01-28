@@ -12,5 +12,6 @@
     ./hypridle.nix
     ./espanso.nix
     ./wlsunset.nix
+    ./scripts.nix
   ];
 }

@@ -1,63 +1,49 @@
 #!/usr/bin/env bash
 
-XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
-XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
-NIX_FLAKE_PATH="${NIX_FLAKE_PATH:-/etc/nixos}"
+# --- Configuration ---
+NIX_FLAKE_PATH="${NIX_FLAKE_PATH:-$HOME/.config/nix}"
+STYLIX_TARGET_IMAGE="$NIX_FLAKE_PATH/current.png"
 
-# Path to your new grid theme
-GRID_THEME="${GRID_THEME:-$XDG_CONFIG_HOME/rofi/grid.rasi}"
-# Path to your wallpapers
 WALLPAPER_DIR="${WALLPAPER_DIR:-$HOME/Pictures/Wallpapers}"
-# Destination for current wallpaper (Stylix source)
-CURRENT_WALLPAPER_PATH="${CURRENT_WALLPAPER_PATH:-$XDG_DATA_HOME/backgrounds/current.png}"
-
-ROFI="${ROFI:-rofi}"
+GRID_THEME="${GRID_THEME:-$HOME/.config/rofi/grid.rasi}"
+ROFI="rofi"
 rofi_flags="-normal-window"
 
-# Check if wallpaper directory exists
+# --- Validation ---
 if [ ! -d "$WALLPAPER_DIR" ]; then
   $ROFI $rofi_flags -e "Wallpaper directory not found: $WALLPAPER_DIR"
   exit 1
 fi
 
-mkdir -p "$(dirname "$CURRENT_WALLPAPER_PATH")"
-
-# Generate entries using printf for reliability
+# --- Generate Entries ---
 generate_entries() {
-  find "$WALLPAPER_DIR" -type f \( -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.png" -o -iname "*.gif" \) |
+  find "$WALLPAPER_DIR" -type f \( -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.png" \) |
     while read -r wallpaper; do
-      filename=$(basename "$wallpaper")
-      # Use printf for safer escape sequence handling
-      printf "%s\0icon\x1f%s\n" "$filename" "$wallpaper"
+      printf "%s\0icon\x1f%s\n" "$(basename "$wallpaper")" "$wallpaper"
     done
 }
 
-# Check if any wallpapers were found
-if ! find "$WALLPAPER_DIR" -type f \( -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.png" -o -iname "*.gif" \) -print -quit | grep -q .; then
-  $ROFI $rofi_flags -e "No wallpapers found in $WALLPAPER_DIR"
-  exit 1
-fi
-
-# Let the user choose a wallpaper. Rofi will output the filename.
+# --- Selection ---
 chosen_filename=$(generate_entries | $ROFI $rofi_flags -theme "$GRID_THEME" -dmenu -i -p "Wallpaper")
 
-# If a wallpaper was chosen, apply it
 if [ -n "$chosen_filename" ]; then
   chosen_wallpaper_path="$WALLPAPER_DIR/$chosen_filename"
 
-  # Copy wallpaper to the Stylix source path
-  cp "$chosen_wallpaper_path" "$CURRENT_WALLPAPER_PATH"
+  cp "$chosen_wallpaper_path" "$STYLIX_TARGET_IMAGE"
+
+  if [ -d "$NIX_FLAKE_PATH/.git" ]; then
+    cd "$NIX_FLAKE_PATH" && git add "$STYLIX_TARGET_IMAGE"
+  fi
 
   if command -v nh &>/dev/null; then
-    notify-send "Theme Switcher" "Wallpaper updated. Running nh switch..."
+    notify-send "Theme Switcher" "Wallpaper updated. Rebuilding..."
+
     if nh os switch --ask "$NIX_FLAKE_PATH"; then
-      notify-send "Theme Switcher" "Rebuild complete."
+      notify-send "Theme Switcher" "Style applied successfully!"
     else
-      notify-send "Theme Switcher" "Rebuild failed. Check logs."
+      notify-send "Theme Switcher" "Rebuild failed!" -u critical
     fi
   else
-    $ROFI $rofi_flags -e "nh not found. Install nh or run rebuild manually."
+    notify-send "Theme Switcher" "nh not found. Run rebuild manually."
   fi
 fi
-
-exit 0

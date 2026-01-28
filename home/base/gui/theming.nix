@@ -1,17 +1,17 @@
-{ pkgs, lib, config, ... }:
+{
+  pkgs,
+  ...
+}:
 
 let
-  userWallpaper = "${config.xdg.dataHome}/backgrounds/current.png";
-  defaultWallpaper = ../../../current.png;
-  wallpaperPath =
-    if builtins.pathExists userWallpaper then userWallpaper else defaultWallpaper;
+  wallpaperPath = ../../../current.png;
 in
 {
   stylix = {
     enable = true;
     image = wallpaperPath;
     polarity = "dark";
-    
+
     fonts = {
       monospace = {
         name = "CaskaydiaMono Nerd Font";
@@ -36,25 +36,18 @@ in
         popups = 12;
       };
     };
-    
+
     targets = {
       neovim = {
         enable = true;
         plugin = "base16-nvim";
       };
       rofi = {
-        enable = false;  # We'll use our custom rofi.nix instead
+        enable = false; # We'll use our custom rofi.nix instead
       };
       waybar = {
-        enable = false;  # We'll use our custom waybar.nix instead
+        enable = false; # We'll use our custom waybar.nix instead
       };
     };
   };
-
-  home.activation.ensureWallpaper =
-    lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-      if [ ! -f "${userWallpaper}" ]; then
-        ${pkgs.coreutils}/bin/install -Dm644 "${defaultWallpaper}" "${userWallpaper}"
-      fi
-    '';
 }

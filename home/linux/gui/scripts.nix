@@ -26,6 +26,7 @@ let
   rofiChangeTheme = pkgs.writeShellApplication {
     name = "rofi-change-theme";
     runtimeInputs = [
+      pkgs.nh
       pkgs.rofi
       pkgs.findutils
       pkgs.gnugrep

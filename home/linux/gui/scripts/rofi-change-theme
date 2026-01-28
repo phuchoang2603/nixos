@@ -2,6 +2,7 @@
 
 XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
+NIX_FLAKE_PATH="${NIX_FLAKE_PATH:-/etc/nixos}"
 
 # Path to your new grid theme
 GRID_THEME="${GRID_THEME:-$XDG_CONFIG_HOME/rofi/grid.rasi}"
@@ -47,7 +48,16 @@ if [ -n "$chosen_filename" ]; then
   # Copy wallpaper to the Stylix source path
   cp "$chosen_wallpaper_path" "$CURRENT_WALLPAPER_PATH"
 
-  notify-send "Theme Switcher" "Wallpaper source updated. Rebuild to apply."
+  if command -v nh &>/dev/null; then
+    notify-send "Theme Switcher" "Wallpaper updated. Running nh switch..."
+    if nh os switch --ask "$NIX_FLAKE_PATH"; then
+      notify-send "Theme Switcher" "Rebuild complete."
+    else
+      notify-send "Theme Switcher" "Rebuild failed. Check logs."
+    fi
+  else
+    $ROFI $rofi_flags -e "nh not found. Install nh or run rebuild manually."
+  fi
 fi
 
 exit 0

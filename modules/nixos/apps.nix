@@ -47,5 +47,6 @@
     sushi
     localsend
     blueman
+    nh
   ];
 }

@@ -107,7 +107,7 @@ function task_menu {
 
 # Function to list tasks
 function list_tasks {
-    local filter_arg="$1" # Can be "today", "#Project", "@Label", etc.
+    local filter_arg="${1:-}" # Can be "today", "#Project", "@Label", etc.
 
     "$todoist_command" sync # Synchronize before listing
 
@@ -240,7 +240,7 @@ function main_menu {
 }
 
 # Initial entry point
-if [ "${1}" == "fq" ]; then
+if [ "${1:-}" == "fq" ]; then
     quick_add
 else
     main_menu

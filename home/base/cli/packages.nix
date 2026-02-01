@@ -72,6 +72,7 @@
     wget
     curl
     unzip
+    lsof
 
     # Monitoring
     fastfetch

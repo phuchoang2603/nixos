@@ -232,14 +232,8 @@
         "match:class ^(spotify)$, workspace 5"
         "match:class ^(org.gnome.Nautilus)$, workspace 6"
         "match:class ^(com.obsproject.Studio)$, workspace 7"
-        "match:class ^(microsoft-edge)$, tile on"
-        "match:class ^(com.mitchellh.ghostty|org.pwmt.zathura)$, tile on"
-        "match:class ^(code|libreoffice.*)$, tile on"
-        "match:class ^(spotify)$, tile on"
-        "match:class ^(obsidian)$, tile on"
-        "match:class ^(org.gnome.Nautilus)$, tile on"
-        "match:class ^(com.obsproject.Studio)$, tile on"
-        "match:class ^(obsidian|microsoft-edge|org.gnome.NautilusPreviewer)$, opacity 1 override"
+        "match:class ^(microsoft-edge|com.mitchellh.ghostty|org.pwmt.zathura|code|libreoffice.*|spotify|obsidian|org.gnome.Nautilus|com.obsproject.Studio)$, tile on"
+        "match:class ^(obsidian|microsoft-edge|org.gnome.NautilusPreviewer|org.pwmt.zathura)$, opacity 1 override"
       ];
     };
   };

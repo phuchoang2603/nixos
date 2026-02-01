@@ -31,13 +31,4 @@ return {
       require("gitignore")
     end,
   },
-  {
-    "lervag/vimtex",
-    lazy = false, -- we don't want to lazy load VimTeX
-    init = function()
-      vim.g.maplocalleader = " "
-      vim.g.vimtex_view_method = 'zathura'
-      vim.g.vimtex_view_general_viewer = 'zathura'
-    end,
-  },
 }

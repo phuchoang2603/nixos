@@ -47,6 +47,8 @@
     sushi
     localsend
     blueman
+    pciutils
+    usbutils
     nh
   ];
 }

@@ -2,63 +2,76 @@
 
 {
   home.packages = with pkgs; [
+    # Nix
+    nixd # LSP
+    statix # Linter
+    nixfmt # Formatter
+    alejandra # Alternative Formatter (common for Nix)
+
+    # Python
+    python3 # Runtime
+    uv # Package/Env Manager
+    pyright # LSP
+    ruff # Linter & Formatter
+
+    # Go
+    go # Runtime
+    gopls # LSP
+    go-tools # Staticcheck, etc.
+    delve # Debugger (DAP)
+    golangci-lint # Linter (Recommended for Go extra)
+
+    # C / C++
+    gcc # Compiler
+    clang-tools # LSP (clangd) & Formatter
+    cmake-language-server # LSP
+    gdb # Debugger
+
+    # Lua
+    lua
+    luarocks # Package Manager
+    lua-language-server # LSP
+    stylua # Formatter
+
+    # Web & Configs (Node/JSON/YAML/TOML)
+    nodejs # Runtime
+    prettier # Multi-tool Formatter
+    vscode-langservers-extracted # LSPs for JSON, HTML, CSS
+    yaml-language-server # LSP
+    yamlfmt # Formatter
+    taplo # TOML LSP & Formatter
+
+    # Infrastructure & DevOps
+    terraform # CLI
+    terraform-ls # LSP
+    dockerfile-language-server # LSP
+    hadolint # Docker Linter (Highly recommended)
+    kubernetes-helm # Helm CLI
+    helm-ls # Helm LSP
+    kubectl # K8s CLI
+    kubectx # K8s Tool
+    krew # K8s Plugin Manager
+    lazydocker # Docker TUI
+    ansible-lint # Linter
+
+    # Documentation & Markup
+    marksman # Markdown LSP
+    markdownlint-cli # Markdown Linter (Recommended)
+    texlab # LaTeX LSP
+
+    # General Tooling & Editor Support
+    tree-sitter # Syntax Highlighting Parser
+    shfmt # Shell Formatter
+    shellcheck # Shell Linter (Recommended)
+    llvmPackages.lldb # General Debugger (C/Rust)
+
     # System
     vim
     git
+    lazygit
     wget
     curl
     unzip
-    pciutils
-    usbutils
-
-    # Languages & Lint $ Formatter
-    nodejs
-    go
-    uv
-    rustc
-    cargo
-    gcc
-    tree-sitter
-    luarocks
-    statix
-    nixfmt
-
-    # --- LSPs (Language Servers) ---
-    nixd
-    lua-language-server
-    marksman
-    pyright
-    gopls
-    terraform-ls
-    yaml-language-server
-    clang-tools
-    cmake-language-server
-    dockerfile-language-server
-    helm-ls
-    texlab
-    taplo
-    vscode-langservers-extracted
-
-    # --- Formatters ---
-    nixfmt
-    stylua
-    ruff
-    yamlfmt
-    ansible-lint
-    shfmt
-
-    # --- Debuggers ---
-    llvmPackages.lldb
-    delve
-
-    # DevOps
-    kubectl
-    kubernetes-helm
-    kubectx
-    krew
-    terraform
-    lazydocker
-    lazygit
 
     # Monitoring
     fastfetch

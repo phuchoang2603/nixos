@@ -13,5 +13,6 @@
     ./neovim.nix
     ./rclone-bisync.nix
     ./latex.nix
+    ./direnv.nix
   ];
 }

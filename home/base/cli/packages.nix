@@ -6,29 +6,8 @@
     nixd # LSP
     statix # Linter
     nixfmt # Formatter
-    alejandra # Alternative Formatter (common for Nix)
-
-    # Python
-    python3 # Runtime
-    uv # Package/Env Manager
-    pyright # LSP
-    ruff # Linter & Formatter
-
-    # Go
-    go # Runtime
-    gopls # LSP
-    go-tools # Staticcheck, etc.
-    delve # Debugger (DAP)
-    golangci-lint # Linter (Recommended for Go extra)
-
-    # C / C++
-    gcc # Compiler
-    clang-tools # LSP (clangd) & Formatter
-    cmake-language-server # LSP
-    gdb # Debugger
 
     # Lua
-    lua
     luarocks # Package Manager
     lua-language-server # LSP
     stylua # Formatter
@@ -42,16 +21,12 @@
     taplo # TOML LSP & Formatter
 
     # Infrastructure & DevOps
-    terraform-ls # LSP
-    dockerfile-language-server # LSP
-    hadolint # Docker Linter (Highly recommended)
     kubernetes-helm # Helm CLI
     helm-ls # Helm LSP
     kubectl # K8s CLI
     kubectx # K8s Tool
     krew # K8s Plugin Manager
     lazydocker # Docker TUI
-    ansible-lint # Linter
 
     # Documentation & Markup
     marksman # Markdown LSP
@@ -59,9 +34,10 @@
 
     # General Tooling & Editor Support
     tree-sitter # Syntax Highlighting Parser
+    llvmPackages.lldb # General Debugger
+    bash-language-server # Bash LSP
     shfmt # Shell Formatter
     shellcheck # Shell Linter (Recommended)
-    llvmPackages.lldb # General Debugger (C/Rust)
 
     # System
     vim

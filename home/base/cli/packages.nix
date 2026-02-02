@@ -42,7 +42,6 @@
     taplo # TOML LSP & Formatter
 
     # Infrastructure & DevOps
-    terraform # CLI
     terraform-ls # LSP
     dockerfile-language-server # LSP
     hadolint # Docker Linter (Highly recommended)
@@ -57,7 +56,6 @@
     # Documentation & Markup
     marksman # Markdown LSP
     markdownlint-cli # Markdown Linter (Recommended)
-    texlab # LaTeX LSP
 
     # General Tooling & Editor Support
     tree-sitter # Syntax Highlighting Parser

@@ -1,4 +1,5 @@
 return {
+  { "akinsho/bufferline.nvim", enabled = false },
   { "nmac427/guess-indent.nvim", opts = { auto_cmd = true, override_editorconfig = true } },
   {
     "chrisgrieser/nvim-spider",
@@ -24,7 +25,7 @@ return {
       },
     },
   },
-  { "nvim-mini/mini.pairs", enabled = true, },
+  { "nvim-mini/mini.pairs", enabled = true },
   {
     "wintermute-cell/gitignore.nvim",
     config = function()

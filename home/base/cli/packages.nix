@@ -30,7 +30,7 @@
 
     # Documentation & Markup
     marksman # Markdown LSP
-    markdownlint-cli # Markdown Linter (Recommended)
+    markdownlint-cli2 # Markdown Linter (Recommended)
 
     # General Tooling & Editor Support
     tree-sitter # Syntax Highlighting Parser

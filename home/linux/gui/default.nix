@@ -13,5 +13,6 @@
     ./espanso.nix
     ./wlsunset.nix
     ./scripts.nix
+    ./mimeapps.nix
   ];
 }

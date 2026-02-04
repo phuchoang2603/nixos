@@ -27,6 +27,9 @@ return {
       },
     },
     ---@type md-pdf.config
-    opts = {},
+    opts = {
+      toc = false,
+      title_page = false,
+    },
   },
 }

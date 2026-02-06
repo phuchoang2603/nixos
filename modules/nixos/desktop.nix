@@ -25,6 +25,13 @@
 
     # Thumbnail service
     tumbler.enable = true;
+
+    # Game streaming server
+    sunshine = {
+      enable = true;
+      autoStart = true;
+      openFirewall = true;
+    };
   };
 
   # XDG portal for screen sharing, file picker, etc.

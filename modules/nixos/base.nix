@@ -16,6 +16,8 @@
     # Enable latest kernel for better hardware support
     kernelPackages = pkgs.linuxPackages_latest;
     kernelModules = [ "uinput" ];
+
+    growPartition = true;
   };
 
   # Networking

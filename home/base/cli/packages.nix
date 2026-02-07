@@ -23,7 +23,6 @@
     yaml-language-server # LSP
     yamlfmt # Formatter
     taplo # TOML LSP & Formatter
-    sqlfluff
 
     # General Tooling & Editor Support
     tree-sitter # Syntax Highlighting Parser
@@ -48,6 +47,7 @@
     curl
     unzip
     lsof
+    gcc
 
     # Monitoring
     fastfetch

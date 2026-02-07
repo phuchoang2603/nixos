@@ -7,6 +7,10 @@
     statix # Linter
     nixfmt # Formatter
 
+    # Documentation & Markup
+    marksman # Markdown LSP
+    markdownlint-cli2 # Markdown Linter (Recommended)
+
     # Lua
     luarocks # Package Manager
     lua-language-server # LSP
@@ -19,6 +23,14 @@
     yaml-language-server # LSP
     yamlfmt # Formatter
     taplo # TOML LSP & Formatter
+    sqlfluff
+
+    # General Tooling & Editor Support
+    tree-sitter # Syntax Highlighting Parser
+    llvmPackages.lldb # General Debugger
+    bash-language-server # Bash LSP
+    shfmt # Shell Formatter
+    shellcheck # Shell Linter
 
     # Infrastructure & DevOps
     kubernetes-helm # Helm CLI
@@ -27,17 +39,6 @@
     kubectx # K8s Tool
     krew # K8s Plugin Manager
     lazydocker # Docker TUI
-
-    # Documentation & Markup
-    marksman # Markdown LSP
-    markdownlint-cli2 # Markdown Linter (Recommended)
-
-    # General Tooling & Editor Support
-    tree-sitter # Syntax Highlighting Parser
-    llvmPackages.lldb # General Debugger
-    bash-language-server # Bash LSP
-    shfmt # Shell Formatter
-    shellcheck # Shell Linter (Recommended)
 
     # System
     vim

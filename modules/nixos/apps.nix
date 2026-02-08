@@ -12,6 +12,7 @@
     # GUI Applications
     microsoft-edge
     vscode
+    jetbrains.datagrip
     libreoffice-fresh
     obsidian
     nautilus

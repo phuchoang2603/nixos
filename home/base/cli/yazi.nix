@@ -65,6 +65,14 @@
             block = true;
           }
         ];
+        sql-editor = [
+          {
+            run = "datagrip %s";
+            desc = "SQL Editor";
+            "for" = "unix";
+            orphan = true;
+          }
+        ];
         play = [
           {
             run = "xdg-open %s1";
@@ -220,6 +228,13 @@
             use = [
               "edit"
               "reveal"
+            ];
+          }
+          # SQL
+          {
+            url = "*.sql";
+            use = [
+              "sql-editor"
             ];
           }
           {

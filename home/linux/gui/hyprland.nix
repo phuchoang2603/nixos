@@ -227,12 +227,12 @@
         "match:class (.*), size 95% 95%"
         "match:class ^(microsoft-edge)$, workspace 1"
         "match:class ^(com.mitchellh.ghostty|org.pwmt.zathura)$, workspace 2"
-        "match:class ^(code|libreoffice.*)$, workspace 3"
+        "match:class ^(code|jetbrains-datagrip|libreoffice.*)$, workspace 3"
         "match:class ^(obsidian)$, workspace 4"
         "match:class ^(spotify)$, workspace 5"
         "match:class ^(org.gnome.Nautilus)$, workspace 6"
         "match:class ^(com.obsproject.Studio)$, workspace 7"
-        "match:class ^(microsoft-edge|com.mitchellh.ghostty|org.pwmt.zathura|code|libreoffice.*|spotify|obsidian|org.gnome.Nautilus|com.obsproject.Studio)$, tile on"
+        "match:class ^(microsoft-edge|com.mitchellh.ghostty|org.pwmt.zathura|code|libreoffice.*|jetbrains-datagrip|spotify|obsidian|org.gnome.Nautilus|com.obsproject.Studio)$, tile on"
         "match:class ^(obsidian|microsoft-edge|org.gnome.NautilusPreviewer|org.pwmt.zathura)$, opacity 1 override"
       ];
     };

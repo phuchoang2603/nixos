@@ -1,0 +1,5 @@
+{ ... }:
+
+{
+  my.rcloneBisync.enable = true;
+}

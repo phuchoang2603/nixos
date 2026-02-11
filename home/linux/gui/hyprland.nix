@@ -92,16 +92,6 @@
         repeat_rate = 35;
         special_fallthrough = true;
         follow_mouse = 1;
-
-        touchpad = {
-          disable_while_typing = true;
-          natural_scroll = true;
-          scroll_factor = 0.8;
-          clickfinger_behavior = true;
-          tap-to-click = true;
-          drag_lock = 1;
-          tap-and-drag = true;
-        };
       };
 
       device = {
@@ -112,19 +102,6 @@
       binds = {
         scroll_event_delay = 0;
       };
-
-      gesture = [
-        "2, right, dispatcher, sendshortcut, ALT, right, activewindow"
-        "2, left, dispatcher, sendshortcut, ALT, left, activewindow"
-        "3, right, dispatcher, sendshortcut, CTRL, Page_Down, activewindow"
-        "3, left, dispatcher, sendshortcut, CTRL, Page_Up, activewindow"
-        "3, up, dispatcher, sendshortcut, CTRL, T, activewindow"
-        "3, down, dispatcher, sendshortcut, CTRL, W, activewindow"
-        "4, horizontal, workspace"
-        "4, pinch, dispatcher, setprop, active opaque toggle"
-        "4, up, fullscreen"
-        "4, down, close"
-      ];
 
       misc = {
         vfr = true;

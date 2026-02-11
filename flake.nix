@@ -57,7 +57,6 @@
             home-manager.nixosModules.home-manager
             inputs.stylix.nixosModules.stylix
             {
-              # Allow unfree packages
               nixpkgs.config.allowUnfree = true;
 
               home-manager = {
@@ -68,6 +67,35 @@
                   imports = [
                     ./home/linux/gui
                     ./hosts/nixos-desktop/home.nix
+                  ];
+                };
+                sharedModules = [
+                  inputs.stylix.homeModules.stylix
+                ];
+                backupFileExtension = "backup";
+              };
+            }
+          ];
+        };
+
+        nixos-laptop = nixpkgs.lib.nixosSystem {
+          system = linuxSystem;
+          specialArgs = mkSpecialArgs linuxSystem;
+          modules = [
+            ./hosts/nixos-laptop
+            home-manager.nixosModules.home-manager
+            inputs.stylix.nixosModules.stylix
+            {
+              nixpkgs.config.allowUnfree = true;
+
+              home-manager = {
+                useGlobalPkgs = true;
+                useUserPackages = true;
+                extraSpecialArgs = mkSpecialArgs linuxSystem;
+                users.${user} = {
+                  imports = [
+                    ./home/linux/gui
+                    ./hosts/nixos-laptop/home.nix
                   ];
                 };
                 sharedModules = [

@@ -6,6 +6,7 @@
   imports = [
     ./hardware-configuration.nix
     ./auto-cpufreq.nix
+    ./virtio.nix
     ../../modules/nixos
   ];
 

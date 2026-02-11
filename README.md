@@ -79,8 +79,54 @@ Profiles live under `home/`:
 
 ### NixOS
 
+1. Partition with cfdisk
+Run cfdisk on your target drive (e.g., /dev/nvme0n1).
+
 ```bash
-sudo nixos-rebuild switch --flake .#nixos-desktop
+sudo cfdisk /dev/nvme0n1
+```
+
+Inside the cfdisk interface:
+- Select Label Type: Choose gpt.
+- Create Boot Partition: * Select New. Size: 512M. Type: Select Type and choose EFI System.
+- Create Root Partition: * Select the remaining Free space. Select New (default size uses the rest of the disk). Type: Leave as Linux filesystem (default).
+- Write & Quit: Select Write, type yes, then select Quit.
+
+2. Format the Partitions
+Now that the partitions exist, apply the filesystems.
+
+```bash
+# Format the EFI partition (usually p1)
+sudo mkfs.fat -F 32 -n boot /dev/nvme0n1p1
+
+# Format the Root partition (usually p2)
+sudo mkfs.ext4 -L nixos /dev/nvme0n1p2
+```
+
+3. Mount to /mnt
+You need to mount the root first so that the boot directory has a physical place to live on the disk.
+
+```bash
+# Mount the root partition to /mnt
+sudo mount /dev/disk/by-label/nixos /mnt
+
+# Create the boot mount point and mount the EFI partition
+sudo mkdir -p /mnt/boot
+sudo mount /dev/disk/by-label/boot /mnt/boot
+```
+
+4. Clone and Apply
+Now that your environment is staged at /mnt, you can bring in your flake.
+
+```bash
+# Clone your repo into the mounted system
+sudo git clone https://github.com/your-username/your-repo.git /mnt/etc/nixos
+
+sudo nixos-generate-config --root /mnt --show-hardware-config > /mnt/etc/nixos/hardware-configuration.nix
+
+# Install the system
+# Using --root /mnt tells NixOS to install to the disk, not the live ISO
+sudo nixos-install --flake /mnt/etc/nixos#nixos-desktop
 ```
 
 ### macOS (nix-darwin)

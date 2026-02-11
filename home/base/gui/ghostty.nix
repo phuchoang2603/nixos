@@ -1,4 +1,9 @@
-{ pkgs, lib, config, ... }:
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}:
 
 {
   programs.ghostty = {
@@ -18,7 +23,10 @@
       window-padding-x = 10;
       window-padding-y = 10;
 
-      # Colors managed by Stylix - no config-file needed
+      # Keybind
+      keybind = [
+        "ctrl+enter=unbind"
+      ];
     };
   };
 }

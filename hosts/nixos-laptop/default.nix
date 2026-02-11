@@ -1,15 +1,11 @@
-{
-  pkgs,
-  lib,
-  config,
-  ...
-}:
+{ ... }:
 
 # NixOS Desktop host configuration
 
 {
   imports = [
     ./hardware-configuration.nix
+    ./auto-cpufreq.nix
     ../../modules/nixos
   ];
 

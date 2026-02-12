@@ -1,39 +1,48 @@
-{ pkgs, lib, config, ... }:
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}:
 
 let
   cfg = config.my.rcloneBisync;
 
   mkServiceName = dir: "rclone-bisync-${lib.replaceStrings [ " " ] [ "-" ] dir}";
 
-  mkService = dir:
+  mkService =
+    dir:
     let
       serviceName = mkServiceName dir;
       remotePath = "${cfg.remote}:${cfg.libraryBase}/${dir}";
-      localPath = "%h/${dir}";
-      extraArgs = lib.concatStringsSep " " cfg.extraArgs;
-      execStart = lib.concatStringsSep " " (
-        [
-          "${pkgs.rclone}/bin/rclone"
-          "bisync"
-          remotePath
-          localPath
-          "--create-empty-src-dirs"
-          "--compare"
-          "size,modtime,checksum"
-          "--slow-hash-sync-only"
-          "--resilient"
-          "--recover"
-          "--fix-case"
-          "--conflict-resolve"
-          "newer"
-          "--conflict-loser"
-          "delete"
-          "-MvP"
-          "--check-access"
-          "--config=%h/.config/rclone/rclone.conf"
-        ]
-        ++ lib.optional (extraArgs != "") extraArgs
-      );
+      localPath = "${config.home.homeDirectory}/${dir}";
+
+      execStartScript = pkgs.writeShellScript "rclone-bisync-${dir}-wrapper" ''
+        CACHE_DIR="$HOME/.cache/rclone/bisync"
+        # Rclone creates cache files with underscores replacing slashes and colons
+        # This is a simplified check; if the directory is empty, we resync.
+        if [ ! -d "$CACHE_DIR" ] || [ -z "$(ls -A "$CACHE_DIR")" ]; then
+          echo "No prior sync history found for ${dir}. Running initial --resync..."
+          ${pkgs.rclone}/bin/rclone bisync "${remotePath}" "${localPath}" \
+            --resync \
+            --create-empty-src-dirs \
+            --compare size,modtime,checksum \
+            --slow-hash-sync-only \
+            --config "$HOME/.config/rclone/rclone.conf" -v
+        else
+          ${pkgs.rclone}/bin/rclone bisync "${remotePath}" "${localPath}" \
+            --create-empty-src-dirs \
+            --compare size,modtime,checksum \
+            --slow-hash-sync-only \
+            --resilient \
+            --recover \
+            --fix-case \
+            --conflict-resolve newer \
+            --conflict-loser delete \
+            --check-access \
+            --config "$HOME/.config/rclone/rclone.conf" -v
+        fi
+      '';
     in
     lib.nameValuePair serviceName {
       Unit = {
@@ -45,11 +54,12 @@ let
       };
       Service = {
         Type = "oneshot";
-        ExecStart = execStart;
+        ExecStart = "${execStartScript}";
       };
     };
 
-  mkTimer = dir:
+  mkTimer =
+    dir:
     let
       serviceName = mkServiceName dir;
     in
@@ -85,7 +95,12 @@ in
 
     dirs = lib.mkOption {
       type = lib.types.listOf lib.types.str;
-      default = [ "Pictures" "Documents" "Music" "Videos" ];
+      default = [
+        "Pictures"
+        "Documents"
+        "Music"
+        "Videos"
+      ];
       description = "Directories to bisync relative to the home directory.";
     };
 
@@ -97,7 +112,7 @@ in
 
     extraArgs = lib.mkOption {
       type = lib.types.listOf lib.types.str;
-      default = [];
+      default = [ ];
       description = "Extra arguments appended to the rclone bisync command.";
     };
   };

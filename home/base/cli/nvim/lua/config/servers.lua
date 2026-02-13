@@ -10,6 +10,8 @@ function M.get_servers()
   return {
     -- Lua
     lua_ls = {
+      cmd = { 'lua-language-server' },
+      root_dir = get_root_dir({ '.luarc.json', '.luarc.jsonc', '.luacheckrc', '.stylua.toml', 'stylua.toml', 'selene.toml', 'selene.yml', '.git' }),
       settings = {
         Lua = {
           workspace = {
@@ -52,6 +54,7 @@ function M.get_servers()
 
     -- Go
     gopls = {
+      cmd = { 'gopls' },
       root_dir = get_root_dir { 'go.work', 'go.mod', '.git' },
       settings = {
         gopls = {
@@ -92,6 +95,7 @@ function M.get_servers()
 
     -- Python
     pyright = {
+      cmd = { 'pyright-langserver', '--stdio' },
       root_dir = get_root_dir { 'pyproject.toml', 'setup.py', 'setup.cfg', 'requirements.txt', 'Pipfile', 'pyrightconfig.json', '.git' },
       settings = {
         python = {
@@ -106,6 +110,7 @@ function M.get_servers()
 
     -- YAML
     yamlls = {
+      cmd = { 'yaml-language-server', '--stdio' },
       root_dir = get_root_dir { '.git' },
       settings = {
         yaml = {
@@ -132,6 +137,7 @@ function M.get_servers()
 
     -- JSON
     jsonls = {
+      cmd = { 'vscode-json-language-server', '--stdio' },
       root_dir = get_root_dir { '.git' },
       settings = {
         json = {
@@ -147,27 +153,33 @@ function M.get_servers()
 
     -- Docker
     dockerls = {
+      cmd = { 'docker-langserver', '--stdio' },
       root_dir = get_root_dir { 'Dockerfile', '.git' },
     },
     docker_compose_language_service = {
+      cmd = { 'docker-compose-langserver', '--stdio' },
       root_dir = get_root_dir { 'docker-compose.yaml', 'docker-compose.yml', 'compose.yaml', 'compose.yml', '.git' },
     },
 
     -- Terraform
     terraformls = {
+      cmd = { 'terraform-ls', 'serve' },
       root_dir = get_root_dir { '.terraform', '.git' },
     },
     tflint = {
+      cmd = { 'tflint', '--langserver' },
       root_dir = get_root_dir { '.tflint.hcl', '.terraform', '.git' },
     },
 
     -- Ansible
     ansiblels = {
+      cmd = { 'ansible-language-server', '--stdio' },
       root_dir = get_root_dir { 'ansible.cfg', '.ansible-lint', '.git' },
     },
 
     -- Nix
     nil_ls = {
+      cmd = { 'nil' },
       root_dir = get_root_dir { 'flake.nix', 'default.nix', 'shell.nix', '.git' },
       settings = {
         ['nil'] = {
@@ -180,21 +192,25 @@ function M.get_servers()
 
     -- Markdown
     marksman = {
+      cmd = { 'marksman', 'server' },
       root_dir = get_root_dir { '.marksman.toml', '.git' },
     },
 
     -- TOML
     taplo = {
+      cmd = { 'taplo', 'lsp', 'stdio' },
       root_dir = get_root_dir { '.git' },
     },
 
     -- Helm
     helm_ls = {
+      cmd = { 'helm_ls', 'serve' },
       root_dir = get_root_dir { 'Chart.yaml', '.git' },
     },
 
     -- Bash
     bashls = {
+      cmd = { 'bash-language-server', 'start' },
       root_dir = get_root_dir { '.git' },
     },
   }

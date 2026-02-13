@@ -29,7 +29,6 @@ return {
         'json',
         'yaml',
         'toml',
-        'sql',
 
         -- DevOps & Infrastructure
         'dockerfile',
@@ -82,9 +81,7 @@ return {
 
       local function attach(buf)
         local ft = vim.bo[buf].filetype
-        if not vim.tbl_get(opts, 'move', 'enable') then
-          return
-        end
+        if not vim.tbl_get(opts, 'move', 'enable') then return end
         ---@type table<string, table<string, string>>
         local moves = vim.tbl_get(opts, 'move', 'keys') or {}
 
@@ -101,9 +98,7 @@ return {
             desc = (key:sub(1, 1) == '[' and 'Prev ' or 'Next ') .. desc
             desc = desc .. (key:sub(2, 2) == key:sub(2, 2):upper() and ' End' or ' Start')
             if not (vim.wo.diff and key:find '[cC]') then
-              vim.keymap.set({ 'n', 'x', 'o' }, key, function()
-                require('nvim-treesitter-textobjects.move')[method](query, 'textobjects')
-              end, {
+              vim.keymap.set({ 'n', 'x', 'o' }, key, function() require('nvim-treesitter-textobjects.move')[method](query, 'textobjects') end, {
                 buffer = buf,
                 desc = desc,
                 silent = true,
@@ -115,9 +110,7 @@ return {
 
       vim.api.nvim_create_autocmd('FileType', {
         group = vim.api.nvim_create_augroup('treesitter_textobjects', { clear = true }),
-        callback = function(ev)
-          attach(ev.buf)
-        end,
+        callback = function(ev) attach(ev.buf) end,
       })
       vim.tbl_map(attach, vim.api.nvim_list_bufs())
     end,

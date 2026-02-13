@@ -4,7 +4,7 @@ vim.g.maplocalleader = '\\'
 vim.g.have_nerd_font = true
 
 vim.o.mouse = 'a'
-vim.o.number = true
+vim.o.number = false
 vim.o.relativenumber = true
 vim.o.showmode = false
 vim.o.signcolumn = 'yes'
@@ -62,12 +62,3 @@ vim.opt.swapfile = false
 -- instead raise a dialog asking if you wish to save the current file(s)
 -- See `:help 'confirm'`
 vim.o.confirm = true
-
--- Enable folding with LSP
-vim.o.foldmethod = 'expr'
-vim.o.foldexpr = 'v:lua.vim.lsp.foldexpr()'
-vim.o.foldtext = ''
-vim.o.foldlevel = 99
-vim.o.foldlevelstart = 99
-vim.o.foldenable = true
-vim.o.foldcolumn = '1'

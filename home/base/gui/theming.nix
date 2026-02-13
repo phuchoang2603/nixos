@@ -39,8 +39,7 @@ in
 
     targets = {
       neovim = {
-        enable = true;
-        plugin = "mini.base16";
+        enable = false; # Disabled - we manage neovim colorscheme manually via Lazy.nvim
       };
       rofi = {
         enable = false; # We'll use our custom rofi.nix instead

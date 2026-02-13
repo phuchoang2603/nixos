@@ -127,19 +127,6 @@ function M.get_servers()
       },
     },
 
-    nixd = {
-      settings = {
-        nixd = {
-          formatting = {
-            command = { 'nixfmt' },
-          },
-          nixpkgs = {
-            expr = 'import (builtins.getFlake(toString ./.)).inputs.nixpkgs { }',
-          },
-        },
-      },
-    },
-
     -- Markdown
     marksman = {},
 
@@ -148,9 +135,6 @@ function M.get_servers()
 
     -- Helm
     helm_ls = {},
-
-    -- SQL
-    sqlls = {},
 
     -- Git (commit messages, etc)
     -- Note: This doesn't exist as a standalone LSP, handled by other plugins

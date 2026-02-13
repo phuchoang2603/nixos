@@ -15,7 +15,7 @@
   home.packages = with pkgs; [
     # LSP Servers
     lua-language-server # Lua
-    nil # Nix
+    nixd # Nix
     marksman # Markdown
     taplo # TOML
     yaml-language-server # YAML

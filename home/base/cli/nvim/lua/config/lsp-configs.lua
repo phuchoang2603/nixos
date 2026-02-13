@@ -1,8 +1,6 @@
-local function get_root_dir(patterns)
-  return function(fname) return vim.fs.root(fname, patterns) end
-end
+-- Consolidated LSP, formatter, and linter configurations for all languages
+-- Uses Neovim 0.11+ native LSP API (vim.lsp.config + vim.lsp.enable)
 
--- Export all language configurations
 return {
   -- ============================================================================
   -- ANSIBLE
@@ -10,7 +8,9 @@ return {
   ansible = {
     lsp = {
       ansiblels = {
-        root_dir = get_root_dir { 'ansible.cfg', '.ansible-lint', '.git' },
+        cmd = { 'ansible-language-server', '--stdio' },
+        filetypes = { 'yaml.ansible', 'ansible' },
+        root_markers = { 'ansible.cfg', '.ansible-lint', '.git' },
       },
     },
     format = {},
@@ -20,7 +20,6 @@ return {
         'mfussenegger/nvim-ansible',
         ft = { 'yaml.ansible', 'ansible' },
         config = function()
-          -- Automatically detect Ansible files
           vim.api.nvim_create_autocmd({ 'BufRead', 'BufNewFile' }, {
             pattern = {
               '*/playbooks/*.yml',
@@ -47,7 +46,9 @@ return {
   bash = {
     lsp = {
       bashls = {
-        root_dir = get_root_dir { '.git' },
+        cmd = { 'bash-language-server', 'start' },
+        filetypes = { 'sh', 'bash' },
+        root_markers = { '.git' },
       },
     },
     format = {
@@ -63,15 +64,6 @@ return {
   c = {
     lsp = {
       clangd = {
-        root_dir = get_root_dir {
-          '.clangd',
-          '.clang-tidy',
-          '.clang-format',
-          'compile_commands.json',
-          'compile_flags.txt',
-          'configure.ac',
-          '.git',
-        },
         cmd = {
           'clangd',
           '--background-index',
@@ -80,6 +72,16 @@ return {
           '--completion-style=detailed',
           '--function-arg-placeholders',
           '--fallback-style=llvm',
+        },
+        filetypes = { 'c', 'cpp', 'objc', 'objcpp', 'cuda' },
+        root_markers = {
+          '.clangd',
+          '.clang-tidy',
+          '.clang-format',
+          'compile_commands.json',
+          'compile_flags.txt',
+          'configure.ac',
+          '.git',
         },
       },
     },
@@ -93,10 +95,14 @@ return {
   docker = {
     lsp = {
       dockerls = {
-        root_dir = get_root_dir { 'Dockerfile', '.git' },
+        cmd = { 'docker-langserver', '--stdio' },
+        filetypes = { 'dockerfile' },
+        root_markers = { 'Dockerfile', '.git' },
       },
       docker_compose_language_service = {
-        root_dir = get_root_dir { 'docker-compose.yaml', 'docker-compose.yml', 'compose.yaml', 'compose.yml', '.git' },
+        cmd = { 'docker-compose-langserver', '--stdio' },
+        filetypes = { 'yaml.docker-compose' },
+        root_markers = { 'docker-compose.yaml', 'docker-compose.yml', 'compose.yaml', 'compose.yml', '.git' },
       },
     },
     format = {},
@@ -111,7 +117,9 @@ return {
   go = {
     lsp = {
       gopls = {
-        root_dir = get_root_dir { 'go.work', 'go.mod', '.git' },
+        cmd = { 'gopls' },
+        filetypes = { 'go', 'gomod', 'gowork', 'gotmpl' },
+        root_markers = { 'go.work', 'go.mod', '.git' },
         settings = {
           gopls = {
             gofumpt = true,
@@ -144,7 +152,6 @@ return {
             completeUnimported = true,
             staticcheck = true,
             directoryFilters = { '-.git', '-.vscode', '-.idea', '-.vscode-test', '-node_modules' },
-            -- semanticTokens disabled in setup hook due to performance issues
           },
         },
       },
@@ -163,7 +170,9 @@ return {
   helm = {
     lsp = {
       helm_ls = {
-        root_dir = get_root_dir { 'Chart.yaml', '.git' },
+        cmd = { 'helm_ls', 'serve' },
+        filetypes = { 'helm' },
+        root_markers = { 'Chart.yaml', '.git' },
       },
     },
     format = {},
@@ -176,7 +185,9 @@ return {
   json = {
     lsp = {
       jsonls = {
-        root_dir = get_root_dir { '.git' },
+        cmd = { 'vscode-json-language-server', '--stdio' },
+        filetypes = { 'json', 'jsonc' },
+        root_markers = { '.git' },
         on_new_config = function(new_config)
           new_config.settings.json.schemas = new_config.settings.json.schemas or {}
           vim.list_extend(new_config.settings.json.schemas, require('schemastore').json.schemas())
@@ -204,7 +215,9 @@ return {
   lua = {
     lsp = {
       lua_ls = {
-        root_dir = get_root_dir {
+        cmd = { 'lua-language-server' },
+        filetypes = { 'lua' },
+        root_markers = {
           '.luarc.json',
           '.luarc.jsonc',
           '.luacheckrc',
@@ -252,7 +265,9 @@ return {
   markdown = {
     lsp = {
       marksman = {
-        root_dir = get_root_dir { '.marksman.toml', '.git' },
+        cmd = { 'marksman', 'server' },
+        filetypes = { 'markdown', 'markdown.mdx' },
+        root_markers = { '.marksman.toml', '.git' },
       },
     },
     format = {
@@ -287,17 +302,17 @@ return {
   -- ============================================================================
   nix = {
     lsp = {
-      nil_ls = {
-        root_dir = get_root_dir { 'flake.nix', 'default.nix', 'shell.nix', '.git' },
+      nixd = {
+        cmd = { 'nixd' },
+        filetypes = { 'nix' },
+        root_markers = { 'flake.nix', 'default.nix', 'shell.nix', '.git' },
         settings = {
-          ['nil'] = {
-            nix = {
-              flake = {
-                autoArchive = true,
-              },
-            },
+          nixd = {
             formatting = {
               command = { 'nixfmt' },
+            },
+            nixpkgs = {
+              expr = 'import (builtins.getFlake(toString ./.)).inputs.nixpkgs { }',
             },
           },
         },
@@ -317,7 +332,9 @@ return {
   python = {
     lsp = {
       basedpyright = {
-        root_dir = get_root_dir {
+        cmd = { 'basedpyright-langserver', '--stdio' },
+        filetypes = { 'python' },
+        root_markers = {
           'pyproject.toml',
           'setup.py',
           'setup.cfg',
@@ -342,6 +359,8 @@ return {
         },
       },
       ruff = {
+        cmd = { 'ruff', 'server', '--preview' },
+        filetypes = { 'python' },
         cmd_env = { RUFF_TRACE = 'messages' },
         init_options = {
           settings = {
@@ -385,10 +404,14 @@ return {
   terraform = {
     lsp = {
       terraformls = {
-        root_dir = get_root_dir { '.terraform', '.git' },
+        cmd = { 'terraform-ls', 'serve' },
+        filetypes = { 'terraform', 'terraform-vars' },
+        root_markers = { '.terraform', '.git' },
       },
       tflint = {
-        root_dir = get_root_dir { '.tflint.hcl', '.terraform', '.git' },
+        cmd = { 'tflint', '--langserver' },
+        filetypes = { 'terraform' },
+        root_markers = { '.tflint.hcl', '.terraform', '.git' },
       },
     },
     format = {
@@ -408,7 +431,9 @@ return {
   toml = {
     lsp = {
       taplo = {
-        root_dir = get_root_dir { '.git' },
+        cmd = { 'taplo', 'lsp', 'stdio' },
+        filetypes = { 'toml' },
+        root_markers = { '.git' },
         keys = {
           {
             'K',
@@ -464,7 +489,9 @@ return {
   yaml = {
     lsp = {
       yamlls = {
-        root_dir = get_root_dir { '.git' },
+        cmd = { 'yaml-language-server', '--stdio' },
+        filetypes = { 'yaml', 'yaml.docker-compose', 'yaml.gitlab' },
+        root_markers = { '.git' },
         capabilities = {
           textDocument = {
             foldingRange = {
@@ -485,10 +512,7 @@ return {
             },
             validate = true,
             schemaStore = {
-              -- Must disable built-in schemaStore support to use
-              -- schemas from SchemaStore.nvim plugin
               enable = false,
-              -- Avoid TypeError: Cannot read properties of undefined (reading 'length')
               url = '',
             },
           },

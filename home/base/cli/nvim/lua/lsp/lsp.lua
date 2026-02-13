@@ -115,11 +115,17 @@ local spec = {
               if server ~= '*' and client.name ~= server then return end
 
               for _, keys in pairs(keymaps) do
-                local has = not keys.has or client.supports_method('textDocument/' .. keys.has)
+                local has = not keys.has
+                if not has then
+                  if type(keys.has) == 'table' then
+                    has = vim.tbl_contains(vim.tbl_map(function(m) return client.supports_method(m) end, keys.has), true)
+                  else
+                    has = client.supports_method('textDocument/' .. keys.has)
+                  end
+                end
                 if has and keys.enabled ~= false then
                   local opts_key = {
                     buffer = args.buf,
-                    mode = keys.mode or 'n',
                     desc = keys.desc,
                   }
                   vim.keymap.set(keys.mode or 'n', keys.lhs, keys.rhs, opts_key)

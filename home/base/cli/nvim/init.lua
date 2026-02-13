@@ -20,17 +20,11 @@ rtp:prepend(lazypath)
 local lsp_specs = require 'lsp.lsp'
 local format_spec = require 'lsp.format'
 local lint_spec = require 'lsp.lint'
-local vimtex_specs = require 'lsp.vimtex'
 
 local plugins = { { import = 'plugins' } }
 
 -- Add LSP specs (lsp.lua returns an array)
 for _, spec in ipairs(lsp_specs) do
-  table.insert(plugins, spec)
-end
-
--- Add vimtex specs (returns an array)
-for _, spec in ipairs(vimtex_specs) do
   table.insert(plugins, spec)
 end
 

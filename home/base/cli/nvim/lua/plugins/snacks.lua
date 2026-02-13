@@ -25,6 +25,15 @@ return {
     picker = {
       enabled = true,
     },
+    -- Better indent guide
+    indent = {
+      enabled = true,
+    },
+    -- Pretty notification system
+    notifier = {
+      enabled = true,
+      timeout = 3000, -- default timeout in ms
+    },
   },
 
   keys = {

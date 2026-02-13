@@ -15,7 +15,8 @@ local rtp = vim.opt.rtp
 rtp:prepend(lazypath)
 
 -- [[ Configure and install plugins ]]
--- Automatically import all plugin configurations from lua/plugins/
+-- Automatically import all plugin configurations from lua/plugins/ and lua/lsp/
 require('lazy').setup {
   { import = 'plugins' },
+  { import = 'lsp' },
 }

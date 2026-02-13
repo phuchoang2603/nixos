@@ -1,9 +1,4 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
+{ config, lib, pkgs, ... }:
 
 {
   programs.neovim = {
@@ -23,18 +18,33 @@
     nodePackages.bash-language-server # Bash
     helm-ls # Helm
 
+    # Language-specific LSP servers
+    basedpyright # Python type checker
+    ruff # Python linter/formatter LSP
+    gopls # Go
+    clang-tools # clangd for C/C++
+    terraform-ls # Terraform
+    tflint # Terraform linter
+    nodePackages.dockerfile-language-server-nodejs # Docker
+    docker-compose-language-service # Docker Compose
+
     # Formatters
     stylua # Lua
-    nixfmt-classic # Nix (or nixfmt-rfc-style)
-    nodePackages.prettier # Web formats (JS/TS/JSON/YAML/Markdown)
+    nixfmt # Nix
     prettierd # Prettier daemon (faster)
     shfmt # Shell
+    black # Python
+    isort # Python imports
+    gotools # gofumpt and other Go tools
 
     # Linters
     statix # Nix
     yamllint # YAML
     nodePackages.markdownlint-cli2 # Markdown
     hadolint # Dockerfile
+    mypy # Python type checker
+    golangci-lint # Go
+    ansible-lint # Ansible
   ];
 
   xdg.configFile = {

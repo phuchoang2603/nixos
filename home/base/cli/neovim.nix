@@ -8,14 +8,14 @@
     withNodeJs = true;
     withPython3 = true;
     withRuby = false;
-
-    initLua = lib.mkAfter ''
-      require("config.lazy")
-    '';
   };
 
-  xdg.configFile."nvim" = {
-    source = ./nvim-config;
-    recursive = true;
+  xdg.configFile = {
+    "nvim/lua" = {
+      source = ./nvim/lua;
+      recursive = true;
+    };
+    "nvim/init.lua".source = ./nvim/init.lua;
+    "nvim/.stylua.toml".source = ./nvim/.stylua.toml;
   };
 }

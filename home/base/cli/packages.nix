@@ -4,6 +4,7 @@
   home.packages = with pkgs; [
     # Nix
     nixd # LSP
+    nil
     statix # Linter
     nixfmt # Formatter
 
@@ -21,7 +22,6 @@
     prettier # Multi-tool Formatter
     vscode-langservers-extracted # LSPs for JSON, HTML, CSS
     yaml-language-server # LSP
-    yamlfmt # Formatter
     taplo # TOML LSP & Formatter
 
     # General Tooling & Editor Support

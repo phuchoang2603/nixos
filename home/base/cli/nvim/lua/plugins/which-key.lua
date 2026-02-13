@@ -12,6 +12,7 @@ return {
       { '<leader>g', group = 'Git' },
       { '<leader>s', group = 'Search', mode = { 'n', 'v' } },
       { '<leader>t', group = 'Toggle' },
+      { '<leader>o', group = 'Opencode' },
       { '<leader>x', group = 'Diagnostics/Quickfi[x]' },
       { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
     },

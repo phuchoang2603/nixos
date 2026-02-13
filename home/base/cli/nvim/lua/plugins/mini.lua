@@ -31,8 +31,6 @@ return {
 
       -- Simple and easy statusline
       require('mini.statusline').setup { use_icons = vim.g.have_nerd_font }
-
-      require('mini.base16').setup { use_cterm = true }
     end,
   },
 }

@@ -41,12 +41,3 @@ vim.keymap.set('n', '<C-l>', '<C-w>l', opts)
 vim.keymap.set('n', '<C-j>', '<C-w>j', opts)
 vim.keymap.set('n', '<C-k>', '<C-w>k', opts)
 vim.keymap.set('n', '<C-d>', '<C-w>c', opts)
-
--- Folding keybinds (za is default for toggle)
--- za - Toggle fold under cursor
--- zR - Open all folds
--- zM - Close all folds
--- zo - Open fold under cursor
--- zc - Close fold under cursor
-vim.keymap.set('n', 'zR', 'zR', { desc = 'Open all folds' })
-vim.keymap.set('n', 'zM', 'zM', { desc = 'Close all folds' })

@@ -170,38 +170,8 @@ return {
     -- Setup all language servers
     local servers = require('config.servers').get_servers()
 
-    -- Define filetypes for each server (required for auto-start)
-    local server_filetypes = {
-      lua_ls = { 'lua' },
-      clangd = { 'c', 'cpp', 'objc', 'objcpp', 'cuda', 'proto' },
-      gopls = { 'go', 'gomod', 'gowork', 'gotmpl' },
-      pyright = { 'python' },
-      yamlls = { 'yaml', 'yaml.docker-compose', 'yaml.gitlab' },
-      jsonls = { 'json', 'jsonc' },
-      dockerls = { 'dockerfile' },
-      docker_compose_language_service = { 'yaml.docker-compose' },
-      terraformls = { 'terraform', 'terraform-vars' },
-      tflint = { 'terraform' },
-      ansiblels = { 'yaml.ansible' },
-      nil_ls = { 'nix' },
-      nixd = { 'nix' },
-      marksman = { 'markdown', 'markdown.mdx' },
-      taplo = { 'toml' },
-      helm_ls = { 'helm' },
-      sqlls = { 'sql' },
-    }
-
     for server_name, server_config in pairs(servers) do
       server_config.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server_config.capabilities or {})
-
-      -- Add filetypes for auto-start
-      if server_filetypes[server_name] then server_config.filetypes = server_filetypes[server_name] end
-
-      -- Enable LSP-based folding
-      server_config.folds = {
-        enabled = true,
-      }
-
       vim.lsp.config(server_name, server_config)
       vim.lsp.enable(server_name)
     end

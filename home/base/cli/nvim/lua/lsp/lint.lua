@@ -1,48 +1,50 @@
+-- Lint Configuration (nvim-lint)
+-- Loads linters from language-specific files in lua/lsp/*.lua
+
+-- Helper function to load all language linter configurations
+local function load_linters()
+  local lang_files = vim.fn.glob(vim.fn.stdpath 'config' .. '/lua/lsp/*.lua', false, true)
+  local merged_linters = {}
+
+  -- Files to skip (not language configs)
+  local skip_files = { 'lsp', 'format', 'lint', 'utils', 'vimtex' }
+
+  for _, file in ipairs(lang_files) do
+    local lang_name = vim.fn.fnamemodify(file, ':t:r')
+
+    if not vim.tbl_contains(skip_files, lang_name) then
+      local ok, lang_config = pcall(require, 'lsp.' .. lang_name)
+      if ok and lang_config.lint then
+        -- Merge linter configs
+        merged_linters = vim.tbl_deep_extend('force', merged_linters, lang_config.lint)
+      end
+    end
+  end
+
+  return merged_linters
+end
+
 return {
-  -- Asynchronously calls language-specific linter tools and reports
-  -- their results via the `vim.diagnostic` module.
   {
     'mfussenegger/nvim-lint',
     event = { 'BufReadPost', 'BufNewFile', 'BufWritePost' },
-    opts = {
-      -- Event to trigger linters
-      events = { 'BufWritePost', 'BufReadPost', 'InsertLeave' },
-      linters_by_ft = {
-        fish = { 'fish' },
-        python = { 'mypy', 'ruff' },
-        go = { 'golangcilint' },
-        terraform = { 'terraform_validate' },
-        tf = { 'terraform_validate' },
-        dockerfile = { 'hadolint' },
-        yaml = { 'ansible_lint', 'yamllint' },
-        markdown = { 'markdownlint-cli2' },
-        nix = { 'nix', 'statix' },
-        -- Use the "*" filetype to run linters on all filetypes.
-        -- ['*'] = { 'global linter' },
-        -- Use the "_" filetype to run linters on filetypes that don't have other linters configured.
-        -- ['_'] = { 'fallback linter' },
-        -- ["*"] = { "typos" },
-      },
-      -- LazyVim extension to easily override linter options
-      -- or add custom linters.
-      ---@type table<string,table>
-      linters = {
-        -- Only run ansible-lint in ansible directories  
-        ansible_lint = {
-          condition = function(ctx)
-            return vim.fs.root(ctx.filename, { 'ansible.cfg', '.ansible-lint' })
-          end,
+    opts = function()
+      return {
+        -- Event to trigger linters
+        events = { 'BufWritePost', 'BufReadPost', 'InsertLeave' },
+        linters_by_ft = load_linters(),
+        -- LazyVim extension to easily override linter options
+        -- or add custom linters.
+        linters = {
+          -- Only run ansible-lint in ansible directories
+          ansible_lint = {
+            condition = function(ctx)
+              return vim.fs.root(ctx.filename, { 'ansible.cfg', '.ansible-lint' })
+            end,
+          },
         },
-        -- -- Example of using selene only when a selene.toml file is present
-        -- selene = {
-        --   -- `condition` is another LazyVim extension that allows you to
-        --   -- dynamically enable/disable linters based on the context.
-        --   condition = function(ctx)
-        --     return vim.fs.find({ "selene.toml" }, { path = ctx.filename, upward = true })[1]
-        --   end,
-        -- },
-      },
-    },
+      }
+    end,
     config = function(_, opts)
       local M = {}
 

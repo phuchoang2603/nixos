@@ -69,9 +69,6 @@ return {
       -- TOML
       toml = { 'taplo' },
 
-      -- SQL
-      sql = { 'sql_formatter' },
-
       -- Ansible
       ansible = { 'ansible' },
     },

@@ -3,7 +3,6 @@
 {
   home.packages = with pkgs; [
     # Nix
-    nixd # LSP
     nil
     statix # Linter
     nixfmt # Formatter

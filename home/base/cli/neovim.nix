@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
   programs.neovim = {
@@ -14,8 +19,8 @@
     marksman # Markdown
     taplo # TOML
     yaml-language-server # YAML
-    nodePackages.vscode-langservers-extracted # JSON, HTML, CSS, ESLint
-    nodePackages.bash-language-server # Bash
+    vscode-langservers-extracted # JSON, HTML, CSS, ESLint
+    bash-language-server # Bash
     helm-ls # Helm
 
     # Language-specific LSP servers
@@ -25,7 +30,7 @@
     clang-tools # clangd for C/C++
     terraform-ls # Terraform
     tflint # Terraform linter
-    nodePackages.dockerfile-language-server-nodejs # Docker
+    dockerfile-language-server # Docker
     docker-compose-language-service # Docker Compose
 
     # Formatters
@@ -40,7 +45,7 @@
     # Linters
     statix # Nix
     yamllint # YAML
-    nodePackages.markdownlint-cli2 # Markdown
+    markdownlint-cli2 # Markdown
     hadolint # Dockerfile
     mypy # Python type checker
     golangci-lint # Go

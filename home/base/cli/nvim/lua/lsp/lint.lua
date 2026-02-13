@@ -1,27 +1,16 @@
 -- Lint Configuration (nvim-lint)
--- Loads linters from language-specific files in lua/lsp/*.lua
+-- Loads linters from lua/config/lsp-configs.lua
 
--- Helper function to load all language linter configurations
-local function load_linters()
-  local lang_files = vim.fn.glob(vim.fn.stdpath 'config' .. '/lua/lsp/*.lua', false, true)
-  local merged_linters = {}
+-- Load all language configurations from the central config file
+local lang_configs = require 'config.lsp-configs'
 
-  -- Files to skip (not language configs)
-  local skip_files = { 'lsp', 'format', 'lint', 'utils', 'vimtex' }
+-- Extract linters from language configs
+local linters = {}
 
-  for _, file in ipairs(lang_files) do
-    local lang_name = vim.fn.fnamemodify(file, ':t:r')
-
-    if not vim.tbl_contains(skip_files, lang_name) then
-      local ok, lang_config = pcall(require, 'lsp.' .. lang_name)
-      if ok and lang_config.lint then
-        -- Merge linter configs
-        merged_linters = vim.tbl_deep_extend('force', merged_linters, lang_config.lint)
-      end
-    end
+for _, config in pairs(lang_configs) do
+  if config.lint then
+    linters = vim.tbl_deep_extend('force', linters, config.lint)
   end
-
-  return merged_linters
 end
 
 return {
@@ -32,7 +21,7 @@ return {
       return {
         -- Event to trigger linters
         events = { 'BufWritePost', 'BufReadPost', 'InsertLeave' },
-        linters_by_ft = load_linters(),
+        linters_by_ft = linters,
         -- LazyVim extension to easily override linter options
         -- or add custom linters.
         linters = {

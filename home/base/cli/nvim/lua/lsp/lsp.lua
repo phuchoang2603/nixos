@@ -1,36 +1,17 @@
 -- LSP Configuration
--- Loads language-specific LSP configurations from lua/lsp/*.lua files
+-- Loads language-specific LSP configurations from lua/config/lsp-configs.lua
 
--- Helper function to load all language configurations
-local function load_language_configs()
-  local lang_files = vim.fn.glob(vim.fn.stdpath 'config' .. '/lua/lsp/*.lua', false, true)
-  local merged_servers = {}
-  local all_plugins = {}
+-- Load all language configurations from the central config file
+local lang_configs = require 'config.lsp-configs'
 
-  -- Files to skip (not language configs)
-  local skip_files = { 'lsp', 'format', 'lint', 'utils', 'vimtex' }
+-- Extract LSP servers and plugins from language configs
+local servers = {}
+local plugins = {}
 
-  for _, file in ipairs(lang_files) do
-    local lang_name = vim.fn.fnamemodify(file, ':t:r')
-
-    if not vim.tbl_contains(skip_files, lang_name) then
-      local ok, lang_config = pcall(require, 'lsp.' .. lang_name)
-      if ok and lang_config.lsp then
-        -- Merge LSP server configs
-        merged_servers = vim.tbl_deep_extend('force', merged_servers, lang_config.lsp)
-
-        -- Collect plugins if they exist
-        if lang_config.plugins then
-          vim.list_extend(all_plugins, lang_config.plugins)
-        end
-      end
-    end
-  end
-
-  return merged_servers, all_plugins
+for _, config in pairs(lang_configs) do
+  if config.lsp then servers = vim.tbl_deep_extend('force', servers, config.lsp) end
+  if config.plugins then vim.list_extend(plugins, config.plugins) end
 end
-
-local servers, plugins = load_language_configs()
 
 -- Build the plugin spec
 local spec = {
@@ -130,12 +111,8 @@ local spec = {
           vim.api.nvim_create_autocmd('LspAttach', {
             callback = function(args)
               local client = vim.lsp.get_client_by_id(args.data.client_id)
-              if not client then
-                return
-              end
-              if server ~= '*' and client.name ~= server then
-                return
-              end
+              if not client then return end
+              if server ~= '*' and client.name ~= server then return end
 
               for _, keys in pairs(keymaps) do
                 local has = not keys.has or client.supports_method('textDocument/' .. keys.has)
@@ -159,9 +136,7 @@ local spec = {
           callback = function(args)
             local client = vim.lsp.get_client_by_id(args.data.client_id)
             if client and client.supports_method 'textDocument/inlayHint' then
-              if vim.api.nvim_buf_is_valid(args.buf) and vim.bo[args.buf].buftype == '' then
-                vim.lsp.inlay_hint.enable(true, { bufnr = args.buf })
-              end
+              if vim.api.nvim_buf_is_valid(args.buf) and vim.bo[args.buf].buftype == '' then vim.lsp.inlay_hint.enable(true, { bufnr = args.buf }) end
             end
           end,
         })
@@ -200,9 +175,7 @@ local spec = {
       vim.diagnostic.config(vim.deepcopy(opts.diagnostics))
 
       -- Configure global LSP settings
-      if opts.servers['*'] then
-        vim.lsp.config('*', opts.servers['*'])
-      end
+      if opts.servers['*'] then vim.lsp.config('*', opts.servers['*']) end
 
       -- Configure and enable each LSP server
       for server, server_opts in pairs(opts.servers) do

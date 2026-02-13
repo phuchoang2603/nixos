@@ -2,51 +2,22 @@
 
 {
   home.packages = with pkgs; [
-    # Nix
-    nil
-    statix # Linter
-    nixfmt # Formatter
-
-    # Documentation & Markup
-    marksman # Markdown LSP
-    markdownlint-cli2 # Markdown Linter (Recommended)
-
-    # Lua
-    luarocks # Package Manager
-    lua-language-server # LSP
-    stylua # Formatter
-
-    # Web & Configs (Node/JSON/YAML/TOML)
-    nodejs # Runtime
-    prettierd # Multi-tool Formatter
-    vscode-langservers-extracted # LSPs for JSON, HTML, CSS
-    yaml-language-server # LSP
-    taplo # TOML LSP & Formatter
-
-    # General Tooling & Editor Support
-    tree-sitter # Syntax Highlighting Parser
-    llvmPackages.lldb # General Debugger
-    bash-language-server # Bash LSP
-    shfmt # Shell Formatter
-    shellcheck # Shell Linter
-
-    # Infrastructure & DevOps
-    kubernetes-helm # Helm CLI
-    helm-ls # Helm LSP
-    kubectl # K8s CLI
-    kubectx # K8s Tool
-    krew # K8s Plugin Manager
-    lazydocker # Docker TUI
-
     # System
     vim
     git
-    lazygit
     wget
     curl
     unzip
     lsof
     gcc
+
+    # Infrastructure & DevOps
+    kubernetes-helm
+    kubectl
+    kubectx
+    krew
+    lazydocker
+    lazygit
 
     # Monitoring
     fastfetch

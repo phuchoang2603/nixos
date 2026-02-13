@@ -1,5 +1,6 @@
 return {
   'neovim/nvim-lspconfig',
+  event = 'BufReadPre',
   dependencies = {
     -- Useful status updates for LSP.
     { 'j-hui/fidget.nvim', opts = {} },
@@ -46,22 +47,70 @@ return {
       ft = 'helm',
     },
   },
-  keys = {
-    { '<leader>cl', '<cmd>LspInfo<cr>', desc = 'Lsp Info' },
-  },
-  config = function()
-    -- Diagnostic configuration
-    vim.diagnostic.config {
-      update_in_insert = false,
-      severity_sort = true,
-      float = { border = 'rounded', source = 'if_many' },
-      underline = { severity = vim.diagnostic.severity.ERROR },
-      virtual_text = true,
-      virtual_lines = false,
-      jump = { float = true },
+  ---@class PluginLspOpts
+  opts = function()
+    local ret = {
+      -- options for vim.diagnostic.config()
+      ---@type vim.diagnostic.Opts
+      diagnostics = {
+        underline = true,
+        update_in_insert = false,
+        virtual_text = {
+          spacing = 4,
+          source = 'if_many',
+          prefix = '●',
+        },
+        severity_sort = true,
+        signs = {
+          text = {
+            [vim.diagnostic.severity.ERROR] = ' ',
+            [vim.diagnostic.severity.WARN] = ' ',
+            [vim.diagnostic.severity.HINT] = ' ',
+            [vim.diagnostic.severity.INFO] = ' ',
+          },
+        },
+      },
+      -- Enable this to enable the builtin LSP inlay hints on Neovim.
+      inlay_hints = {
+        enabled = true,
+        exclude = { 'vue' }, -- filetypes for which you don't want to enable inlay hints
+      },
+      -- Enable this to enable the builtin LSP code lenses on Neovim.
+      codelens = {
+        enabled = false,
+      },
+      -- Enable this to enable the builtin LSP folding on Neovim.
+      folds = {
+        enabled = true,
+      },
+      -- LSP Server Settings
+      ---@type table<string, vim.lsp.Config>
+      servers = {},
+      -- you can do any additional lsp server setup here
+      -- return true if you don't want this server to be setup with lspconfig
+      ---@type table<string, fun(server:string, opts: vim.lsp.Config):boolean?>
+      setup = {},
     }
+    return ret
+  end,
+  ---@param opts PluginLspOpts
+  config = function(_, opts)
+    -- Diagnostic icons
+    local signs = {
+      Error = ' ',
+      Warn = ' ',
+      Hint = ' ',
+      Info = ' ',
+    }
+    for type, icon in pairs(signs) do
+      local hl = 'DiagnosticSign' .. type
+      vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = '' })
+    end
 
-    -- LSP keymaps on attach
+    -- Diagnostics configuration
+    vim.diagnostic.config(vim.deepcopy(opts.diagnostics))
+
+    -- Setup keymaps on LSP attach
     vim.api.nvim_create_autocmd('LspAttach', {
       group = vim.api.nvim_create_augroup('lsp-attach', { clear = true }),
       callback = function(event)
@@ -71,11 +120,11 @@ return {
         end
 
         -- LSP keymaps - Goto actions
-        map('gd', vim.lsp.buf.definition, '[G]oto [D]efinition')
-        map('gr', vim.lsp.buf.references, '[G]oto [R]eferences')
-        map('gI', vim.lsp.buf.implementation, '[G]oto [I]mplementation')
-        map('gy', vim.lsp.buf.type_definition, '[G]oto T[y]pe Definition')
-        map('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
+        map('gd', vim.lsp.buf.definition, 'Goto Definition')
+        map('gr', vim.lsp.buf.references, 'References')
+        map('gI', vim.lsp.buf.implementation, 'Goto Implementation')
+        map('gy', vim.lsp.buf.type_definition, 'Goto T[y]pe Definition')
+        map('gD', vim.lsp.buf.declaration, 'Goto Declaration')
 
         -- Hover & Signature Help
         map('K', vim.lsp.buf.hover, 'Hover Documentation')
@@ -83,7 +132,7 @@ return {
         map('<c-k>', vim.lsp.buf.signature_help, 'Signature Help', 'i')
 
         -- Code Actions
-        map('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction', { 'n', 'x' })
+        map('<leader>ca', vim.lsp.buf.code_action, 'Code Action', { 'n', 'x' })
         map(
           '<leader>cA',
           function()
@@ -94,21 +143,32 @@ return {
               },
             }
           end,
-          'Source [A]ction'
+          'Source Action'
         )
 
         -- Rename
-        map('<leader>cr', vim.lsp.buf.rename, '[C]ode [R]ename')
+        map('<leader>cr', vim.lsp.buf.rename, 'Rename')
+
+        -- LSP Info
+        map('<leader>cl', '<cmd>LspInfo<cr>', 'Lsp Info')
 
         -- Codelens
         local client = vim.lsp.get_client_by_id(event.data.client_id)
-        if client and client:supports_method('textDocument/codeLens', event.buf) then
-          map('<leader>cc', vim.lsp.codelens.run, 'Run [C]odelens', { 'n', 'x' })
-          map('<leader>cC', vim.lsp.codelens.refresh, 'Refresh & Display [C]odelens')
+        if client and client:supports_method 'textDocument/codeLens' then
+          map('<leader>cc', vim.lsp.codelens.run, 'Run Codelens', { 'n', 'x' })
+          map('<leader>cC', vim.lsp.codelens.refresh, 'Refresh & Display Codelens')
+
+          if opts.codelens.enabled then
+            vim.lsp.codelens.refresh()
+            vim.api.nvim_create_autocmd({ 'BufEnter', 'CursorHold', 'InsertLeave' }, {
+              buffer = event.buf,
+              callback = vim.lsp.codelens.refresh,
+            })
+          end
         end
 
-        -- Document highlight
-        if client and client:supports_method('textDocument/documentHighlight', event.buf) then
+        -- Document highlight with Snacks word navigation
+        if client and client:supports_method 'textDocument/documentHighlight' then
           local highlight_augroup = vim.api.nvim_create_augroup('lsp-highlight', { clear = false })
           vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
             buffer = event.buf,
@@ -130,35 +190,84 @@ return {
             end,
           })
 
-          -- Reference navigation (when references are highlighted)
-          map(']]', function() vim.cmd 'normal! ]]' end, 'Next Reference')
-          map('[[', function() vim.cmd 'normal! [[' end, 'Prev Reference')
-          map('<a-n>', function() vim.cmd 'normal! ]]' end, 'Next Reference')
-          map('<a-p>', function() vim.cmd 'normal! [[' end, 'Prev Reference')
+          -- Reference navigation using Snacks.words if available
+          local has_snacks, snacks = pcall(require, 'snacks')
+          if has_snacks and snacks.words then
+            map(']]', function() snacks.words.jump(vim.v.count1) end, 'Next Reference')
+            map('[[', function() snacks.words.jump(-vim.v.count1) end, 'Prev Reference')
+            map('<a-n>', function() snacks.words.jump(vim.v.count1, true) end, 'Next Reference')
+            map('<a-p>', function() snacks.words.jump(-vim.v.count1, true) end, 'Prev Reference')
+          else
+            map(']]', function() vim.cmd 'normal! ]]' end, 'Next Reference')
+            map('[[', function() vim.cmd 'normal! [[' end, 'Prev Reference')
+          end
         end
 
-        -- Inlay hints - enable by default and provide toggle
-        if client and client:supports_method('textDocument/inlayHint', event.buf) then
-          vim.lsp.inlay_hint.enable(true, { bufnr = event.buf })
-          map('<leader>ch', function() vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf }) end, 'Code Toggle Inlay Hints')
+        -- Inlay hints
+        if client and client:supports_method 'textDocument/inlayHint' then
+          if opts.inlay_hints.enabled and not vim.tbl_contains(opts.inlay_hints.exclude or {}, vim.bo[event.buf].filetype) then
+            vim.lsp.inlay_hint.enable(true, { bufnr = event.buf })
+          end
+          map('<leader>ch', function()
+            vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf }, { bufnr = event.buf })
+          end, 'Toggle Inlay Hints')
         end
       end,
     })
 
+    -- Setup folding
+    if opts.folds.enabled then
+      vim.api.nvim_create_autocmd('LspAttach', {
+        group = vim.api.nvim_create_augroup('lsp-folds', { clear = true }),
+        callback = function(event)
+          local client = vim.lsp.get_client_by_id(event.data.client_id)
+          if client and client:supports_method 'textDocument/foldingRange' then
+            vim.wo[event.win].foldmethod = 'expr'
+            vim.wo[event.win].foldexpr = 'v:lua.vim.lsp.foldexpr()'
+          end
+        end,
+      })
+    end
+
     -- Get capabilities from blink.cmp
     local capabilities = require('blink.cmp').get_lsp_capabilities()
 
-    -- Setup all language servers
+    -- Add file operation capabilities
+    capabilities = vim.tbl_deep_extend('force', capabilities, {
+      workspace = {
+        fileOperations = {
+          didRename = true,
+          willRename = true,
+        },
+      },
+    })
+
+    -- Load servers from config.servers
     local servers = require('config.servers').get_servers()
 
+    -- Merge with opts.servers
+    servers = vim.tbl_deep_extend('force', servers, opts.servers)
+
+    -- Configure each server
     for server_name, server_config in pairs(servers) do
-      server_config.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server_config.capabilities or {})
-      -- Enable LSP-based folding
-      server_config.folds = {
-        enabled = true,
-      }
-      vim.lsp.config(server_name, server_config)
-      vim.lsp.enable(server_name)
+      if server_config.enabled ~= false then
+        -- Merge capabilities
+        server_config.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server_config.capabilities or {})
+
+        -- Enable folding
+        if opts.folds.enabled then
+          server_config.folds = { enabled = true }
+        end
+
+        -- Run custom setup if provided
+        local setup = opts.setup[server_name] or opts.setup['*']
+        if setup and setup(server_name, server_config) then
+          -- setup returned true, skip default setup
+        else
+          vim.lsp.config(server_name, server_config)
+          vim.lsp.enable(server_name)
+        end
+      end
     end
   end,
 }

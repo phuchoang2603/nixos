@@ -9,6 +9,42 @@ return {
 
     -- JSON/YAML schemas
     'b0o/schemastore.nvim',
+
+    -- C/C++ extensions for clangd
+    {
+      'p00f/clangd_extensions.nvim',
+      ft = { 'c', 'cpp', 'objc', 'objcpp', 'cuda' },
+      opts = {
+        inlay_hints = {
+          inline = false,
+        },
+        ast = {
+          role_icons = {
+            type = '',
+            declaration = '',
+            expression = '',
+            specifier = '',
+            statement = '',
+            ['template argument'] = '',
+          },
+          kind_icons = {
+            Compound = '',
+            Recovery = '',
+            TranslationUnit = '',
+            PackExpansion = '',
+            TemplateTypeParm = '',
+            TemplateTemplateParm = '',
+            TemplateParamObject = '',
+          },
+        },
+      },
+    },
+
+    -- Helm Language Server
+    {
+      'towolf/vim-helm',
+      ft = 'helm',
+    },
   },
   keys = {
     { '<leader>cl', '<cmd>LspInfo<cr>', desc = 'Lsp Info' },

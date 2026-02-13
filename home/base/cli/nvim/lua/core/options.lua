@@ -4,7 +4,7 @@ vim.g.maplocalleader = '\\'
 vim.g.have_nerd_font = true
 
 vim.o.mouse = 'a'
-vim.o.number = false
+vim.o.number = true
 vim.o.relativenumber = true
 vim.o.showmode = false
 vim.o.signcolumn = 'yes'

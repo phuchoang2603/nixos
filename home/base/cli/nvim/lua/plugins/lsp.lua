@@ -1,5 +1,6 @@
 return {
   'neovim/nvim-lspconfig',
+  event = { 'BufReadPre', 'BufNewFile' },
   dependencies = {
     -- Allows extra capabilities provided by blink.cmp
     'saghen/blink.cmp',
@@ -72,6 +73,8 @@ return {
     vim.api.nvim_create_autocmd('LspAttach', {
       group = vim.api.nvim_create_augroup('lsp-attach', { clear = true }),
       callback = function(event)
+        local client = vim.lsp.get_client_by_id(event.data.client_id)
+
         local map = function(keys, func, desc, mode)
           mode = mode or 'n'
           vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
@@ -108,7 +111,6 @@ return {
         map('<leader>cr', vim.lsp.buf.rename, 'Rename')
 
         -- Codelens
-        local client = vim.lsp.get_client_by_id(event.data.client_id)
         if client and client:supports_method('textDocument/codeLens', event.buf) then
           map('<leader>cc', vim.lsp.codelens.run, 'Run Codelens', { 'n', 'x' })
           map('<leader>cC', vim.lsp.codelens.refresh, 'Refresh & Display Codelens')
@@ -167,13 +169,16 @@ return {
     -- Get capabilities from blink.cmp
     local capabilities = require('blink.cmp').get_lsp_capabilities()
 
-    -- Setup all language servers
+    -- Setup all language servers using lspconfig
+    local lspconfig = require 'lspconfig'
     local servers = require('config.servers').get_servers()
 
     for server_name, server_config in pairs(servers) do
+      -- Merge capabilities
       server_config.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server_config.capabilities or {})
-      vim.lsp.config(server_name, server_config)
-      vim.lsp.enable(server_name)
+
+      -- Setup server using lspconfig
+      lspconfig[server_name].setup(server_config)
     end
   end,
 }

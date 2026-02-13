@@ -18,7 +18,7 @@
 
     # Web & Configs (Node/JSON/YAML/TOML)
     nodejs # Runtime
-    prettier # Multi-tool Formatter
+    prettierd # Multi-tool Formatter
     vscode-langservers-extracted # LSPs for JSON, HTML, CSS
     yaml-language-server # LSP
     taplo # TOML LSP & Formatter

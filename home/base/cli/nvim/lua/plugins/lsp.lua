@@ -88,7 +88,17 @@ return {
       },
 
       -- Server-specific setup hooks
-      setup = {},
+      setup = {
+        -- Workaround for gopls semantic tokens performance issue
+        gopls = function(_, opts)
+          -- Disable semantic tokens due to performance issues
+          -- https://github.com/golang/go/issues/54531#issuecomment-1464982242
+          opts.capabilities = vim.tbl_deep_extend('force', opts.capabilities or {}, {
+            semanticTokensProvider = nil,
+          })
+          return false -- Continue with default setup
+        end,
+      },
     }
 
     -- Load servers from config.servers

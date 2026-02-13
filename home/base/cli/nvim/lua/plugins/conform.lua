@@ -31,10 +31,16 @@ return {
       lua = { 'stylua' },
 
       -- Python
-      python = { 'isort', 'black' },
+      python = function(bufnr)
+        if require('conform').get_formatter_info('ruff_format', bufnr).available then
+          return { 'ruff_format' }
+        else
+          return { 'isort', 'black' }
+        end
+      end,
 
       -- Go
-      go = { 'gofumpt' },
+      go = { 'goimports', 'gofumpt' },
 
       -- Web (JavaScript, TypeScript, CSS, HTML, JSON, YAML, Markdown, etc.)
       javascript = { 'prettierd', 'prettier', stop_after_first = true },

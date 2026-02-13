@@ -10,8 +10,7 @@ function M.get_servers()
   return {
     -- Lua
     lua_ls = {
-      cmd = { 'lua-language-server' },
-      root_dir = get_root_dir({ '.luarc.json', '.luarc.jsonc', '.luacheckrc', '.stylua.toml', 'stylua.toml', 'selene.toml', 'selene.yml', '.git' }),
+      root_dir = get_root_dir { '.luarc.json', '.luarc.jsonc', '.luacheckrc', '.stylua.toml', 'stylua.toml', 'selene.toml', 'selene.yml', '.git' },
       settings = {
         Lua = {
           workspace = {
@@ -54,7 +53,6 @@ function M.get_servers()
 
     -- Go
     gopls = {
-      cmd = { 'gopls' },
       root_dir = get_root_dir { 'go.work', 'go.mod', '.git' },
       settings = {
         gopls = {
@@ -88,64 +86,98 @@ function M.get_servers()
           completeUnimported = true,
           staticcheck = true,
           directoryFilters = { '-.git', '-.vscode', '-.idea', '-.vscode-test', '-node_modules' },
-          semanticTokens = true,
+          -- semanticTokens disabled in setup hook due to performance issues
         },
       },
     },
 
     -- Python
-    pyright = {
-      cmd = { 'pyright-langserver', '--stdio' },
+    basedpyright = {
       root_dir = get_root_dir { 'pyproject.toml', 'setup.py', 'setup.cfg', 'requirements.txt', 'Pipfile', 'pyrightconfig.json', '.git' },
       settings = {
-        python = {
+        basedpyright = {
           analysis = {
-            typeCheckingMode = 'basic',
+            typeCheckingMode = 'standard',
             autoSearchPaths = true,
+            diagnosticMode = 'openFilesOnly',
             useLibraryCodeForTypes = true,
+            diagnosticSeverityOverrides = {
+              reportUnusedVariable = 'warning',
+              reportUnusedImport = 'warning',
+            },
           },
+        },
+      },
+    },
+    ruff = {
+      cmd_env = { RUFF_TRACE = 'messages' },
+      init_options = {
+        settings = {
+          logLevel = 'error',
+        },
+      },
+      keys = {
+        {
+          '<leader>co',
+          function()
+            vim.lsp.buf.code_action {
+              apply = true,
+              context = {
+                only = { 'source.organizeImports' },
+                diagnostics = {},
+              },
+            }
+          end,
+          desc = 'Organize Imports',
         },
       },
     },
 
     -- YAML
     yamlls = {
-      cmd = { 'yaml-language-server', '--stdio' },
       root_dir = get_root_dir { '.git' },
-      settings = {
-        yaml = {
-          schemas = {
-            kubernetes = '*.yaml',
-            ['http://json.schemastore.org/github-workflow'] = '.github/workflows/*',
-            ['http://json.schemastore.org/github-action'] = '.github/action.{yml,yaml}',
-            ['http://json.schemastore.org/ansible-stable-2.9'] = 'roles/tasks/*.{yml,yaml}',
-            ['http://json.schemastore.org/prettierrc'] = '.prettierrc.{yml,yaml}',
-            ['http://json.schemastore.org/kustomization'] = 'kustomization.{yml,yaml}',
-            ['http://json.schemastore.org/ansible-playbook'] = '*play*.{yml,yaml}',
-            ['http://json.schemastore.org/chart'] = 'Chart.{yml,yaml}',
-            ['https://json.schemastore.org/dependabot-v2'] = '.github/dependabot.{yml,yaml}',
-            ['https://json.schemastore.org/gitlab-ci'] = '*gitlab-ci*.{yml,yaml}',
-            ['https://raw.githubusercontent.com/OAI/OpenAPI-Specification/main/schemas/v3.1/schema.json'] = '*api*.{yml,yaml}',
+      capabilities = {
+        textDocument = {
+          foldingRange = {
+            dynamicRegistration = false,
+            lineFoldingOnly = true,
           },
+        },
+      },
+      on_new_config = function(new_config)
+        new_config.settings.yaml.schemas = vim.tbl_deep_extend('force', new_config.settings.yaml.schemas or {}, require('schemastore').yaml.schemas())
+      end,
+      settings = {
+        redhat = { telemetry = { enabled = false } },
+        yaml = {
+          keyOrdering = false,
           format = {
             enable = true,
           },
           validate = true,
+          schemaStore = {
+            -- Must disable built-in schemaStore support to use
+            -- schemas from SchemaStore.nvim plugin
+            enable = false,
+            -- Avoid TypeError: Cannot read properties of undefined (reading 'length')
+            url = '',
+          },
         },
       },
     },
 
     -- JSON
     jsonls = {
-      cmd = { 'vscode-json-language-server', '--stdio' },
       root_dir = get_root_dir { '.git' },
+      on_new_config = function(new_config)
+        new_config.settings.json.schemas = new_config.settings.json.schemas or {}
+        vim.list_extend(new_config.settings.json.schemas, require('schemastore').json.schemas())
+      end,
       settings = {
         json = {
-          schemas = (function()
-            local ok, schemastore = pcall(require, 'schemastore')
-            if ok then return schemastore.json.schemas() end
-            return {}
-          end)(),
+          format = {
+            enable = true,
+          },
           validate = { enable = true },
         },
       },
@@ -153,36 +185,35 @@ function M.get_servers()
 
     -- Docker
     dockerls = {
-      cmd = { 'docker-langserver', '--stdio' },
       root_dir = get_root_dir { 'Dockerfile', '.git' },
     },
     docker_compose_language_service = {
-      cmd = { 'docker-compose-langserver', '--stdio' },
       root_dir = get_root_dir { 'docker-compose.yaml', 'docker-compose.yml', 'compose.yaml', 'compose.yml', '.git' },
     },
 
     -- Terraform
     terraformls = {
-      cmd = { 'terraform-ls', 'serve' },
       root_dir = get_root_dir { '.terraform', '.git' },
     },
     tflint = {
-      cmd = { 'tflint', '--langserver' },
       root_dir = get_root_dir { '.tflint.hcl', '.terraform', '.git' },
     },
 
     -- Ansible
     ansiblels = {
-      cmd = { 'ansible-language-server', '--stdio' },
       root_dir = get_root_dir { 'ansible.cfg', '.ansible-lint', '.git' },
     },
 
     -- Nix
     nil_ls = {
-      cmd = { 'nil' },
       root_dir = get_root_dir { 'flake.nix', 'default.nix', 'shell.nix', '.git' },
       settings = {
         ['nil'] = {
+          nix = {
+            flake = {
+              autoArchive = true,
+            },
+          },
           formatting = {
             command = { 'nixfmt' },
           },
@@ -192,25 +223,34 @@ function M.get_servers()
 
     -- Markdown
     marksman = {
-      cmd = { 'marksman', 'server' },
       root_dir = get_root_dir { '.marksman.toml', '.git' },
     },
 
     -- TOML
     taplo = {
-      cmd = { 'taplo', 'lsp', 'stdio' },
       root_dir = get_root_dir { '.git' },
+      keys = {
+        {
+          'K',
+          function()
+            if vim.fn.expand '%:t' == 'Cargo.toml' and require('crates').popup_available() then
+              require('crates').show_popup()
+            else
+              vim.lsp.buf.hover()
+            end
+          end,
+          desc = 'Show Crate Documentation',
+        },
+      },
     },
 
     -- Helm
     helm_ls = {
-      cmd = { 'helm_ls', 'serve' },
       root_dir = get_root_dir { 'Chart.yaml', '.git' },
     },
 
     -- Bash
     bashls = {
-      cmd = { 'bash-language-server', 'start' },
       root_dir = get_root_dir { '.git' },
     },
   }

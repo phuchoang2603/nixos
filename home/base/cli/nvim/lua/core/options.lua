@@ -62,3 +62,8 @@ vim.opt.swapfile = false
 -- instead raise a dialog asking if you wish to save the current file(s)
 -- See `:help 'confirm'`
 vim.o.confirm = true
+
+-- Folding configuration
+-- Start with all folds open (use zM to close all, zR to open all, za to toggle)
+vim.o.foldlevel = 99
+vim.o.foldlevelstart = 99

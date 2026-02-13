@@ -17,6 +17,14 @@ return {
     explorer = {
       enabled = false,
     },
+    -- Enable better UI for vim.ui.select and vim.ui.input
+    input = {
+      enabled = true,
+    },
+    -- Better code action and other select menus
+    picker = {
+      enabled = true,
+    },
   },
 
   keys = {

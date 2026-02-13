@@ -1,10 +1,16 @@
 -- Central place to configure all LSP servers
 local M = {}
 
+-- Helper function for root directory detection
+local function get_root_dir(patterns)
+  return function(fname) return vim.fs.root(fname, patterns) end
+end
+
 function M.get_servers()
   return {
     -- Lua
     lua_ls = {
+      root_dir = get_root_dir { '.luarc.json', '.luarc.jsonc', '.luacheckrc', '.stylua.toml', 'stylua.toml', 'selene.toml', 'selene.yml', '.git' },
       on_init = function(client)
         if client.workspace_folders then
           local path = client.workspace_folders[1].name
@@ -29,6 +35,7 @@ function M.get_servers()
 
     -- C/C++
     clangd = {
+      root_dir = get_root_dir { '.clangd', '.clang-tidy', '.clang-format', 'compile_commands.json', 'compile_flags.txt', 'configure.ac', '.git' },
       cmd = {
         'clangd',
         '--background-index',
@@ -42,6 +49,7 @@ function M.get_servers()
 
     -- Go
     gopls = {
+      root_dir = get_root_dir { 'go.work', 'go.mod', '.git' },
       settings = {
         gopls = {
           gofumpt = true,
@@ -81,6 +89,7 @@ function M.get_servers()
 
     -- Python
     pyright = {
+      root_dir = get_root_dir { 'pyproject.toml', 'setup.py', 'setup.cfg', 'requirements.txt', 'Pipfile', 'pyrightconfig.json', '.git' },
       settings = {
         python = {
           analysis = {
@@ -94,6 +103,7 @@ function M.get_servers()
 
     -- YAML
     yamlls = {
+      root_dir = get_root_dir { '.git' },
       settings = {
         yaml = {
           schemas = {
@@ -119,6 +129,7 @@ function M.get_servers()
 
     -- JSON
     jsonls = {
+      root_dir = get_root_dir { '.git' },
       settings = {
         json = {
           schemas = (function()
@@ -132,18 +143,29 @@ function M.get_servers()
     },
 
     -- Docker
-    dockerls = {},
-    docker_compose_language_service = {},
+    dockerls = {
+      root_dir = get_root_dir { 'Dockerfile', '.git' },
+    },
+    docker_compose_language_service = {
+      root_dir = get_root_dir { 'docker-compose.yaml', 'docker-compose.yml', 'compose.yaml', 'compose.yml', '.git' },
+    },
 
     -- Terraform
-    terraformls = {},
-    tflint = {},
+    terraformls = {
+      root_dir = get_root_dir { '.terraform', '.git' },
+    },
+    tflint = {
+      root_dir = get_root_dir { '.tflint.hcl', '.terraform', '.git' },
+    },
 
     -- Ansible
-    ansiblels = {},
+    ansiblels = {
+      root_dir = get_root_dir { 'ansible.cfg', '.ansible-lint', '.git' },
+    },
 
     -- Nix
     nil_ls = {
+      root_dir = get_root_dir { 'flake.nix', 'default.nix', 'shell.nix', '.git' },
       settings = {
         ['nil'] = {
           formatting = {
@@ -154,16 +176,24 @@ function M.get_servers()
     },
 
     -- Markdown
-    marksman = {},
+    marksman = {
+      root_dir = get_root_dir { '.marksman.toml', '.git' },
+    },
 
     -- TOML
-    taplo = {},
+    taplo = {
+      root_dir = get_root_dir { '.git' },
+    },
 
     -- Helm
-    helm_ls = {},
+    helm_ls = {
+      root_dir = get_root_dir { 'Chart.yaml', '.git' },
+    },
 
-    -- Git (commit messages, etc)
-    -- Note: This doesn't exist as a standalone LSP, handled by other plugins
+    -- Bash
+    bashls = {
+      root_dir = get_root_dir { '.git' },
+    },
   }
 end
 

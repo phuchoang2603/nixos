@@ -12,6 +12,34 @@
         fcitx5-gtk # GTK integration
         qt6Packages.fcitx5-configtool # Configuration tool
       ];
+      settings = {
+        globalOptions = {
+          "Hotkey/TriggerKeys" = {
+            "0" = "Control+Shift_L";
+          };
+        };
+        inputMethod = {
+          "GroupOrder" = {
+            "0" = "Default";
+          };
+
+          "Groups/0" = {
+            Name = "Default";
+            "Default Layout" = "us";
+            DefaultIM = "unikey";
+          };
+
+          "Groups/0/Items/0" = {
+            Name = "keyboard-us";
+            Layout = "";
+          };
+
+          "Groups/0/Items/1" = {
+            Name = "unikey";
+            Layout = "";
+          };
+        };
+      };
     };
   };
 

@@ -225,7 +225,7 @@
         "match:class ^(spotify)$, workspace 5"
         "match:class ^(org.gnome.Nautilus)$, workspace 6"
         "match:class ^(com.obsproject.Studio)$, workspace 7"
-        "match:class ^(org.pwmt.zathura)$, workspace 11"
+        "match:class ^(org.pwmt.zathura)$, workspace 10"
         "match:class ^(microsoft-edge|com.mitchellh.ghostty|org.pwmt.zathura|code|libreoffice.*|spotify|obsidian|org.gnome.Nautilus|com.obsproject.Studio)$, tile on"
         "match:class ^(obsidian|microsoft-edge|org.gnome.NautilusPreviewer|org.pwmt.zathura)$, opacity 1 override"
       ];

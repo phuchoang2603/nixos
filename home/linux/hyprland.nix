@@ -17,13 +17,6 @@
     PATH = "./bin:$HOME/.local/bin:$PATH";
   };
 
-  home.pointerCursor = {
-    gtk.enable = true;
-    package = pkgs.bibata-cursors;
-    name = "Bibata-Modern-Classic";
-    size = 16;
-  };
-
   wayland.windowManager.hyprland = {
     enable = true;
     xwayland.enable = true;

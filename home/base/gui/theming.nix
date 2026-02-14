@@ -12,6 +12,12 @@ in
     image = wallpaperPath;
     polarity = "dark";
 
+    cursor = {
+      package = pkgs.bibata-cursors;
+      name = "Bibata-Modern-Classic";
+      size = 16;
+    };
+
     fonts = {
       monospace = {
         name = "CaskaydiaMono Nerd Font";
@@ -35,6 +41,13 @@ in
         desktop = 10;
         popups = 12;
       };
+    };
+
+    icons = {
+      enable = true;
+      package = pkgs.papirus-icon-theme;
+      dark = "Papirus-Dark";
+      light = "Papirus-Light";
     };
 
     targets = {

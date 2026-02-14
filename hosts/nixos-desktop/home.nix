@@ -19,7 +19,7 @@
       "7,monitor:HDMI-A-1"
       "8,monitor:HDMI-A-1"
       "9,monitor:HDMI-A-1"
-      "10,monitor:HDMI-A-1"
+      "10,monitor:DP-1"
     ];
   };
 }

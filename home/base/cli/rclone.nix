@@ -6,21 +6,18 @@
 }:
 
 let
-  cfg = config.my.rcloneBisync;
-
   mkServiceName = dir: "rclone-bisync-${lib.replaceStrings [ " " ] [ "-" ] dir}";
 
   mkService =
     dir:
     let
       serviceName = mkServiceName dir;
-      remotePath = "${cfg.remote}:${cfg.libraryBase}/${dir}";
+      remotePath = "onedrive:Library/${dir}";
       localPath = "${config.home.homeDirectory}/${dir}";
 
       execStartScript = pkgs.writeShellScript "rclone-bisync-${dir}-wrapper" ''
         CACHE_DIR="$HOME/.cache/rclone/bisync"
-        # Rclone creates cache files with underscores replacing slashes and colons
-        # This is a simplified check; if the directory is empty, we resync.
+        mkdir -p "${localPath}"
         if [ ! -d "$CACHE_DIR" ] || [ -z "$(ls -A "$CACHE_DIR")" ]; then
           echo "No prior sync history found for ${dir}. Running initial --resync..."
           ${pkgs.rclone}/bin/rclone bisync "${remotePath}" "${localPath}" \
@@ -69,58 +66,48 @@ let
         Requires = [ "${serviceName}.service" ];
       };
       Timer = {
-        OnCalendar = cfg.timerOnCalendar;
+        OnCalendar = "*-*-* 00/4:00:00";
         Persistent = true;
       };
       Install = {
         WantedBy = [ "timers.target" ];
       };
     };
+
+  dirs = [
+    "Pictures"
+    "Documents"
+    "Music"
+    "Videos"
+  ];
+
+  mountPath = "mnt/onedrive";
 in
 {
-  options.my.rcloneBisync = {
-    enable = lib.mkEnableOption "rclone bisync timers";
-
-    remote = lib.mkOption {
-      type = lib.types.str;
-      default = "onedrive";
-      description = "Rclone remote name to sync against.";
-    };
-
-    libraryBase = lib.mkOption {
-      type = lib.types.str;
-      default = "Library";
-      description = "Remote base path for OneDrive libraries.";
-    };
-
-    dirs = lib.mkOption {
-      type = lib.types.listOf lib.types.str;
-      default = [
-        "Pictures"
-        "Documents"
-        "Music"
-        "Videos"
-      ];
-      description = "Directories to bisync relative to the home directory.";
-    };
-
-    timerOnCalendar = lib.mkOption {
-      type = lib.types.str;
-      default = "*-*-* 00/4:00:00";
-      description = "Systemd OnCalendar schedule for bisync timers.";
-    };
-
-    extraArgs = lib.mkOption {
-      type = lib.types.listOf lib.types.str;
-      default = [ ];
-      description = "Extra arguments appended to the rclone bisync command.";
-    };
-  };
-
-  config = lib.mkIf (cfg.enable && pkgs.stdenv.isLinux) {
+  config = lib.mkIf pkgs.stdenv.isLinux {
     home.packages = [ pkgs.rclone ];
 
-    systemd.user.services = lib.listToAttrs (map mkService cfg.dirs);
-    systemd.user.timers = lib.listToAttrs (map mkTimer cfg.dirs);
+    systemd.user.services = (lib.listToAttrs (map mkService dirs)) // {
+      rclone-mount-onedrive = {
+        Unit = {
+          Description = "Rclone Mount - OneDrive";
+          After = [ "network-online.target" ];
+          Wants = [ "network-online.target" ];
+        };
+        Service = {
+          Type = "simple";
+          ExecStartPre = "/run/current-system/sw/bin/mkdir -p ${config.home.homeDirectory}/${mountPath}";
+          ExecStart = "${pkgs.rclone}/bin/rclone mount onedrive: ${config.home.homeDirectory}/${mountPath} --config=${config.home.homeDirectory}/.config/rclone/rclone.conf --vfs-cache-mode full --vfs-cache-max-age 675h --allow-other --allow-non-empty --dir-cache-time 672h";
+          ExecStop = "/run/current-system/sw/bin/fusermount -u ${config.home.homeDirectory}/${mountPath}";
+          Restart = "always";
+          RestartSec = 10;
+        };
+        Install = {
+          WantedBy = [ "default.target" ];
+        };
+      };
+    };
+
+    systemd.user.timers = lib.listToAttrs (map mkTimer dirs);
   };
 }

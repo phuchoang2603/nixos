@@ -2,7 +2,6 @@
 
 {
   my.waybar.output = "HDMI-A-1";
-  my.rcloneBisync.enable = true;
 
   wayland.windowManager.hyprland.settings = {
     monitor = [

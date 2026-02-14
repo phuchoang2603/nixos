@@ -189,8 +189,8 @@ return {
       },
     },
     format = {
-      json = { 'prettierd', 'prettier', stop_after_first = true },
-      jsonc = { 'prettierd', 'prettier', stop_after_first = true },
+      json = { 'prettierd', stop_after_first = true },
+      jsonc = { 'prettierd', stop_after_first = true },
     },
     lint = {},
   },
@@ -257,8 +257,8 @@ return {
       },
     },
     format = {
-      markdown = { 'prettierd', 'prettier', stop_after_first = true },
-      ['markdown.mdx'] = { 'prettierd', 'prettier', stop_after_first = true },
+      markdown = { 'prettierd', stop_after_first = true },
+      ['markdown.mdx'] = { 'prettierd', stop_after_first = true },
     },
     lint = {
       markdown = { 'markdownlint-cli2' },
@@ -294,11 +294,19 @@ return {
         root_markers = { 'flake.nix', 'default.nix', 'shell.nix', '.git' },
         settings = {
           nixd = {
+            nixpkgs = {
+              expr = 'import <nixpkgs> { }',
+            },
             formatting = {
               command = { 'nixfmt' },
             },
-            nixpkgs = {
-              expr = 'import (builtins.getFlake(toString ./.)).inputs.nixpkgs { }',
+            options = {
+              nixos = {
+                expr = '(builtins.getFlake ("git+file://" + toString ./.)).nixosConfigurations.k-on.options',
+              },
+              home_manager = {
+                expr = '(builtins.getFlake ("git+file://" + toString ./.)).homeConfigurations."ruixi@k-on".options',
+              },
             },
           },
         },
@@ -448,23 +456,23 @@ return {
     lsp = {},
     format = {
       -- JavaScript
-      javascript = { 'prettierd', 'prettier', stop_after_first = true },
-      javascriptreact = { 'prettierd', 'prettier', stop_after_first = true },
+      javascript = { 'prettierd', stop_after_first = true },
+      javascriptreact = { 'prettierd', stop_after_first = true },
       -- TypeScript
-      typescript = { 'prettierd', 'prettier', stop_after_first = true },
-      typescriptreact = { 'prettierd', 'prettier', stop_after_first = true },
+      typescript = { 'prettierd', stop_after_first = true },
+      typescriptreact = { 'prettierd', stop_after_first = true },
       -- Vue
-      vue = { 'prettierd', 'prettier', stop_after_first = true },
+      vue = { 'prettierd', stop_after_first = true },
       -- CSS/SCSS/LESS
-      css = { 'prettierd', 'prettier', stop_after_first = true },
-      scss = { 'prettierd', 'prettier', stop_after_first = true },
-      less = { 'prettierd', 'prettier', stop_after_first = true },
+      css = { 'prettierd', stop_after_first = true },
+      scss = { 'prettierd', stop_after_first = true },
+      less = { 'prettierd', stop_after_first = true },
       -- HTML
-      html = { 'prettierd', 'prettier', stop_after_first = true },
+      html = { 'prettierd', stop_after_first = true },
       -- GraphQL
-      graphql = { 'prettierd', 'prettier', stop_after_first = true },
+      graphql = { 'prettierd', stop_after_first = true },
       -- Handlebars
-      handlebars = { 'prettierd', 'prettier', stop_after_first = true },
+      handlebars = { 'prettierd', stop_after_first = true },
     },
     lint = {},
   },
@@ -506,7 +514,7 @@ return {
       },
     },
     format = {
-      yaml = { 'prettierd', 'prettier', stop_after_first = true },
+      yaml = { 'prettierd', stop_after_first = true },
     },
     lint = {
       yaml = { 'ansible_lint', 'yamllint' },

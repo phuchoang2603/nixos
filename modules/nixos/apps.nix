@@ -16,7 +16,6 @@
     libreoffice-fresh
     obsidian
     nautilus
-    copyq
 
     # Wayland essentials
     wayland

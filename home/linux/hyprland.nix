@@ -27,7 +27,11 @@
   wayland.windowManager.hyprland = {
     enable = true;
     xwayland.enable = true;
-    systemd.variables = [ "--all" ];
+    systemd = {
+      enable = true;
+      variables = [ "--all" ];
+      enableXdgAutostart = true;
+    };
     portalPackage = pkgs.xdg-desktop-portal-hyprland;
 
     settings = {
@@ -38,12 +42,6 @@
       "$music" = "spotify";
       "$note" = "obsidian";
       "$fileManager" = "nautilus";
-
-      # Autostart
-      exec-once = [
-        "fcitx5 -d"
-        "copyq --start-server"
-      ];
 
       # General settings
       general = {

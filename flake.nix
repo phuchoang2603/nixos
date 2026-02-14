@@ -58,6 +58,7 @@
             inputs.stylix.nixosModules.stylix
             {
               nixpkgs.config.allowUnfree = true;
+              nixpkgs.overlays = [ (import ./pkgs) ];
 
               home-manager = {
                 useGlobalPkgs = true;
@@ -87,6 +88,7 @@
             inputs.stylix.nixosModules.stylix
             {
               nixpkgs.config.allowUnfree = true;
+              nixpkgs.overlays = [ (import ./pkgs) ];
 
               home-manager = {
                 useGlobalPkgs = true;
@@ -119,6 +121,7 @@
             {
               # Allow unfree packages
               nixpkgs.config.allowUnfree = true;
+              nixpkgs.overlays = [ (import ./pkgs) ];
 
               home-manager = {
                 useGlobalPkgs = true;

@@ -16,7 +16,7 @@
 
     extraPackages = with pkgs; [
       # ANSIBLE
-      nodePackages.ansible-language-server
+      ansible-language-server
       ansible-lint
 
       # BASH / SHELL

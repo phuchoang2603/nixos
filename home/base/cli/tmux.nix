@@ -3,33 +3,67 @@
 {
   programs.tmux = {
     enable = true;
+
+    # Basic settings
     shell = "${pkgs.zsh}/bin/zsh";
-    mouse = true;
-    prefix = "C-a";
-    keyMode = "vi";
-    baseIndex = 1;
-    escapeTime = 0;
-    historyLimit = 50000;
     terminal = "tmux-256color";
 
+    # Keybindings
+    prefix = "C-a";
+    keyMode = "vi";
+    customPaneNavigationAndResize = true; # Enable hjkl navigation
+
+    # Indexing
+    baseIndex = 1; # Start window numbering at 1
+
+    # Timing
+    escapeTime = 0; # No delay for escape key
+
+    # History
+    historyLimit = 50000; # Scrollback buffer
+
+    # Window behavior
+    aggressiveResize = true; # Smart window resizing
+    newSession = true; # Auto-create session if none exists
+    disableConfirmationPrompt = true; # No confirmation for kill-pane/window
+    resizeAmount = 5; # Amount to resize panes
+
+    # Focus events for better vim integration
+    focusEvents = true;
+
+    # Plugins
+    plugins = with pkgs.tmuxPlugins; [
+      sensible
+      yank
+      resurrect
+      continuum
+    ];
+
     extraConfig = ''
+      # GENERAL SETTINGS
       set -g allow-passthrough on
       set -g detach-on-destroy off
       set -g renumber-windows on
       set -g set-clipboard on
       set -g status-position top
-      set -g status-right '#(gitmux "#{pane_current_path}")'
+
+      # STATUS BAR
       set -g status-style fg=default,bg=default
+      set -g status-right '#(gitmux "#{pane_current_path}")'
+
+      # WINDOW NAMING
+      # Automatically rename window to command name instead of current path
       set-option -g automatic-rename on
-      set-option -g automatic-rename-format "#{b:pane_current_path}"
+      set-option -g automatic-rename-format "#{pane_current_command}"
+
+      # SPLIT PANES (keep current path)
       bind '"' split-window -v -c "#{pane_current_path}"
       bind % split-window -h -c "#{pane_current_path}"
-      bind h select-pane -L
-      bind j select-pane -D
-      bind k select-pane -U
-      bind l select-pane -R
-      bind x kill-pane
+
+      # COPY MODE
       bind -T copy-mode-vi v send-keys -X begin-selection
+
+      # SESSION MANAGEMENT (via sesh)
       bind "o" run-shell "sesh connect \"$(
         sesh list --icons | fzf-tmux -p 80%,80% \
           --no-sort --ansi --border-label ' sesh ' --prompt '⚡  ' \
@@ -46,12 +80,10 @@
 
       bind -N "last-session (via sesh) " L run-shell "sesh last"
     '';
-
-    plugins = with pkgs.tmuxPlugins; [
-      sensible
-      yank
-      resurrect
-      continuum
-    ];
   };
+
+  home.packages = with pkgs; [
+    gitmux
+    sesh
+  ];
 }

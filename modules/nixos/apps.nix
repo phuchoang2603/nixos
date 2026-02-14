@@ -31,14 +31,6 @@
     libsForQt5.qt5ct
     qt6Packages.qt6ct
 
-    # Screenshot/Recording
-    hyprpicker
-    hyprshot
-    grim
-    slurp
-    swappy
-    wf-recorder
-
     # Utilities
     mission-center # Task manager
     gnome-calculator

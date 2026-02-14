@@ -1,4 +1,9 @@
-{ pkgs, lib, config, ... }:
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}:
 
 {
   services.mako = {
@@ -17,4 +22,6 @@
       max-icon-size = 32;
     };
   };
+
+  services.copyq.enable = true;
 }

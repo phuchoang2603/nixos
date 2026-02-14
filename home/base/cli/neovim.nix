@@ -35,6 +35,7 @@
       gopls
       gotools
       golangci-lint
+      gofumpt
 
       # HELM
       helm-ls

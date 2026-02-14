@@ -14,5 +14,6 @@
     ./wlsunset.nix
     ./scripts.nix
     ./mimeapps.nix
+    ./fcitx5.nix
   ];
 }

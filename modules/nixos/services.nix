@@ -12,6 +12,8 @@
       jack.enable = true;
       wireplumber.enable = true;
     };
+
+    # Bluetooth
     blueman.enable = true;
 
     # Login manager (TTY) for Hyprland

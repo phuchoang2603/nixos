@@ -16,7 +16,7 @@
 
     extraPackages = with pkgs; [
       # ANSIBLE
-      vscode-extensions.redhat.ansible
+      nodePackages.ansible-language-server
       ansible-lint
 
       # BASH / SHELL

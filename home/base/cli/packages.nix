@@ -35,10 +35,6 @@
     fd
     ripgrep
     todoist
-
-    # Tmux ecosystem
-    gitmux
-    sesh
   ];
 
   programs = {

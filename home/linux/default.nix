@@ -10,6 +10,7 @@
     ./hyprpaper.nix
     ./hyprlock.nix
     ./hypridle.nix
+    ./hyprshot.nix
     ./espanso.nix
     ./wlsunset.nix
     ./scripts.nix

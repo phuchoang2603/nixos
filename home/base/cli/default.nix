@@ -11,7 +11,6 @@
     ./yazi.nix
     ./opencode.nix
     ./neovim.nix
-    ./rclone.nix
     ./direnv.nix
   ];
 }

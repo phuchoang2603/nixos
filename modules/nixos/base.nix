@@ -80,6 +80,8 @@
     options = "--delete-older-than 7d";
   };
 
+  programs.fuse.userAllowOther = true;
+
   # Fonts managed by Stylix
   fonts.fontconfig.enable = true;
 

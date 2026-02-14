@@ -3,18 +3,19 @@
 {
   imports = [
     ../base/gui
-    ./rofi.nix
-    ./mako.nix
-    ./waybar.nix
+    ./rclone.nix
+    ./fcitx5.nix
+    ./espanso.nix
+    ./mimeapps.nix
     ./hyprland.nix
     ./hyprpaper.nix
     ./hyprlock.nix
     ./hypridle.nix
     ./hyprshot.nix
-    ./espanso.nix
     ./wlsunset.nix
+    ./mako.nix
+    ./rofi.nix
+    ./waybar.nix
     ./scripts.nix
-    ./mimeapps.nix
-    ./fcitx5.nix
   ];
 }

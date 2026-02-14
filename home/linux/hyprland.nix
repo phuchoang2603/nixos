@@ -1,7 +1,34 @@
+{ pkgs, ... }:
+
 {
+  home.sessionVariables = {
+    NIXOS_OZONE_WL = "1";
+    XDG_SESSION_TYPE = "wayland";
+    XDG_CURRENT_DESKTOP = "Hyprland";
+    XDG_SESSION_DESKTOP = "Hyprland";
+    XDG_PICTURES_DIR = "$HOME/Pictures/Screenshots/";
+    QT_QPA_PLATFORM = "wayland;xcb";
+    QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
+    QT_AUTO_SCREEN_SCALE_FACTOR = "1";
+    GDK_BACKEND = "wayland,*";
+    SDL_VIDEODRIVER = "wayland";
+    CLUTTER_BACKEND = "wayland";
+    MOZ_ENABLE_WAYLAND = "1";
+    PATH = "./bin:$HOME/.local/bin:$PATH";
+  };
+
+  home.pointerCursor = {
+    gtk.enable = true;
+    package = pkgs.bibata-cursors;
+    name = "Bibata-Modern-Classic";
+    size = 16;
+  };
+
   wayland.windowManager.hyprland = {
     enable = true;
     xwayland.enable = true;
+    systemd.variables = [ "--all" ];
+    portalPackage = pkgs.xdg-desktop-portal-hyprland;
 
     settings = {
       # Variables
@@ -14,7 +41,6 @@
 
       # Autostart
       exec-once = [
-        "dbus-update-activation-environment --systemd --all"
         "fcitx5 -d"
         "copyq --start-server"
       ];

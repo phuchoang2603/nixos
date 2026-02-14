@@ -3,7 +3,7 @@
 {
   services.hypridle = {
     enable = true;
-    
+
     settings = {
       general = {
         lock_cmd = "playerctl --all-players pause && pidof hyprlock || hyprlock";

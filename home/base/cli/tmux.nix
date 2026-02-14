@@ -24,7 +24,6 @@
 
     # Window behavior
     aggressiveResize = true; # Smart window resizing
-    newSession = true; # Auto-create session if none exists
     disableConfirmationPrompt = true; # No confirmation for kill-pane/window
     resizeAmount = 5; # Amount to resize panes
 

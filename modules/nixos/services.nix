@@ -1,3 +1,5 @@
+{ pkgs, ... }:
+
 {
   security.rtkit.enable = true;
   services = {
@@ -11,6 +13,31 @@
       wireplumber.enable = true;
     };
     blueman.enable = true;
+
+    # Login manager (TTY) for Hyprland
+    greetd = {
+      enable = true;
+      settings.default_session = {
+        user = "greeter";
+        command = "${pkgs.tuigreet}/bin/tuigreet --time --cmd start-hyprland";
+      };
+    };
+
+    # Enable GNOME keyring for secrets
+    gnome.gnome-keyring.enable = true;
+
+    # Enable GVFS for trash and other virtual filesystems
+    gvfs.enable = true;
+
+    # Thumbnail service
+    tumbler.enable = true;
+
+    # Game streaming server
+    sunshine = {
+      enable = true;
+      autoStart = true;
+      openFirewall = true;
+    };
 
     # Tailscale VPN
     tailscale = {
@@ -43,6 +70,36 @@
         PasswordAuthentication = true;
         PermitRootLogin = "no";
       };
+    };
+  };
+
+  programs = {
+    # Enable dconf for GTK settings
+    dconf.enable = true;
+
+    # Enable Hyprland for system-wide
+    hyprland = {
+      enable = true;
+      xwayland.enable = true;
+    };
+  };
+
+  # Security/Authentication
+  security = {
+    polkit.enable = true;
+    pam.services.login.enableGnomeKeyring = true;
+    pam.services.greetd.enableGnomeKeyring = true;
+  };
+
+  # Polkit agent (needed for GUI auth prompts on Hyprland)
+  systemd.user.services.polkit-gnome-authentication-agent-1 = {
+    description = "Polkit GNOME Authentication Agent";
+    wantedBy = [ "graphical-session.target" ];
+    after = [ "graphical-session.target" ];
+    serviceConfig = {
+      Type = "simple";
+      ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
+      Restart = "on-failure";
     };
   };
 

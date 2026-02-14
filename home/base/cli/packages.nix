@@ -8,6 +8,7 @@
     wget
     curl
     unzip
+    inotify-tools
     lsof
     gcc
 

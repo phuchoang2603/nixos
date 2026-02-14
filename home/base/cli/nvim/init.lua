@@ -1,4 +1,5 @@
 -- [[ Load core configuration ]]
+require 'core.filetypes'
 require 'core.options'
 require 'core.keymaps'
 

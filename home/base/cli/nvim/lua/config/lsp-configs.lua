@@ -9,8 +9,8 @@ return {
     lsp = {
       ansiblels = {
         cmd = { 'ansible-language-server', '--stdio' },
-        filetypes = { 'yaml.ansible', 'ansible' },
-        root_markers = { 'ansible.cfg', '.ansible-lint', '.git' },
+        filetypes = { 'yaml.ansible' },
+        root_markers = { 'ansible.cfg', '.ansible-lint' },
       },
     },
     format = {},
@@ -18,24 +18,7 @@ return {
     plugins = {
       {
         'mfussenegger/nvim-ansible',
-        ft = { 'yaml.ansible', 'ansible' },
-        config = function()
-          vim.api.nvim_create_autocmd({ 'BufRead', 'BufNewFile' }, {
-            pattern = {
-              '*/playbooks/*.yml',
-              '*/playbooks/*.yaml',
-              '*/roles/*/tasks/*.yml',
-              '*/roles/*/tasks/*.yaml',
-              '*/roles/*/handlers/*.yml',
-              '*/roles/*/handlers/*.yaml',
-              '*/ansible/*.yml',
-              '*/ansible/*.yaml',
-              '*play*.yml',
-              '*play*.yaml',
-            },
-            callback = function() vim.bo.filetype = 'yaml.ansible' end,
-          })
-        end,
+        ft = { 'yaml.ansible' },
       },
     },
   },
@@ -177,6 +160,9 @@ return {
     },
     format = {},
     lint = {},
+    plugins = {
+      { 'qvalentin/helm-ls.nvim', ft = 'helm' },
+    },
   },
 
   -- ============================================================================
@@ -490,7 +476,7 @@ return {
     lsp = {
       yamlls = {
         cmd = { 'yaml-language-server', '--stdio' },
-        filetypes = { 'yaml', 'yaml.docker-compose', 'yaml.gitlab' },
+        filetypes = { 'yaml' },
         root_markers = { '.git' },
         capabilities = {
           textDocument = {

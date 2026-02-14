@@ -15,6 +15,4 @@
     sunrise = "06:30";
     sunset = "18:00";
   };
-
-  services.network-manager-applet.enable = true;
 }

@@ -2,7 +2,7 @@
 
 {
   imports = [
-    ../../base/gui
+    ../base/gui
     ./rofi.nix
     ./mako.nix
     ./waybar.nix

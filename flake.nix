@@ -66,7 +66,7 @@
                 extraSpecialArgs = mkSpecialArgs linuxSystem;
                 users.${user} = {
                   imports = [
-                    ./home/linux/gui
+                    ./home/linux
                     ./hosts/nixos-desktop/home.nix
                   ];
                 };
@@ -96,7 +96,7 @@
                 extraSpecialArgs = mkSpecialArgs linuxSystem;
                 users.${user} = {
                   imports = [
-                    ./home/linux/gui
+                    ./home/linux
                     ./hosts/nixos-laptop/home.nix
                   ];
                 };
@@ -129,7 +129,7 @@
                 extraSpecialArgs = mkSpecialArgs darwinSystem;
                 users.${user} = {
                   imports = [
-                    ./home/darwin/gui
+                    ./home/darwin
                   ];
                 };
                 sharedModules = [ inputs.stylix.homeModules.stylix ];

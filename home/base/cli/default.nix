@@ -11,7 +11,7 @@
     ./yazi.nix
     ./opencode.nix
     ./neovim.nix
-    ./rclone-bisync.nix
+    ./rclone.nix
     ./direnv.nix
   ];
 }

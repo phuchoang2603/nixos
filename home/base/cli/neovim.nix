@@ -1,6 +1,4 @@
 {
-  config,
-  lib,
   pkgs,
   ...
 }:
@@ -10,53 +8,82 @@
     enable = true;
     vimAlias = true;
     viAlias = true;
+    defaultEditor = true;
+
+    plugins = with pkgs.vimPlugins; [
+      lazy-nvim
+    ];
+
+    extraPackages = with pkgs; [
+      # ANSIBLE
+      vscode-extensions.redhat.ansible
+      ansible-lint
+
+      # BASH / SHELL
+      bash-language-server
+      shfmt
+
+      # C / C++
+      clang-tools
+
+      # DOCKER
+      dockerfile-language-server
+      docker-compose-language-service
+      hadolint # Dockerfile linter
+
+      # GO
+      gopls
+      gotools
+      golangci-lint
+
+      # HELM
+      helm-ls
+
+      # JSON / HTML / CSS / ESLINT
+      vscode-langservers-extracted
+
+      # LUA
+      lua-language-server
+      stylua
+
+      # MARKDOWN
+      marksman
+      markdownlint-cli2
+
+      # NIX
+      nixd
+      nixfmt
+      statix # Nix linter
+
+      # PYTHON
+      basedpyright
+      ruff # Python linter/formatter LSP
+      black
+      isort
+      mypy
+
+      # TERRAFORM
+      terraform-ls
+      tflint
+
+      # TOML
+      taplo
+
+      # WEB (JavaScript/TypeScript/CSS/HTML)
+      prettierd # Prettier daemon for faster formatting
+
+      # YAML
+      yaml-language-server
+      yamllint
+    ];
   };
-
-  home.packages = with pkgs; [
-    # LSP Servers
-    lua-language-server # Lua
-    nixd # Nix
-    marksman # Markdown
-    taplo # TOML
-    yaml-language-server # YAML
-    vscode-langservers-extracted # JSON, HTML, CSS, ESLint
-    bash-language-server # Bash
-    helm-ls # Helm
-
-    # Language-specific LSP servers
-    basedpyright # Python type checker
-    ruff # Python linter/formatter LSP
-    gopls # Go
-    clang-tools # clangd for C/C++
-    terraform-ls # Terraform
-    tflint # Terraform linter
-    dockerfile-language-server # Docker
-    docker-compose-language-service # Docker Compose
-
-    # Formatters
-    stylua # Lua
-    nixfmt # Nix
-    prettierd # Prettier daemon (faster)
-    shfmt # Shell
-    black # Python
-    isort # Python imports
-    gotools # gofumpt and other Go tools
-
-    # Linters
-    statix # Nix
-    yamllint # YAML
-    markdownlint-cli2 # Markdown
-    hadolint # Dockerfile
-    mypy # Python type checker
-    golangci-lint # Go
-    ansible-lint # Ansible
-  ];
 
   xdg.configFile = {
     "nvim/lua" = {
       source = ./nvim/lua;
       recursive = true;
     };
+
     "nvim/init.lua".source = ./nvim/init.lua;
     "nvim/.stylua.toml".source = ./nvim/.stylua.toml;
   };

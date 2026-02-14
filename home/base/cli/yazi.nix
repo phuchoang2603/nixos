@@ -24,6 +24,23 @@
           "scroll"
         ];
         title_format = "Yazi: {cwd}";
+
+        prepend_keymap = [
+          {
+            on = [
+              "g"
+              "r"
+            ];
+            run = ''shell -- ya emit cd "$(git rev-parse --show-toplevel)"'';
+          }
+          {
+            on = "y";
+            run = [
+              ''shell -- for path in "$@"; do echo "file://$path"; done | wl-copy -t text/uri-list''
+              "yank"
+            ];
+          }
+        ];
       };
 
       preview = {

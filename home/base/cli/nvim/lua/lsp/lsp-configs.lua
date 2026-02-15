@@ -19,12 +19,6 @@ return {
     lint = {
       ['yaml.ansible'] = { 'ansible_lint' },
     },
-    plugins = {
-      {
-        'mfussenegger/nvim-ansible',
-        ft = { 'yaml.ansible' },
-      },
-    },
   },
 
   -- ============================================================================

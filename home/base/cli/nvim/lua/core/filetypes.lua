@@ -14,16 +14,19 @@ vim.filetype.add {
     ['.*/templates/.*%.yaml'] = 'helm',
     ['.*/templates/.*%.tpl'] = 'gotmpl',
     -- Match Ansible playbooks
-    ['.*/ansible/.*%.ya?ml'] = 'yaml.ansible',
-    ['.*/host_vars/.*%.ya?ml'] = 'yaml.ansible',
-    ['.*/group_vars/.*%.ya?ml'] = 'yaml.ansible',
-    ['.*/playbooks/.*%.ya?ml'] = 'yaml.ansible',
-    ['.*/roles/.*/tasks/.*%.ya?ml'] = 'yaml.ansible',
-    ['.*/roles/.*/handlers/.*%.ya?ml'] = 'yaml.ansible',
-    ['.*/roles/.*/defaults/.*%.ya?ml'] = 'yaml.ansible',
-    ['.*/roles/.*/vars/.*%.ya?ml'] = 'yaml.ansible',
+    ['.*/%(tasks%|defaults%|group_vars%|host_vars%|handlers%|vars%|molecule%|ansible%|playbooks%)/.*%.ya?ml'] = 'yaml.ansible',
     ['.*playbook.*%.ya?ml'] = 'yaml.ansible',
+    ['.*/roles/.*/.*%.ya?ml'] = 'yaml.ansible',
     -- Terraform vars
     ['.*%.tfvars'] = 'terraform-vars',
   },
 }
+
+-- Manually add common Ansible folders to the search path
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = 'yaml.ansible',
+  callback = function()
+    vim.opt_local.path:append { 'tasks', 'templates', 'files', 'vars', 'handlers' }
+    vim.opt_local.suffixesadd:prepend { '.yml', '.yaml', '.sh', '.j2' }
+  end,
+})

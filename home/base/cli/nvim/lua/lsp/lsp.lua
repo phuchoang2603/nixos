@@ -118,9 +118,9 @@ local spec = {
                 local has = not keys.has
                 if not has then
                   if type(keys.has) == 'table' then
-                    has = vim.tbl_contains(vim.tbl_map(function(m) return client.supports_method(m) end, keys.has), true)
+                    has = vim.tbl_contains(vim.tbl_map(function(m) return client:supports_method(m) end, keys.has), true)
                   else
-                    has = client.supports_method('textDocument/' .. keys.has)
+                    has = client:supports_method('textDocument/' .. keys.has)
                   end
                 end
                 if has and keys.enabled ~= false then
@@ -141,7 +141,7 @@ local spec = {
         vim.api.nvim_create_autocmd('LspAttach', {
           callback = function(args)
             local client = vim.lsp.get_client_by_id(args.data.client_id)
-            if client and client.supports_method 'textDocument/inlayHint' then
+            if client and client:supports_method 'textDocument/inlayHint' then
               if vim.api.nvim_buf_is_valid(args.buf) and vim.bo[args.buf].buftype == '' then vim.lsp.inlay_hint.enable(true, { bufnr = args.buf }) end
             end
           end,
@@ -153,7 +153,7 @@ local spec = {
         vim.api.nvim_create_autocmd('LspAttach', {
           callback = function(args)
             local client = vim.lsp.get_client_by_id(args.data.client_id)
-            if client and client.supports_method 'textDocument/foldingRange' then
+            if client and client:supports_method 'textDocument/foldingRange' then
               vim.wo[0].foldmethod = 'expr'
               vim.wo[0].foldexpr = 'v:lua.vim.lsp.foldexpr()'
             end
@@ -166,7 +166,7 @@ local spec = {
         vim.api.nvim_create_autocmd('LspAttach', {
           callback = function(args)
             local client = vim.lsp.get_client_by_id(args.data.client_id)
-            if client and client.supports_method 'textDocument/codeLens' then
+            if client and client:supports_method 'textDocument/codeLens' then
               vim.lsp.codelens.refresh()
               vim.api.nvim_create_autocmd({ 'BufEnter', 'CursorHold', 'InsertLeave' }, {
                 buffer = args.buf,

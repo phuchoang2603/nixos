@@ -3,9 +3,6 @@ return {
   priority = 1000,
   lazy = false,
   opts = {
-    bigfiles = {
-      enabled = true,
-    },
     scroll = {
       enabled = false,
     },

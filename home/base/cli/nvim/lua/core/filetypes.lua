@@ -21,12 +21,3 @@ vim.filetype.add {
     ['.*%.tfvars'] = 'terraform-vars',
   },
 }
-
--- Manually add common Ansible folders to the search path
-vim.api.nvim_create_autocmd('FileType', {
-  pattern = 'yaml.ansible',
-  callback = function()
-    vim.opt_local.path:append { 'tasks', 'templates', 'files', 'vars', 'handlers' }
-    vim.opt_local.suffixesadd:prepend { '.yml', '.yaml', '.sh', '.j2' }
-  end,
-})

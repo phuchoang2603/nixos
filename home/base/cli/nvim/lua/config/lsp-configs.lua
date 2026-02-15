@@ -269,10 +269,8 @@ return {
           'folke/snacks.nvim',
         },
         keys = {
-          '<leader>cp',
-          ft = 'markdown',
-          '<cmd>LivePreview start<cr>',
-          desc = 'Markdown Preview',
+          { '<leader>cp', '<cmd>LivePreview start<cr>', ft = 'markdown', desc = 'Start Preview' },
+          { '<leader>cx', '<cmd>LivePreview close<cr>', ft = 'markdown', desc = 'Stop Preview' },
         },
       },
     },

@@ -59,7 +59,6 @@ return {
     { '<leader>ss', function() Snacks.picker.lsp_symbols() end, desc = 'LSP Symbols' },
     { '<leader>sS', function() Snacks.picker.lsp_workspace_symbols() end, desc = 'LSP Workspace Symbols' },
     { '<leader>su', function() Snacks.picker.undo() end, desc = 'Undotree' },
-    { '<leader>e', false },
-    { '<leader>E', false },
+    { '<leader>sm', function() Snacks.picker.marks() end, desc = 'Marks' },
   },
 }

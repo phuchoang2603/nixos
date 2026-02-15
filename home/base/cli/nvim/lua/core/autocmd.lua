@@ -19,8 +19,9 @@ vim.api.nvim_create_autocmd('BufEnter', {
 vim.api.nvim_create_autocmd('FileType', {
   pattern = 'yaml.ansible',
   callback = function()
-    print 'Ansible Autocmd Fired!' -- Debug line
-    vim.opt_local.path:append { 'tasks', 'templates', 'files', 'vars', 'handlers' }
-    vim.opt_local.suffixesadd:prepend { '.yml', '.yaml', '.sh', '.j2' }
+    local current_file_dir = vim.fn.expand '%:p:h'
+    vim.opt_local.path = '.,' .. current_file_dir .. ',' .. current_file_dir .. '/roles'
+    vim.opt_local.suffixesadd = '/tasks/main.yml,/tasks/main.yaml,.yml,.yaml'
+    vim.opt_local.isfname:append '-'
   end,
 })

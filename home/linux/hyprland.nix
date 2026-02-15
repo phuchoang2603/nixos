@@ -161,7 +161,7 @@
         "ALT, 4, exec, $note"
         "ALT, 5, exec, $music"
         "ALT, 6, exec, $fileManager"
-        "CTRL, SPACE, exec, rofi -show combi -normal-window"
+        "SUPER, SPACE, exec, rofi -show combi -normal-window"
         "SUPER, F, togglefloating,"
         "SUPER, I, setprop, active opaque toggle"
         "SUPER, C, exec, rofi -show calc -modi calc -no-show-match -no-sort -calc-command \"echo -n '{result}' | wl-copy\""

@@ -259,9 +259,7 @@ return {
     format = {
       markdown = { 'prettierd', stop_after_first = true },
     },
-    lint = {
-      markdown = { 'markdownlint-cli2' },
-    },
+    lint = {},
     plugins = {
       {
         'brianhuster/live-preview.nvim',

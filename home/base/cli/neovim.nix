@@ -49,7 +49,6 @@
 
       # MARKDOWN
       marksman
-      markdownlint-cli2
 
       # NIX
       nixd

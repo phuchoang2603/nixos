@@ -12,6 +12,7 @@ return {
         override = {
           ['vim.lsp.util.convert_input_to_markdown_lines'] = true,
           ['vim.lsp.util.extract_stacktrace'] = true,
+          ['vim.lsp.util.stylize_markdown'] = true,
           ['blink.cmp'] = true,
         },
       },

@@ -12,24 +12,17 @@ end
 -- Diagnostics (mini.icons does NOT have a 'diagnostic' category. It uses 'filetype' or 'extension' patterns)
 -- We use fixed glyphs here for consistency in the LSP system.
 M.diagnostics = {
-  Error = "󰅚 ",
-  Warn  = "󰀪 ",
-  Hint  = "󰌶 ",
-  Info  = "󰋽 ",
+  Error = '󰅚 ',
+  Warn = '󰀪 ',
+  Hint = '󰌶 ',
+  Info = '󰋽 ',
 }
 
 -- Git
 M.git = {
-  added    = get_icon('git', 'add', ' '),
-  modified = get_icon('git', 'change', ' '),
-  removed  = get_icon('git', 'delete', ' '),
+  added = ' ',
+  modified = ' ',
+  removed = ' ',
 }
-
--- LSP Kinds (mini.icons uses 'lsp' category for these)
-M.kinds = setmetatable({}, {
-  __index = function(_, key)
-    return get_icon('lsp', key, '')
-  end,
-})
 
 return M

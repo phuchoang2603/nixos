@@ -3,17 +3,7 @@ return {
     'nvim-mini/mini.nvim',
     version = false,
     config = function()
-      -- Better Around/Inside textobjects
-      --
-      -- Examples:
-      --  - va)  - [V]isually select [A]round [)]paren
-      --  - yinq - [Y]ank [I]nside [N]ext [Q]uote
-      --  - ci'  - [C]hange [I]nside [']quote
-      require('mini.ai').setup { n_lines = 500 }
-
       -- Add/delete/replace surroundings (brackets, quotes, etc.)
-      --
-      -- Examples:
       require('mini.surround').setup {
         mappings = {
           add = 'gsa', -- Add surrounding in Normal and Visual modes
@@ -32,7 +22,6 @@ return {
       -- Icons
       require('mini.icons').setup()
       MiniIcons.mock_nvim_web_devicons()
-      MiniIcons.tweak_lsp_kind()
 
       -- Simple and easy statusline
       local statusline = require 'mini.statusline'

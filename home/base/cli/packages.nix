@@ -13,6 +13,8 @@
     gcc
 
     # Infrastructure & DevOps
+    terraform
+    ansible
     kubernetes-helm
     kubectl
     kubectx

@@ -1,9 +1,6 @@
 -- Register the custom filetypes Neovim doesn't know by default
 vim.filetype.add {
-  extension = {
-    -- Mapping specific extensions if needed
-    mdx = 'markdown.mdx',
-  },
+  extension = {},
   filename = {
     ['go.work'] = 'gowork',
     ['docker-compose.yaml'] = 'yaml.docker-compose',

@@ -8,9 +8,7 @@ local lang_configs = require 'config.lsp-configs'
 local linters = {}
 
 for _, config in pairs(lang_configs) do
-  if config.lint then
-    linters = vim.tbl_deep_extend('force', linters, config.lint)
-  end
+  if config.lint then linters = vim.tbl_deep_extend('force', linters, config.lint) end
 end
 
 return {
@@ -27,9 +25,7 @@ return {
         linters = {
           -- Only run ansible-lint in ansible directories
           ansible_lint = {
-            condition = function(ctx)
-              return vim.fs.root(ctx.filename, { 'ansible.cfg', '.ansible-lint' })
-            end,
+            condition = function(ctx) return vim.fs.root(ctx.filename, { 'ansible.cfg', '.ansible-lint' }) end,
           },
         },
       }
@@ -73,9 +69,7 @@ return {
         names = vim.list_extend({}, names)
 
         -- Add fallback linters.
-        if #names == 0 then
-          vim.list_extend(names, lint.linters_by_ft['_'] or {})
-        end
+        if #names == 0 then vim.list_extend(names, lint.linters_by_ft['_'] or {}) end
 
         -- Add global linters.
         vim.list_extend(names, lint.linters_by_ft['*'] or {})
@@ -85,16 +79,12 @@ return {
         ctx.dirname = vim.fn.fnamemodify(ctx.filename, ':h')
         names = vim.tbl_filter(function(name)
           local linter = lint.linters[name]
-          if not linter then
-            vim.notify('Linter not found: ' .. name, vim.log.levels.WARN, { title = 'nvim-lint' })
-          end
+          if not linter then vim.notify('Linter not found: ' .. name, vim.log.levels.WARN, { title = 'nvim-lint' }) end
           return linter and not (type(linter) == 'table' and linter.condition and not linter.condition(ctx))
         end, names)
 
         -- Run linters.
-        if #names > 0 then
-          lint.try_lint(names)
-        end
+        if #names > 0 then lint.try_lint(names) end
       end
 
       vim.api.nvim_create_autocmd(opts.events, {

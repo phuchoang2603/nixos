@@ -4,7 +4,15 @@ return {
   opts = {
     preset = 'helix',
     delay = 0,
-    icons = { mappings = vim.g.have_nerd_font },
+    win = {
+      border = 'rounded',
+    },
+    icons = {
+      breadcrumb = '»',
+      separator = '➜',
+      group = '+',
+      mappings = vim.g.have_nerd_font,
+    },
 
     spec = {
       { '<leader>b', group = 'Buffer' },

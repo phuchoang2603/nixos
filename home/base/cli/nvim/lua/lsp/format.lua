@@ -2,15 +2,13 @@
 -- Loads formatters from lua/config/lsp-configs.lua
 
 -- Load all language configurations from the central config file
-local lang_configs = require 'config.lsp-configs'
+local lang_configs = require 'lsp.lsp-configs'
 
 -- Extract formatters from language configs
 local formatters = {}
 
 for _, config in pairs(lang_configs) do
-  if config.format then
-    formatters = vim.tbl_deep_extend('force', formatters, config.format)
-  end
+  if config.format then formatters = vim.tbl_deep_extend('force', formatters, config.format) end
 end
 
 return {
@@ -20,9 +18,7 @@ return {
   keys = {
     {
       '<leader>f',
-      function()
-        require('conform').format { async = true, lsp_format = 'fallback' }
-      end,
+      function() require('conform').format { async = true, lsp_format = 'fallback' } end,
       mode = '',
       desc = 'Format buffer',
     },

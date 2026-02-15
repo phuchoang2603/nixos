@@ -9,12 +9,11 @@ require 'core.keymaps'
 
 -- [[ Configure and install plugins ]]
 -- Automatically import all plugin configurations from lua/plugins/
+local plugins = { { import = 'plugins' } }
 -- Manually load LSP plugins (they are arrays of plugin specs)
 local lsp_specs = require 'lsp.lsp'
 local format_spec = require 'lsp.format'
 local lint_spec = require 'lsp.lint'
-
-local plugins = { { import = 'plugins' } }
 
 -- Add LSP specs (lsp.lua returns an array)
 for _, spec in ipairs(lsp_specs) do

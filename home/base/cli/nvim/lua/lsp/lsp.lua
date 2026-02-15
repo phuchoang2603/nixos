@@ -2,7 +2,7 @@
 -- Loads language-specific LSP configurations from lua/config/lsp-configs.lua
 
 -- Load all language configurations from the central config file
-local lang_configs = require 'config.lsp-configs'
+local lang_configs = require 'lsp.lsp-configs'
 
 -- Extract LSP servers and plugins from language configs
 local servers = {}

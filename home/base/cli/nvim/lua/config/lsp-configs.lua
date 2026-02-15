@@ -252,32 +252,27 @@ return {
     lsp = {
       marksman = {
         cmd = { 'marksman', 'server' },
-        filetypes = { 'markdown', 'markdown.mdx' },
+        filetypes = { 'markdown' },
         root_markers = { '.marksman.toml', '.git' },
       },
     },
     format = {
       markdown = { 'prettierd', stop_after_first = true },
-      ['markdown.mdx'] = { 'prettierd', stop_after_first = true },
     },
     lint = {
       markdown = { 'markdownlint-cli2' },
     },
     plugins = {
       {
-        'arminveres/md-pdf.nvim',
-        branch = 'main',
-        lazy = true,
-        keys = {
-          {
-            '<leader>cp',
-            function() require('md-pdf').convert_md_to_pdf() end,
-            desc = 'Markdown preview',
-          },
+        'brianhuster/live-preview.nvim',
+        dependencies = {
+          'folke/snacks.nvim',
         },
-        opts = {
-          toc = false,
-          title_page = false,
+        keys = {
+          '<leader>cp',
+          ft = 'markdown',
+          '<cmd>LivePreview start<cr>',
+          desc = 'Markdown Preview',
         },
       },
     },

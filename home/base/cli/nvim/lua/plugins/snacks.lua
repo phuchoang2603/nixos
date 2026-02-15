@@ -3,6 +3,9 @@ return {
   priority = 1000,
   lazy = false,
   opts = {
+    bigfiles = {
+      enabled = true,
+    },
     scroll = {
       enabled = false,
     },
@@ -27,6 +30,10 @@ return {
     },
     -- Better indent guide
     indent = {
+      enabled = true,
+    },
+    -- Auto-show LSP references
+    words = {
       enabled = true,
     },
     -- Pretty notification system

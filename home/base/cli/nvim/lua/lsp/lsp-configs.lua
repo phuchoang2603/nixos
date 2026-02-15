@@ -14,7 +14,7 @@ return {
       },
     },
     format = {
-      ['yaml.ansible'] = { 'prettierd' },
+      ['yaml.ansible'] = { 'ansible_lint' },
     },
     lint = {
       ['yaml.ansible'] = { 'ansible_lint' },

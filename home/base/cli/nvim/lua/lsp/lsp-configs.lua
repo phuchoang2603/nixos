@@ -10,11 +10,15 @@ return {
       ansiblels = {
         cmd = { 'ansible-language-server', '--stdio' },
         filetypes = { 'yaml.ansible' },
-        root_markers = { 'ansible.cfg', '.ansible-lint' },
+        root_markers = { 'ansible.cfg', '.ansible-lint', 'galaxy.yml' },
       },
     },
-    format = {},
-    lint = {},
+    format = {
+      ['yaml.ansible'] = { 'ansible_lint' },
+    },
+    lint = {
+      ['yaml.ansible'] = { 'ansible_lint' },
+    },
     plugins = {
       {
         'mfussenegger/nvim-ansible',
@@ -508,7 +512,7 @@ return {
       yaml = { 'prettierd', stop_after_first = true },
     },
     lint = {
-      yaml = { 'ansible_lint', 'yamllint' },
+      yaml = { 'yamllint' },
     },
   },
 }

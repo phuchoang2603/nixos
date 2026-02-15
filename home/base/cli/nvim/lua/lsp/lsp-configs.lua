@@ -11,11 +11,16 @@ return {
         cmd = { 'ansible-language-server', '--stdio' },
         filetypes = { 'yaml.ansible' },
         root_markers = { 'ansible.cfg', '.ansible-lint', 'galaxy.yml' },
+        settings = {
+          ansible = {
+            validation = {
+              lint = { enabled = false },
+            },
+          },
+        },
       },
     },
-    format = {
-      ['yaml.ansible'] = { 'ansible_lint' },
-    },
+    format = {},
     lint = {
       ['yaml.ansible'] = { 'ansible_lint' },
     },

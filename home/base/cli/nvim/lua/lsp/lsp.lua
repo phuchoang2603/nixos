@@ -22,6 +22,7 @@ local spec = {
       'b0o/schemastore.nvim', -- JSON/YAML schemas
     },
     opts = function()
+      local icons = require 'core.icons'
       return {
         -- Diagnostic configuration
         diagnostics = {
@@ -35,10 +36,10 @@ local spec = {
           severity_sort = true,
           signs = {
             text = {
-              [vim.diagnostic.severity.ERROR] = '󰅚 ',
-              [vim.diagnostic.severity.WARN] = '󰀪 ',
-              [vim.diagnostic.severity.HINT] = '󰌶 ',
-              [vim.diagnostic.severity.INFO] = '󰋽 ',
+              [vim.diagnostic.severity.ERROR] = icons.diagnostics.Error,
+              [vim.diagnostic.severity.WARN] = icons.diagnostics.Warn,
+              [vim.diagnostic.severity.HINT] = icons.diagnostics.Hint,
+              [vim.diagnostic.severity.INFO] = icons.diagnostics.Info,
             },
           },
         },
@@ -82,11 +83,11 @@ local spec = {
               { 'K', function() return vim.lsp.buf.hover() end, desc = 'Hover' },
               { 'gK', function() return vim.lsp.buf.signature_help() end, desc = 'Signature Help', has = 'signatureHelp' },
               { '<c-k>', function() return vim.lsp.buf.signature_help() end, mode = 'i', desc = 'Signature Help', has = 'signatureHelp' },
-              { '<leader>ca', vim.lsp.buf.code_action, desc = 'Code Action', mode = { 'n', 'x' }, has = 'codeAction' },
+              { '<leader>ca', function() Snacks.picker.lsp_code_actions() end, desc = 'Code Action', mode = { 'n', 'x' } },
               { '<leader>cc', vim.lsp.codelens.run, desc = 'Run Codelens', mode = { 'n', 'x' }, has = 'codeLens' },
               { '<leader>cC', vim.lsp.codelens.refresh, desc = 'Refresh & Display Codelens', mode = { 'n' }, has = 'codeLens' },
               { '<leader>cR', function() Snacks.rename.rename_file() end, desc = 'Rename File', mode = { 'n' }, has = { 'workspace/didRenameFiles', 'workspace/willRenameFiles' } },
-              { '<leader>cr', vim.lsp.buf.rename, desc = 'Rename', has = 'rename' },
+              { '<leader>cr', function() Snacks.rename.rename() end, desc = 'Rename', has = 'rename' },
               { ']]', function() Snacks.words.jump(vim.v.count1) end, has = 'documentHighlight', desc = 'Next Reference', enabled = function() return Snacks.words.is_enabled() end },
               { '[[', function() Snacks.words.jump(-vim.v.count1) end, has = 'documentHighlight', desc = 'Prev Reference', enabled = function() return Snacks.words.is_enabled() end },
               { '<a-n>', function() Snacks.words.jump(vim.v.count1, true) end, has = 'documentHighlight', desc = 'Next Reference', enabled = function() return Snacks.words.is_enabled() end },

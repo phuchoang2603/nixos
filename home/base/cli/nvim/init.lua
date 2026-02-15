@@ -1,6 +1,7 @@
 -- [[ Load core configuration ]]
 require 'core.filetypes'
 require 'core.options'
+require 'core.autocmd'
 require 'core.keymaps'
 
 -- [[ lazy.nvim plugin manager ]]

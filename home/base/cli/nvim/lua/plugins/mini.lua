@@ -41,17 +41,18 @@ return {
             local mode, mode_hl = statusline.section_mode { trunc_width = 120 }
             local diff = statusline.section_diff { trunc_width = 75 }
             local diagnostics = statusline.section_diagnostics { trunc_width = 75 }
-            local lsp = statusline.section_lsp { trunc_width = 75 }
             local filename = statusline.section_filename { trunc_width = 140 }
+            local lsp_progress = require('lsp-progress').progress()
             local fileinfo = statusline.section_fileinfo { trunc_width = 120 }
             local location = statusline.section_location { trunc_width = 75 }
             local search = statusline.section_searchcount { trunc_width = 75 }
 
             return statusline.combine_groups {
               { hl = mode_hl, strings = { mode } },
-              { hl = 'MiniStatuslineDevinfo', strings = { diff, diagnostics, lsp } },
+              { hl = 'MiniStatuslineDevinfo', strings = { diff, diagnostics } },
               '%<', -- Mark general truncate point
               { hl = 'MiniStatuslineFilename', strings = { filename } },
+              { hl = 'MiniStatuslineDevinfo', strings = { lsp_progress } },
               '%=', -- End left alignment
               { hl = 'MiniStatuslineFileinfo', strings = { fileinfo } },
               { hl = mode_hl, strings = { search, location } },
@@ -59,6 +60,12 @@ return {
           end,
         },
       }
+
+      -- Update statusline when lsp-progress updates
+      vim.api.nvim_create_autocmd('User', {
+        pattern = 'LspProgressStatusUpdated',
+        callback = function() vim.cmd.redrawstatus() end,
+      })
     end,
   },
 }

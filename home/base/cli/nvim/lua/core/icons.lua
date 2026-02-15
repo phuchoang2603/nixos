@@ -9,12 +9,13 @@ local function get_icon(category, name, fallback)
   return fallback
 end
 
--- Diagnostics
+-- Diagnostics (mini.icons does NOT have a 'diagnostic' category. It uses 'filetype' or 'extension' patterns)
+-- We use fixed glyphs here for consistency in the LSP system.
 M.diagnostics = {
-  Error = get_icon('diagnostic', 'error', '󰅚 '),
-  Warn  = get_icon('diagnostic', 'warn', '󰀪 '),
-  Hint  = get_icon('diagnostic', 'hint', '󰌶 '),
-  Info  = get_icon('diagnostic', 'info', '󰋽 '),
+  Error = "󰅚 ",
+  Warn  = "󰀪 ",
+  Hint  = "󰌶 ",
+  Info  = "󰋽 ",
 }
 
 -- Git
@@ -24,7 +25,7 @@ M.git = {
   removed  = get_icon('git', 'delete', ' '),
 }
 
--- LSP Kinds (for completion and symbols)
+-- LSP Kinds (mini.icons uses 'lsp' category for these)
 M.kinds = setmetatable({}, {
   __index = function(_, key)
     return get_icon('lsp', key, '')

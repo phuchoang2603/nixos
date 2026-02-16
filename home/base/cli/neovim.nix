@@ -80,11 +80,11 @@
   };
 
   xdg.configFile = {
-    "nvim-nightly/lua" = {
+    "nvim/lua" = {
       source = ./nvim/lua;
       recursive = true;
     };
 
-    "nvim-nightly/init.lua".source = ./nvim/init.lua;
+    "nvim/init.lua".source = ./nvim/init.lua;
   };
 }

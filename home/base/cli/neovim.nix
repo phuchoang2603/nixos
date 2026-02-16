@@ -1,20 +1,22 @@
 {
   pkgs,
+  inputs,
   ...
 }:
 
 {
   programs.neovim = {
     enable = true;
+    package = inputs.neovim-nightly-overlay.packages.${pkgs.system}.default;
     vimAlias = true;
     viAlias = true;
     defaultEditor = true;
 
-    plugins = with pkgs.vimPlugins; [
-      lazy-nvim
-    ];
-
     extraPackages = with pkgs; [
+      tree-sitter
+      lsof
+      inotify-tools
+
       # ANSIBLE
       ansible-language-server
       ansible-lint
@@ -27,8 +29,7 @@
       clang-tools
 
       # DOCKER
-      dockerfile-language-server
-      docker-compose-language-service
+      docker-language-server
       hadolint # Dockerfile linter
 
       # GO
@@ -79,12 +80,11 @@
   };
 
   xdg.configFile = {
-    "nvim/lua" = {
+    "nvim-nightly/lua" = {
       source = ./nvim/lua;
       recursive = true;
     };
 
-    "nvim/init.lua".source = ./nvim/init.lua;
-    "nvim/.stylua.toml".source = ./nvim/.stylua.toml;
+    "nvim-nightly/init.lua".source = ./nvim/init.lua;
   };
 }

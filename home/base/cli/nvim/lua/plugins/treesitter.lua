@@ -1,118 +1,159 @@
-return {
+vim.pack.add {
   {
-    'nvim-treesitter/nvim-treesitter',
-    config = function()
-      local filetypes = {
-        -- Core
-        'bash',
-        'c',
-        'cpp',
-        'diff',
-        'html',
-        'lua',
-        'luadoc',
-        'markdown',
-        'markdown_inline',
-        'query',
-        'vim',
-        'vimdoc',
-
-        -- Programming Languages
-        'python',
-        'go',
-        'gomod',
-        'gowork',
-        'gosum',
-        'javascript',
-        'typescript',
-        'tsx',
-        'json',
-        'yaml',
-        'toml',
-
-        -- DevOps & Infrastructure
-        'dockerfile',
-        'terraform',
-        'hcl',
-        'nix',
-        'helm',
-
-        -- Config files
-        'gitignore',
-        'gitcommit',
-        'git_rebase',
-        'git_config',
-
-        -- LaTeX
-        'latex',
-        'bibtex',
-      }
-
-      require('nvim-treesitter').install(filetypes)
-      vim.api.nvim_create_autocmd('FileType', {
-        pattern = filetypes,
-        callback = function() vim.treesitter.start() end,
-      })
-    end,
+    src = 'https://github.com/nvim-treesitter/nvim-treesitter',
+    version = 'main',
   },
   {
-    'nvim-treesitter/nvim-treesitter-textobjects',
-    branch = 'main',
-    event = 'VeryLazy',
-    opts = {
-      move = {
-        enable = true,
-        set_jumps = true, -- whether to set jumps in the jumplist
-        keys = {
-          goto_next_start = { [']f'] = '@function.outer', [']c'] = '@class.outer', [']a'] = '@parameter.inner' },
-          goto_next_end = { [']F'] = '@function.outer', [']C'] = '@class.outer', [']A'] = '@parameter.inner' },
-          goto_previous_start = { ['[f'] = '@function.outer', ['[c'] = '@class.outer', ['[a'] = '@parameter.inner' },
-          goto_previous_end = { ['[F'] = '@function.outer', ['[C'] = '@class.outer', ['[A'] = '@parameter.inner' },
-        },
-      },
-    },
-    config = function(_, opts)
-      local TS = require 'nvim-treesitter-textobjects'
-      if not TS.setup then
-        vim.notify('Please update nvim-treesitter-textobjects', vim.log.levels.ERROR)
-        return
-      end
-      TS.setup(opts)
-
-      local function attach(buf)
-        local ft = vim.bo[buf].filetype
-        if not vim.tbl_get(opts, 'move', 'enable') then return end
-        ---@type table<string, table<string, string>>
-        local moves = vim.tbl_get(opts, 'move', 'keys') or {}
-
-        for method, keymaps in pairs(moves) do
-          for key, query in pairs(keymaps) do
-            local queries = type(query) == 'table' and query or { query }
-            local parts = {}
-            for _, q in ipairs(queries) do
-              local part = q:gsub('@', ''):gsub('%..*', '')
-              part = part:sub(1, 1):upper() .. part:sub(2)
-              table.insert(parts, part)
-            end
-            local desc = table.concat(parts, ' or ')
-            desc = (key:sub(1, 1) == '[' and 'Prev ' or 'Next ') .. desc
-            desc = desc .. (key:sub(2, 2) == key:sub(2, 2):upper() and ' End' or ' Start')
-            if not (vim.wo.diff and key:find '[cC]') then
-              vim.keymap.set({ 'n', 'x', 'o' }, key, function() require('nvim-treesitter-textobjects.move')[method](query, 'textobjects') end, {
-                buffer = buf,
-                desc = desc,
-                silent = true,
-              })
-            end
-          end
-        end
-      end
-
-      vim.api.nvim_create_autocmd('FileType', {
-        group = vim.api.nvim_create_augroup('treesitter_textobjects', { clear = true }),
-        callback = function(ev) attach(ev.buf) end,
-      })
-      vim.tbl_map(attach, vim.api.nvim_list_bufs())
-    end,
+    src = 'https://github.com/nvim-treesitter/nvim-treesitter-textobjects',
+    version = 'main',
   },
 }
+
+require('nvim-treesitter').setup {}
+require('nvim-treesitter').install {
+  -- Core
+  'diff',
+  'comment',
+  'markdown',
+  'markdown_inline',
+  'query',
+  'regex',
+  'vim',
+  'vimdoc',
+  'json',
+  'xml',
+  'yaml',
+  'ini',
+  'toml',
+
+  -- Programming Languages
+  'bash',
+  'c',
+  'cpp',
+  'python',
+  'go',
+  'gomod',
+  'gowork',
+  'gosum',
+  'lua',
+  'luadoc',
+  'html',
+  'css',
+  'javascript',
+  'typescript',
+  'tsx',
+  'sql',
+  'nix',
+
+  -- DevOps & Infrastructure
+  'dockerfile',
+  'terraform',
+  'hcl',
+  'nix',
+  'helm',
+
+  -- Config files
+  'gitignore',
+  'gitcommit',
+  'git_rebase',
+  'git_config',
+
+  -- LaTeX
+  'latex',
+  'bibtex',
+}
+
+require('nvim-treesitter-textobjects').setup {
+  select = {
+    enable = true,
+    lookahead = true,
+    selection_modes = {
+      ['@parameter.outer'] = 'v', -- charwise
+      ['@function.outer'] = 'V', -- linewise
+      ['@class.outer'] = '<c-v>', -- blockwise
+    },
+    include_surrounding_whitespace = false,
+  },
+  move = {
+    enable = true,
+    set_jumps = true,
+  },
+}
+
+-- SELECT keymaps
+local sel = require 'nvim-treesitter-textobjects.select'
+for _, map in ipairs {
+  { { 'x', 'o' }, 'af', '@function.outer' },
+  { { 'x', 'o' }, 'if', '@function.inner' },
+  { { 'x', 'o' }, 'ac', '@class.outer' },
+  { { 'x', 'o' }, 'ic', '@class.inner' },
+  { { 'x', 'o' }, 'aa', '@parameter.outer' },
+  { { 'x', 'o' }, 'ia', '@parameter.inner' },
+  { { 'x', 'o' }, 'ad', '@comment.outer' },
+  { { 'x', 'o' }, 'as', '@statement.outer' },
+} do
+  vim.keymap.set(map[1], map[2], function() sel.select_textobject(map[3], 'textobjects') end, { desc = 'Select ' .. map[3] })
+end
+
+-- MOVE keymaps
+local mv = require 'nvim-treesitter-textobjects.move'
+
+for _, map in ipairs {
+  -- Function
+  { { 'n', 'x', 'o' }, ']f', mv.goto_next_start, '@function.outer' },
+  { { 'n', 'x', 'o' }, ']F', mv.goto_next_end, '@function.outer' },
+  { { 'n', 'x', 'o' }, '[f', mv.goto_previous_start, '@function.outer' },
+  { { 'n', 'x', 'o' }, '[F', mv.goto_previous_end, '@function.outer' },
+
+  -- Class
+  { { 'n', 'x', 'o' }, ']c', mv.goto_next_start, '@class.outer' },
+  { { 'n', 'x', 'o' }, ']C', mv.goto_next_end, '@class.outer' },
+  { { 'n', 'x', 'o' }, '[c', mv.goto_previous_start, '@class.outer' },
+  { { 'n', 'x', 'o' }, '[C', mv.goto_previous_end, '@class.outer' },
+
+  -- Parameter/Argument
+  { { 'n', 'x', 'o' }, ']a', mv.goto_next_start, '@parameter.inner' },
+  { { 'n', 'x', 'o' }, ']A', mv.goto_next_end, '@parameter.inner' },
+  { { 'n', 'x', 'o' }, '[a', mv.goto_previous_start, '@parameter.inner' },
+  { { 'n', 'x', 'o' }, '[A', mv.goto_previous_end, '@parameter.inner' },
+
+  -- Loops
+  { { 'n', 'x', 'o' }, ']l', mv.goto_next_start, { '@loop.inner', '@loop.outer' } },
+  { { 'n', 'x', 'o' }, '[l', mv.goto_previous_start, { '@loop.inner', '@loop.outer' } },
+} do
+  local modes, lhs, fn, query = map[1], map[2], map[3], map[4]
+
+  local qstr = (type(query) == 'table') and table.concat(query, ', ') or query
+
+  vim.keymap.set(modes, lhs, function() fn(query, 'textobjects') end, { desc = 'Move: ' .. qstr })
+end
+
+-- Handle update
+vim.api.nvim_create_autocmd('PackChanged', {
+  desc = 'Handle nvim-treesitter updates',
+  group = vim.api.nvim_create_augroup('nvim-treesitter-pack-changed-update-handler', { clear = true }),
+  callback = function(event)
+    if event.data.kind == 'update' then
+      local ok = pcall(function() vim.cmd 'TSUpdate' end)
+      if ok then
+        vim.notify('TSUpdate completed successfully!', vim.log.levels.INFO)
+      else
+        vim.notify('TSUpdate command not available yet, skipping', vim.log.levels.WARN)
+      end
+    end
+  end,
+})
+
+-- Enable folding
+vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+vim.bo.indentexpr = 'v:lua.vim.treesitter.indentexpr()'
+
+-- Autostart treesitter
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = '*',
+  callback = function()
+    local filetype = vim.bo.filetype
+    if filetype and filetype ~= '' then pcall(vim.treesitter.start) end
+  end,
+})
+vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"

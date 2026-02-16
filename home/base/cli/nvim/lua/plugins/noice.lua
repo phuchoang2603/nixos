@@ -1,46 +1,57 @@
-return {
-  {
-    'folke/noice.nvim',
-    event = 'VeryLazy',
-    opts = {
-      lsp = {
-        progress = {
-          enabled = true,
-          view = 'mini',
-        },
-        -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
-        override = {
-          ['vim.lsp.util.convert_input_to_markdown_lines'] = true,
-          ['vim.lsp.util.extract_stacktrace'] = true,
-          ['vim.lsp.util.stylize_markdown'] = true,
-          ['blink.cmp'] = true,
-        },
-      },
-      -- you can enable a preset for easier configuration
-      presets = {
-        bottom_search = true, -- use a classic bottom cmdline for search
-        command_palette = true, -- position the cmdline and popupmenu together
-        long_message_to_split = true, -- long messages will be sent to a split
-        inc_rename = false, -- enables an input dialog for inc-rename.nvim
-        lsp_doc_border = true, -- add a border to hover docs and signature help
-      },
-      routes = {
-        {
-          filter = {
-            event = 'msg_show',
-            any = {
-              { find = '%d+L, %d+B' },
-              { find = '; after #%d+' },
-              { find = '; before #%d+' },
-            },
-          },
-          view = 'mini',
-        },
-      },
+vim.pack.add {
+  'https://github.com/folke/noice.nvim',
+  'https://github.com/MunifTanjim/nui.nvim',
+}
+
+if vim.o.filetype == 'lazy' then vim.cmd [[messages clear]] end
+
+require('noice').setup {
+  cmdline = {
+    view = 'cmdline',
+  },
+  lsp = {
+    progress = {
+      enabled = true,
+      view = 'mini',
     },
-    dependencies = {
-      -- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
-      'MunifTanjim/nui.nvim',
+    override = {
+      ['vim.lsp.util.convert_input_to_markdown_lines'] = true,
+      ['vim.lsp.util.stylize_markdown'] = true,
+      ['cmp.entry.get_documentation'] = true,
     },
   },
+  routes = {
+    {
+      filter = {
+        event = 'msg_show',
+        any = {
+          { find = '%d+L, %d+B' },
+          { find = '; after #%d+' },
+          { find = '; before #%d+' },
+        },
+      },
+      view = 'mini',
+    },
+  },
+  presets = {
+    bottom_search = true,
+    command_palette = true,
+    long_message_to_split = true,
+    inc_rename = false,
+    lsp_doc_border = true,
+  },
 }
+
+-- Keymaps
+vim.keymap.set({ 'n' }, '<leader>sn', '', { desc = '+noice' })
+vim.keymap.set('n', '<leader>snl', function() require('noice').cmd 'last' end, { desc = 'Noice Last Message' })
+vim.keymap.set('n', '<leader>snh', function() require('noice').cmd 'history' end, { desc = 'Noice History' })
+vim.keymap.set('n', '<leader>sna', function() require('noice').cmd 'all' end, { desc = 'Noice All' })
+vim.keymap.set('n', '<leader>snd', function() require('noice').cmd 'dismiss' end, { desc = 'Dismiss All' })
+vim.keymap.set('n', '<leader>snt', function() require('noice').cmd 'pick' end, { desc = 'Noice Picker' })
+vim.keymap.set({ 'i', 'n', 's' }, '<c-f>', function()
+  if not require('noice.lsp').scroll(4) then return '<c-f>' end
+end, { silent = true, expr = true, desc = 'Scroll Forward' })
+vim.keymap.set({ 'i', 'n', 's' }, '<c-b>', function()
+  if not require('noice.lsp').scroll(-4) then return '<c-b>' end
+end, { silent = true, expr = true, desc = 'Scroll Backward' })

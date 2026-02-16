@@ -85,6 +85,11 @@
       recursive = true;
     };
 
+    "nvim/lsp" = {
+      source = ./nvim/lsp;
+      recursive = true;
+    };
+
     "nvim/init.lua".source = ./nvim/init.lua;
   };
 }

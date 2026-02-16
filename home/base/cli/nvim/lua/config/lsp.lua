@@ -4,24 +4,24 @@ end
 
 -- LSP
 local servers = {
-  "ansiblels",
-  "basedpyright",
-  "bashls",
-  "clangd",
-  "cssls",
-  "docker_language_server",
-  "gopls",
-  "helm_ls",
-  "html",
-  "jsonls",
-  "lua_ls",
-  "marksman",
-  "nixd",
-  "ruff",
-  "taplo",
-  "terraformls",
-  "tflint",
-  "yamlls",
+	"ansiblels",
+	"basedpyright",
+	"bashls",
+	"clangd",
+	"cssls",
+	"docker_language_server",
+	"gopls",
+	"helm_ls",
+	"html",
+	"jsonls",
+	"lua_ls",
+	"marksman",
+	"nixd",
+	"ruff",
+	"taplo",
+	"terraformls",
+	"tflint",
+	"yamlls",
 }
 vim.lsp.enable(servers)
 
@@ -29,7 +29,7 @@ vim.lsp.enable(servers)
 local default_keymaps = {
 	{ keys = "<leader>ca", func = vim.lsp.buf.code_action, desc = "Code Actions" },
 	{ keys = "<leader>cr", func = vim.lsp.buf.rename, desc = "Code Rename" },
-	{ keys = "<leader>cf", func = vim.lsp.buf.format, desc = "Code Format"},
+	{ keys = "<leader>cf", func = vim.lsp.buf.format, desc = "Code Format" },
 	{ keys = "<leader>k", func = vim.lsp.buf.hover, desc = "Hover Documentation", has = "hoverProvider" },
 	{ keys = "K", func = vim.lsp.buf.hover, desc = "Hover (alt)", has = "hoverProvider" },
 	{ keys = "gd", func = vim.lsp.buf.definition, desc = "Goto Definition", has = "definitionProvider" },
@@ -67,6 +67,3 @@ vim.api.nvim_create_autocmd("LspAttach", {
 		end
 	end,
 })
-
-
-

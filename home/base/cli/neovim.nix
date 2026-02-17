@@ -95,7 +95,6 @@
       inotify-tools
 
       # ANSIBLE
-      ansible-language-server
       ansible-lint
 
       # BASH / SHELL

@@ -4,7 +4,6 @@ end
 
 -- LSP
 local servers = {
-	"ansiblels",
 	"basedpyright",
 	"bashls",
 	"clangd",

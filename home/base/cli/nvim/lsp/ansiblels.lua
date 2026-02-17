@@ -9,6 +9,11 @@
 --- ```sh
 --- npm install -g @ansible/ansible-language-server
 --- ```
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+
+-- Disable the specific features that cause ansiblels to trip over Nightly's client.lua
+capabilities.workspace.didChangeConfiguration.dynamicRegistration = false
+capabilities.workspace.configuration = false
 
 ---@type vim.lsp.Config
 return {

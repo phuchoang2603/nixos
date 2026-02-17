@@ -1,3 +1,4 @@
+-- Trouble
 require("trouble").setup({})
 
 local map = vim.keymap.set
@@ -30,3 +31,6 @@ map("n", "]q", function()
 		end
 	end
 end, { desc = "Next Trouble/Quickfix Item" })
+
+-- Quicker
+require("quicker").setup()

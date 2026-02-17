@@ -115,6 +115,7 @@ local keymaps = {
 		end,
 		desc = "Notification History",
 	},
+
 	-- buffers
 	{
 		"<leader>bd",
@@ -149,6 +150,7 @@ local keymaps = {
 		end,
 		desc = "Buffers",
 	},
+
 	-- git
 	{
 		"<leader>gb",
@@ -192,6 +194,7 @@ local keymaps = {
 		end,
 		desc = "Lazygit (Root Dir)",
 	},
+
 	-- search
 	{
 		"<leader>sw",
@@ -278,6 +281,14 @@ local keymaps = {
 		end,
 		desc = "Undo History",
 	},
+	{
+		"<leader>st",
+		function()
+			Snacks.picker.todo_comments()
+		end,
+		desc = "Todo comments",
+	},
+
 	-- LSP
 	{
 		"gd",
@@ -368,6 +379,7 @@ local keymaps = {
 		desc = "C[a]lls Outgoing",
 		has = "callHierarchy/outgoingCalls",
 	},
+
 	-- Snacks Toggles (UI)
 	{
 		"<leader>us",

@@ -17,10 +17,12 @@
       plenary-nvim
 
       # LSP related
-      blink-cmp
-      luasnip
-      trouble-nvim
-      conform-nvim
+      blink-cmp # completion
+      luasnip # snippets
+      trouble-nvim # quickfix navigate
+      quicker-nvim # quickfix UI
+      conform-nvim # format
+      nvim-lint # linter
       (nvim-treesitter.withPlugins (p: [
         # Core / Utils
         p.gitignore
@@ -79,13 +81,14 @@
       live-preview-nvim
 
       # UI stuff
+      base16-nvim
       gitsigns-nvim
       yazi-nvim
       which-key-nvim
       noice-nvim
       nui-nvim
       snacks-nvim
-      base16-nvim
+      todo-comments-nvim
     ];
 
     extraPackages = with pkgs; [
@@ -106,7 +109,7 @@
 
       # DOCKER
       docker-language-server
-      hadolint # Dockerfile linter
+      hadolint
 
       # GO
       gopls
@@ -130,11 +133,11 @@
       # NIX
       nixd
       nixfmt
-      statix # Nix linter
+      statix
 
       # PYTHON
       basedpyright
-      ruff # Python linter/formatter LSP
+      ruff
       black
       isort
       mypy
@@ -147,7 +150,7 @@
       taplo
 
       # WEB (JavaScript/TypeScript/CSS/HTML)
-      prettierd # Prettier daemon for faster formatting
+      prettierd
 
       # YAML
       yaml-language-server

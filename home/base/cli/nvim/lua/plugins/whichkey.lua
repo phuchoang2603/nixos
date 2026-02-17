@@ -9,6 +9,4 @@ wk.add({
 	{ "<leader>g", group = "Git" },
 	{ "<leader>u", group = "UI" },
 	{ "<leader>s", group = "Search", mode = { "n", "v" } },
-	{ "<leader>o", group = "Opencode" },
-	{ "<leader>x", group = "Diagnostics/Quickfi[x]" },
 })

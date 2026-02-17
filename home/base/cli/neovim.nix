@@ -19,8 +19,7 @@
       # LSP related
       blink-cmp # completion
       luasnip # snippets
-      trouble-nvim # quickfix navigate
-      quicker-nvim # quickfix UI
+      quicker-nvim # quickfix
       conform-nvim # format
       nvim-lint # linter
       (nvim-treesitter.withPlugins (p: [

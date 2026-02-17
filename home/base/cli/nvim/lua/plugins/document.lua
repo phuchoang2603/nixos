@@ -1,26 +1,47 @@
-vim.pack.add {
-  { src = 'https://github.com/lervag/vimtex' },
-  { src = 'https://github.com/brianhuster/live-preview.nvim' },
-}
+vim.pack.add({
+	{ src = "https://github.com/lervag/vimtex" },
+	{ src = "https://github.com/brianhuster/live-preview.nvim" },
+	{ src = "https://github.com/arminveres/md-pdf.nvim" },
+})
 
 -- VimTeX configuration
-vim.g.vimtex_view_method = 'zathura'
-vim.g.vimtex_view_general_viewer = 'zathura'
-vim.g.vimtex_mappings_prefix = '<leader>l'
+vim.g.vimtex_view_method = "zathura"
+vim.g.vimtex_view_general_viewer = "zathura"
+vim.g.vimtex_mappings_prefix = "<leader>l"
 
 -- Filetype specific description for Which-Key (if you use it)
-vim.api.nvim_create_autocmd('FileType', {
-  pattern = 'tex',
-  callback = function() vim.keymap.set('n', '<leader>l', '', { desc = '+vimtex', buffer = true }) end,
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = "tex",
+	callback = function()
+		vim.keymap.set("n", "<leader>l", "", { desc = "+vimtex", buffer = true })
+	end,
 })
 
 -- Markdown preview
-require('live-preview').setup {}
+require("live-preview").setup({})
 
-vim.api.nvim_create_autocmd('FileType', {
-  pattern = 'markdown',
-  callback = function(event)
-    vim.keymap.set('n', '<leader>cp', '<cmd>LivePreview start<cr>', { desc = 'Start Preview', buffer = event.buf })
-    vim.keymap.set('n', '<leader>cx', '<cmd>LivePreview close<cr>', { desc = 'Stop Preview', buffer = event.buf })
-  end,
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = "markdown",
+	callback = function(event)
+		vim.keymap.set("n", "<leader>cp", "<cmd>LivePreview start<cr>", { desc = "Start Preview", buffer = event.buf })
+		vim.keymap.set("n", "<leader>cx", "<cmd>LivePreview close<cr>", { desc = "Stop Preview", buffer = event.buf })
+	end,
+})
+
+-- Markdown to PDF
+-- Configuration (formerly the 'opts' table)
+require("md-pdf").setup({
+	toc = false,
+	title_page = false,
+	-- margins = "1.5cm", -- other defaults if you want to change them
+})
+
+-- Keybindings
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = "markdown",
+	callback = function(event)
+		vim.keymap.set("n", "<leader>cc", function()
+			require("md-pdf").convert_md_to_pdf()
+		end, { buffer = event.buf, desc = "Convert markdown to PDF" })
+	end,
 })

@@ -1,7 +1,4 @@
 require("noice").setup({
-	cmdline = {
-		view = "cmdline",
-	},
 	lsp = {
 		progress = {
 			enabled = true,

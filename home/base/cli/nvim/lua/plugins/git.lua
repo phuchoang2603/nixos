@@ -1,4 +1,3 @@
--- Setup gitsigns.nvim
 require("gitsigns").setup({
 	current_line_blame = true,
 	signs = {

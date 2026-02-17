@@ -1,12 +1,12 @@
-require 'plugins.snacks'
-require 'plugins.whichkey'
-require 'plugins.blink'
-require 'plugins.yazi'
-require 'plugins.theme'
-require 'plugins.treesitter'
-require 'plugins.conform'
-require 'plugins.git'
-require 'plugins.noice'
-require 'plugins.mini'
-require 'plugins.trouble'
-require 'plugins.document'
+require("plugins.snacks")
+require("plugins.whichkey")
+require("plugins.blink")
+require("plugins.yazi")
+require("plugins.theme")
+require("plugins.treesitter")
+require("plugins.conform")
+require("plugins.git")
+require("plugins.noice")
+require("plugins.mini")
+require("plugins.trouble")
+require("plugins.document")

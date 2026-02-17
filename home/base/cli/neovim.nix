@@ -21,7 +21,6 @@
       luasnip # snippets
       quicker-nvim # quickfix
       conform-nvim # format
-      nvim-lint # linter
       (nvim-treesitter.withPlugins (p: [
         # Core / Utils
         p.gitignore
@@ -108,12 +107,10 @@
 
       # DOCKER
       docker-language-server
-      hadolint
 
       # GO
       gopls
       gotools
-      golangci-lint
       gofumpt
 
       # HELM
@@ -132,14 +129,12 @@
       # NIX
       nixd
       nixfmt
-      statix
 
       # PYTHON
       basedpyright
       ruff
       black
       isort
-      mypy
 
       # TERRAFORM
       terraform-ls
@@ -153,7 +148,6 @@
 
       # YAML
       yaml-language-server
-      yamllint
     ];
   };
 

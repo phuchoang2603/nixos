@@ -21,6 +21,7 @@ vim.api.nvim_create_autocmd("InsertEnter", {
 			},
 			completion = {
 				documentation = { auto_show = false, auto_show_delay_ms = 500 },
+				ghost_text = { enabled = false },
 			},
 			sources = {
 				default = { "lsp", "path", "snippets", "buffer" },

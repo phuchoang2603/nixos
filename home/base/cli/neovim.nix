@@ -13,9 +13,6 @@
     defaultEditor = true;
 
     plugins = with pkgs.vimPlugins; [
-      # Core
-      plenary-nvim
-
       # LSP related
       blink-cmp # completion
       luasnip # snippets
@@ -68,6 +65,10 @@
       ]))
       nvim-treesitter-textobjects
 
+      # Core
+      plenary-nvim
+      opencode-nvim
+
       # Mini ecosystem
       mini-surround
       mini-pairs
@@ -93,9 +94,7 @@
       tree-sitter
       lsof
       inotify-tools
-
-      # ANSIBLE
-      ansible-lint
+      copilot-language-server
 
       # BASH / SHELL
       bash-language-server

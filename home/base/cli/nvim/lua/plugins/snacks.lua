@@ -1,4 +1,5 @@
 local Snacks = require("snacks")
+require("todo-comments").setup()
 
 Snacks.setup({
 	bigfile = { enabled = true },

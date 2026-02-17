@@ -12,6 +12,10 @@
     viAlias = true;
     defaultEditor = true;
 
+    plugins = with pkgs.vimPlugins; [
+      gitsigns-nvim
+    ];
+
     extraPackages = with pkgs; [
       tree-sitter
       lsof

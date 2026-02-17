@@ -18,6 +18,5 @@ vim.api.nvim_create_autocmd("FileType", {
 	pattern = "markdown",
 	callback = function(event)
 		vim.keymap.set("n", "<leader>cp", "<cmd>LivePreview start<cr>", { desc = "Start Preview", buffer = event.buf })
-		vim.keymap.set("n", "<leader>cx", "<cmd>LivePreview close<cr>", { desc = "Stop Preview", buffer = event.buf })
 	end,
 })

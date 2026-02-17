@@ -48,7 +48,11 @@
 
       # STATUS BAR
       set -g status-style fg=default,bg=default
+      set -g status-left-length 20
       set -g status-right '#(gitmux "#{pane_current_path}")'
+      set -g status-justify centre
+      set -g window-status-format '#[align=centre]#I:#W#F'
+      set -g window-status-current-format '#[align=centre]#I:#W#F'
 
       # WINDOW NAMING
       # Automatically rename window to command name instead of current path

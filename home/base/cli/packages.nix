@@ -7,6 +7,7 @@
     git
     wget
     curl
+    _7zz
     unzip
     gcc
 

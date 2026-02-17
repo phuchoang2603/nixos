@@ -75,39 +75,19 @@
       fpath+=(${pkgs.zsh-completions}/share/zsh/site-functions)
 
       autoload -Uz compinit
-      zmodload zsh/stat
-      zmodload zsh/datetime
 
-      # Cache compdump and only rebuild periodically for faster startup.
       typeset _zcompdump_dir="''${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
       typeset _zcompdump_file="$_zcompdump_dir/zcompdump-''${ZSH_VERSION}"
-      if [[ ! -d "$_zcompdump_dir" ]]; then
-        mkdir -p "$_zcompdump_dir"
-      fi
+      mkdir -p "$_zcompdump_dir"
 
-      typeset -i _zcompdump_rebuild=0
-      if [[ ! -s "$_zcompdump_file" ]]; then
-        _zcompdump_rebuild=1
-      else
-        typeset -a _zcompdump_stat
-        if zstat -A _zcompdump_stat +mtime "$_zcompdump_file" 2>/dev/null; then
-          if (( EPOCHSECONDS - _zcompdump_stat[1] > 86400 )); then
-            _zcompdump_rebuild=1
-          fi
-        else
-          _zcompdump_rebuild=1
-        fi
-      fi
-
-      if (( _zcompdump_rebuild )); then
-        compinit -d "$_zcompdump_file"
-      else
+      if [[ -f "$_zcompdump_file" ]]; then
         compinit -C -d "$_zcompdump_file"
+      else
+        compinit -d "$_zcompdump_file"
       fi
 
       zstyle ':completion:*' use-cache on
       zstyle ':completion:*' cache-path "$_zcompdump_dir"
-      unset _zcompdump_dir _zcompdump_file _zcompdump_rebuild _zcompdump_stat
 
       # Case insensitive completion
       zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'

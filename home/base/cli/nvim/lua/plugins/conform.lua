@@ -13,7 +13,7 @@ require("conform").setup({
 		css = { "prettierd" },
 		html = { "prettierd" },
 		toml = { "taplo" },
-		yaml = { "prettierd" },
+		yaml = { "prettierd", "ansible_lint" },
 		terraform = { "terraform_fmt" },
 		hcl = { "terraform_fmt" },
 	},

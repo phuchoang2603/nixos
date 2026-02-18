@@ -1,8 +1,14 @@
 vim.g.opencode_opts = {
 	auto_reload = true,
 	provider = {
-		enabled = "tmux",
-		tmux = {},
+		enabled = "snacks",
+		snacks = {
+			auto_close = true,
+			win = {
+				position = "float",
+				enter = true,
+			},
+		},
 	},
 }
 

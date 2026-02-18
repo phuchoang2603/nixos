@@ -18,6 +18,9 @@ map("n", "<C-d>", "<C-w>c", opts)
 map("n", "<leader>%", "<C-W>v", { desc = "Split Window Right", remap = true })
 map("n", '<leader>"', "<C-W>s", { desc = "Split Window Below", remap = true })
 
+-- terminal
+map("t", "<C-q>", "<c-\\><c-n>", { desc = "Enter Normal Mode" })
+
 -- move cursor in Insert Mode using Alt
 map("i", "<A-h>", "<Left>", opts)
 map("i", "<A-j>", "<Down>", opts)

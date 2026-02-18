@@ -13,7 +13,15 @@ Snacks.setup({
 	toggle = { enabled = true },
 	indent = { enabled = true },
 	words = { enabled = true },
-	zen = { enabled = true },
+	terminal = {
+		win = {
+			position = "float",
+			backdrop = 60,
+			width = 0.8,
+			height = 0.9,
+			border = "rounded",
+		},
+	},
 
 	picker = {
 		sources = {
@@ -404,25 +412,31 @@ local keymaps = {
 		desc = "Toggle Diagnostics",
 	},
 	{
-		"<leader>ut",
+		"<leader>uh",
 		function()
 			Snacks.toggle.treesitter():toggle()
 		end,
-		desc = "Toggle Treesitter",
+		desc = "Toggle Treesitter highlighting",
 	},
 	{
-		"<leader>uh",
+		"<leader>ui",
 		function()
 			Snacks.toggle.inlay_hints():toggle()
 		end,
 		desc = "Toggle Inlay Hints",
 	},
 	{
-		"<leader>uz",
+		"<leader>ut",
 		function()
-			Snacks.toggle.zen():toggle()
+			local terminal = Snacks.terminal.list()[1]
+			if terminal then
+				terminal:toggle()
+			else
+				Snacks.terminal.open()
+			end
 		end,
-		desc = "Toggle Zen Mode",
+		mode = { "n", "t" },
+		desc = "Toggle terminal",
 	},
 }
 

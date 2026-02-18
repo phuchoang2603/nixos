@@ -41,7 +41,7 @@ local default_keymaps = {
 	},
 	{
 		mode = "i",
-		keys = "<Tab>",
+		keys = "<C-Y>",
 		func = function()
 			if not vim.lsp.inline_completion.get() then
 				return "<Tab>"

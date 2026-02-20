@@ -27,10 +27,10 @@ statusline.setup({
 			local mode, mode_hl = statusline.section_mode({ trunc_width = 120 })
 			local diff = statusline.section_diff({ trunc_width = 75 })
 			local diagnostics = statusline.section_diagnostics({ trunc_width = 75 })
+			local recording = vim.fn.reg_recording()
+			local macro = recording ~= "" and ("Recording @" .. recording) or ""
 			local filename = statusline.section_filename({ trunc_width = 140 })
 			local fileinfo = statusline.section_fileinfo({ trunc_width = 120 })
-			local location = statusline.section_location({ trunc_width = 75 })
-			local search = statusline.section_searchcount({ trunc_width = 75 })
 
 			return statusline.combine_groups({
 				{ hl = mode_hl, strings = { mode } },
@@ -39,7 +39,7 @@ statusline.setup({
 				{ hl = "MiniStatuslineFilename", strings = { filename } },
 				"%=", -- End left alignment
 				{ hl = "MiniStatuslineFileinfo", strings = { fileinfo } },
-				{ hl = mode_hl, strings = { search, location } },
+				{ hl = mode_hl, strings = { macro } },
 			})
 		end,
 	},

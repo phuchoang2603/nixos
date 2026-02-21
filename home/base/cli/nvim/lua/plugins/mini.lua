@@ -11,9 +11,6 @@ require("mini.surround").setup({
 	},
 })
 
--- pairs
-require("mini.pairs").setup()
-
 -- icons
 require("mini.icons").setup()
 MiniIcons.mock_nvim_web_devicons()

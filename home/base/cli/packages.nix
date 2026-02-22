@@ -19,7 +19,6 @@
     kubectx
     krew
     lazydocker
-    lazygit
 
     # Monitoring
     fastfetch

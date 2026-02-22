@@ -20,7 +20,7 @@ opt.autoindent = true -- Copy indent from current line
 -- Search settings
 opt.ignorecase = true -- Case insensitive search
 opt.smartcase = true -- Case sensitive if uppercase in search
-opt.hlsearch = false -- Don't highlight search results
+opt.hlsearch = true -- Highlight search results
 opt.incsearch = true -- Show matches as you type
 
 -- Visual settings

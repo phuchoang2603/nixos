@@ -8,13 +8,16 @@ vim.api.nvim_create_autocmd("InsertEnter", {
 		require("luasnip.loaders.from_vscode").lazy_load()
 		require("blink.cmp").setup({
 			keymap = {
-				-- 'enter' for enter to accept
-				-- <tab>/<s-tab>: move to right/left of your snippet expansion
-				-- <c-space>: Open menu or open docs if already open
-				-- <c-n>/<c-p> or <up>/<down>: Select next/previous item
-				-- <c-e>: Hide menu
-				-- <c-k>: Toggle signature help
-				preset = "enter", -- Changed to 'enter' so <CR> accepts completions
+				preset = "enter",
+
+				["<Tab>"] = { "fallback" },
+				["<S-Tab>"] = { "fallback" },
+
+				["<C-l>"] = { "snippet_forward", "fallback" },
+				["<C-h>"] = { "snippet_backward", "fallback" },
+
+				["<C-space>"] = { "show", "show_documentation", "hide_documentation" },
+				["<C-e>"] = { "hide" },
 			},
 			appearance = {
 				nerd_font_variant = "mono",

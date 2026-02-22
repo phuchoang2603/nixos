@@ -5,6 +5,7 @@ vim.api.nvim_create_autocmd("InsertEnter", {
 	group = group,
 	once = true,
 	callback = function()
+		require("luasnip.loaders.from_vscode").lazy_load()
 		require("blink.cmp").setup({
 			keymap = {
 				-- 'enter' for enter to accept

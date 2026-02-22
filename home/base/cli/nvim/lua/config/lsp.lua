@@ -41,13 +41,16 @@ local default_keymaps = {
 	},
 	{
 		mode = "i",
-		keys = "<C-Y>",
+		keys = "<Tab>",
 		func = function()
-			if not vim.lsp.inline_completion.get() then
+			if vim.lsp.inline_completion.get() then
+				return vim.lsp.inline_completion.accept()
+			else
 				return "<Tab>"
 			end
 		end,
-		desc = "Accept Copilot Suggestions",
+		expr = true,
+		desc = "Accept Copilot Suggestions or Tab",
 	},
 	{ keys = "<leader>k", func = vim.lsp.buf.hover, desc = "Hover Documentation", has = "hoverProvider" },
 	{ keys = "K", func = vim.lsp.buf.hover, desc = "Hover (alt)", has = "hoverProvider" },
@@ -63,7 +66,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
 		if client then
 			-- Native Inline Completion
 			if client:supports_method("textDocument/inlineCompletion") then
-				vim.lsp.inline_completion.enable(true, { bufnr = buf })
+				vim.lsp.inline_completion.enable(false, { bufnr = buf })
 			end
 
 			-- Inlay hints
@@ -85,7 +88,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
 						km.mode or "n",
 						km.keys,
 						km.func,
-						{ buffer = buf, desc = "LSP: " .. km.desc, nowait = km.nowait }
+						{ buffer = buf, desc = "LSP: " .. km.desc, nowait = km.nowait, expr = km.expr }
 					)
 				end
 			end

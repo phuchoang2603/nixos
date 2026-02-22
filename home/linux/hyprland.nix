@@ -1,21 +1,6 @@
 { pkgs, ... }:
 
 {
-  home.sessionVariables = {
-    NIXOS_OZONE_WL = "1";
-    XDG_SESSION_TYPE = "wayland";
-    XDG_CURRENT_DESKTOP = "Hyprland";
-    XDG_SESSION_DESKTOP = "Hyprland";
-    QT_QPA_PLATFORM = "wayland;xcb";
-    QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
-    QT_AUTO_SCREEN_SCALE_FACTOR = "1";
-    GDK_BACKEND = "wayland,*";
-    SDL_VIDEODRIVER = "wayland";
-    CLUTTER_BACKEND = "wayland";
-    MOZ_ENABLE_WAYLAND = "1";
-    PATH = "./bin:$HOME/.local/bin:$PATH";
-  };
-
   wayland.windowManager.hyprland = {
     enable = true;
     xwayland.enable = true;
@@ -27,6 +12,22 @@
     portalPackage = pkgs.xdg-desktop-portal-hyprland;
 
     settings = {
+      env = [
+        "NIXOS_OZONE_WL,1"
+        "XDG_SESSION_TYPE,wayland"
+        "XDG_CURRENT_DESKTOP,Hyprland"
+        "XDG_SESSION_DESKTOP,Hyprland"
+        "XDG_PICTURES_DIR,$HOME/Pictures/Screenshots"
+        "QT_QPA_PLATFORM,wayland;xcb"
+        "QT_WAYLAND_DISABLE_WINDOWDECORATION,1"
+        "QT_AUTO_SCREEN_SCALE_FACTOR,1"
+        "GDK_BACKEND,wayland,*"
+        "SDL_VIDEODRIVER,wayland"
+        "CLUTTER_BACKEND,wayland"
+        "MOZ_ENABLE_WAYLAND,1"
+        "PATH,$HOME/.local/bin:$PATH"
+      ];
+
       # Variables
       "$browser" = "microsoft-edge";
       "$terminal" = "ghostty";
@@ -169,11 +170,11 @@
         "SUPER, S, exec, rofi-session"
         "SUPER, T, exec, rofi-todoist"
         "SUPER, R, exec, rofi-change-theme"
-        "SUPER, V, exec, rofi-cliphist"
+        "SUPER, V, exec, cliphist list | rofi -normal-window -dmenu -display-columns 2 | cliphist decode | wl-copy"
         "SUPER, W, killactive,"
-        "SUPER SHIFT, A, exec, hyprshot -m region --raw | swappy -f - -o $HYPRSHOT_DIR"
-        "SUPER SHIFT, S, exec, hyprshot -m region -o $HYPRSHOT_DIR"
-        "SUPER SHIFT, W, exec, hyprshot -m window -o $HYPRSHOT_DIR"
+        "SUPER SHIFT, A, exec, hyprshot -m region --raw | swappy -f -"
+        "SUPER SHIFT, S, exec, hyprshot -m region"
+        "SUPER SHIFT, W, exec, hyprshot -m window"
         "SUPER, h, movefocus, l"
         "SUPER, l, movefocus, r"
         "SUPER, k, movefocus, u"

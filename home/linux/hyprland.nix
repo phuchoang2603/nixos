@@ -169,7 +169,7 @@
         "SUPER, S, exec, rofi-session"
         "SUPER, T, exec, rofi-todoist"
         "SUPER, R, exec, rofi-change-theme"
-        "SUPER, V, exec, copyq -e \"toggle()\""
+        "SUPER, V, exec, rofi-cliphist"
         "SUPER, W, killactive,"
         "SUPER SHIFT, A, exec, hyprshot -m region --raw | swappy -f -"
         "SUPER SHIFT, S, exec, hyprshot -m region"

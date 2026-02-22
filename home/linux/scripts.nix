@@ -71,6 +71,18 @@ let
     text = builtins.readFile (scriptDir + "/rofi-todoist");
   };
 
+  rofiCliphist = pkgs.writeShellApplication {
+    name = "rofi-cliphist";
+    runtimeInputs = [
+      pkgs.rofi
+      pkgs.cliphist
+      pkgs.gawk
+      pkgs.wl-clipboard
+      pkgs.coreutils
+    ];
+    text = builtins.readFile (scriptDir + "/rofi-cliphist");
+  };
+
   waybarDocker = pkgs.writeShellApplication {
     name = "waybar-docker";
     runtimeInputs = [
@@ -100,6 +112,7 @@ in
     rofiPlayerctl
     rofiSession
     rofiTodoist
+    rofiCliphist
     waybarDocker
     waybarTodoist
   ];

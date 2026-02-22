@@ -1,7 +1,5 @@
 {
   pkgs,
-  lib,
-  config,
   ...
 }:
 
@@ -23,5 +21,9 @@
     };
   };
 
-  services.copyq.enable = true;
+  services.cliphist = {
+    enable = true;
+    clipboardPackage = pkgs.wl-clipboard;
+    allowImages = true;
+  };
 }

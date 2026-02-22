@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+# --- Configuration ---
+# Use XDG_RUNTIME_DIR so thumbnails are cleared on logout automatically
+tmp_dir="${XDG_RUNTIME_DIR:-/tmp}/cliphist"
+GRID_THEME="${GRID_THEME:-$HOME/.config/rofi/grid.rasi}"
+ROFI="rofi"
+rofi_flags="-normal-window "
+
+# --- Validation & Setup ---
+mkdir -p "$tmp_dir"
+
+# --- Action (The Selection) ---
+# When you click an item in Rofi, it passes the text as the first argument ($1)
+if [[ -n "${1:-}" ]]; then
+  cliphist decode <<<"$1" | wl-copy
+  exit 0
+fi
+
+# --- Generate Entries ---
+# We use gawk to process the cliphist list and create the icon tags for Rofi
+generate_entries() {
+  read -r -d '' prog <<EOF
+/^[0-9]+\s<meta http-equiv=/ { next }
+match(\$0, /^([0-9]+)\s(\[\[\s)?binary.*(jpg|jpeg|png|bmp)/, grp) {
+    # Extract the image to a temp file so Rofi can display it as an icon
+    system("cliphist decode <<" grp[1] " > $tmp_dir/"grp[1]"."grp[3])
+    print \$0"\0icon\x1f$tmp_dir/"grp[1]"."grp[3]
+    next
+}
+{ print \$0 }
+EOF
+  cliphist list | gawk "$prog"
+}
+
+chosen=$(generate_entries | $ROFI "$rofi_flags" -theme "$GRID_THEME" -dmenu -i -p "Clipboard History")
+
+if [[ -n "$chosen" ]]; then
+  "$0" "$chosen"
+fi

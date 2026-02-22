@@ -3,7 +3,7 @@
 {
   programs.hyprshot = {
     enable = true;
-    saveLocation = "$HOME/Pictures/Screenshots";
+    saveLocation = "${config.home.homeDirectory}/Pictures/Screenshots";
   };
 
   home.packages = with pkgs; [

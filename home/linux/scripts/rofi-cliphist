@@ -1,39 +1,45 @@
 #!/usr/bin/env bash
 
-# --- Configuration ---
-# Use XDG_RUNTIME_DIR so thumbnails are cleared on logout automatically
-tmp_dir="${XDG_RUNTIME_DIR:-/tmp}/cliphist"
-GRID_THEME="${GRID_THEME:-$HOME/.config/rofi/grid.rasi}"
-ROFI="rofi"
-rofi_flags="-normal-window "
-
-# --- Validation & Setup ---
+tmp_dir="/tmp/cliphist"
 mkdir -p "$tmp_dir"
 
-# --- Action (The Selection) ---
-# When you click an item in Rofi, it passes the text as the first argument ($1)
+# --- 1. HANDLE SELECTION ---
 if [[ -n "${1:-}" ]]; then
-  cliphist decode <<<"$1" | wl-copy
+  # Use printf to preserve the exact tab character between ID and content
+  printf "%s" "$1" | cliphist decode | wl-copy
   exit 0
 fi
 
-# --- Generate Entries ---
-# We use gawk to process the cliphist list and create the icon tags for Rofi
+# --- 2. GENERATE ENTRIES ---
 generate_entries() {
-  read -r -d '' prog <<EOF
-/^[0-9]+\s<meta http-equiv=/ { next }
-match(\$0, /^([0-9]+)\s(\[\[\s)?binary.*(jpg|jpeg|png|bmp)/, grp) {
-    # Extract the image to a temp file so Rofi can display it as an icon
-    system("cliphist decode <<" grp[1] " > $tmp_dir/"grp[1]"."grp[3])
-    print \$0"\0icon\x1f$tmp_dir/"grp[1]"."grp[3]
-    next
-}
-{ print \$0 }
-EOF
-  cliphist list | gawk "$prog"
+  # cliphist list format is "<id>\t<preview>"
+  cliphist list | head -n 50 | while read -r line; do
+    if [[ "$line" == *'[[ binary'* ]]; then
+      id=$(echo "$line" | cut -f1)
+      img_path="$tmp_dir/$id.png"
+
+      # Decode only if image isn't cached
+      if [[ ! -f "$img_path" ]]; then
+        cliphist decode <<<"$line" >"$img_path" 2>/dev/null
+      fi
+
+      # Full line is passed to Rofi, but column 1 is hidden later
+      echo -en "$line\0icon\x1f$img_path\n"
+    else
+      echo "$line"
+    fi
+  done
 }
 
-chosen=$(generate_entries | $ROFI "$rofi_flags" -theme "$GRID_THEME" -dmenu -i -p "Clipboard History")
+# --- 3. RUN ROFI ---
+# -display-columns 2: Hides the ID number column
+# wrap: true + nlines: 3: Simulates text wrapping and makes rows taller
+chosen=$(generate_entries | rofi -dmenu -i -p "Clipboard" \
+  -display-columns 2 \
+  -show-icons \
+  -theme-str 'element-icon { size: 12ch; }' \
+  -theme-str 'element-text { vertical-align: 0.5; wrap: true; nlines: 3; }' \
+  -theme-str 'listview { fixed-height: false; }')
 
 if [[ -n "$chosen" ]]; then
   "$0" "$chosen"

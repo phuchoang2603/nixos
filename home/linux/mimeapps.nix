@@ -2,8 +2,8 @@
   xdg.mimeApps = {
     enable = true;
     defaultApplications = {
-      "application/pdf" = [ "mupdf.desktop" ];
-      "application/x-pdf" = [ "mupdf.desktop" ];
+      "application/pdf" = [ "org.pwmt.zathura.desktop" ];
+      "application/x-pdf" = [ "org.pwmt.zathura.desktop" ];
       "image/png" = [ "swappy.desktop" ];
       "image/jpeg" = [ "swappy.desktop" ];
       "image/jpg" = [ "swappy.desktop" ];

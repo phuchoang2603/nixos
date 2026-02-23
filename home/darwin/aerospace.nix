@@ -63,6 +63,9 @@
         alt-5 = "workspace 5";
         alt-6 = "workspace 6";
 
+        alt-shift-n = "workspace --wrap-around next";
+        alt-shift-p = "workspace --wrap-around prev";
+
         # Move window to workspace
         alt-shift-1 = "move-node-to-workspace 1";
         alt-shift-2 = "move-node-to-workspace 2";

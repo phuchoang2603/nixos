@@ -37,7 +37,7 @@
       vscode
       jetbrains.datagrip
       obsidian
-      mupdf
+      zathura
     ]
     ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
       # --- macOS Only ---

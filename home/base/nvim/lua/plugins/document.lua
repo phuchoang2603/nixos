@@ -1,6 +1,6 @@
 -- VimTeX configuration
-vim.g.vimtex_view_method = "sioyek"
-vim.g.vimtex_view_general_viewer = "sioyek"
+vim.g.vimtex_view_method = "mupdf"
+vim.g.vimtex_view_general_viewer = "mupdf"
 vim.g.vimtex_mappings_prefix = "<leader>l"
 
 -- Filetype specific description for Which-Key (if you use it)

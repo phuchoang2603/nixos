@@ -1,40 +1,84 @@
-{ ... }:
+{ user, ... }:
 
 {
   # System settings
   system = {
     stateVersion = 6;
 
+    loginwindow = {
+      GuestEnabled = false;
+    };
+
     defaults = {
-      # Dock settings
+      controlcenter = {
+        BatteryShowPercentage = true;
+        NowPlaying = false;
+      };
+
+      CustomUserPreferences = {
+        "com.apple.symbolichotkeys" = {
+          AppleSymbolicHotKeys = {
+            "64" = {
+              # Disable 'Cmd + Space' for Spotlight Search
+              enabled = false;
+            };
+            "65" = {
+              # Disable 'Cmd + Alt + Space' for Finder search window
+              enabled = false;
+            };
+          };
+        };
+      };
+
       dock = {
         autohide = true;
-        mru-spaces = false;
+        expose-animation-duration = 0.15;
         show-recents = false;
+        persistent-apps = [ ];
+        tilesize = 30;
       };
 
-      # Finder settings
+      trackpad = {
+        TrackpadRightClick = true;
+        Clicking = true;
+        TrackpadThreeFingerDrag = true;
+      };
+
       finder = {
-        AppleShowAllFiles = true; # hidden files
-        AppleShowAllExtensions = true; # file extensions
-        _FXShowPosixPathInTitle = true; # title bar full path
+        AppleShowAllFiles = true;
+        AppleShowAllExtensions = true;
+        _FXShowPosixPathInTitle = true;
         FXPreferredViewStyle = "Nlsv"; # list view
-        ShowPathbar = true; # breadcrumb nav at bottom
-        ShowStatusBar = true; # file count & disk space
+        FXRemoveOldTrashItems = true;
+        CreateDesktop = false;
+        DisableAllAnimations = true;
+        NewWindowTarget = "Desktop";
+        ShowPathbar = true;
+        ShowStatusBar = true;
       };
 
-      # Global settings
       NSGlobalDomain = {
         AppleICUForce24HourTime = true;
         AppleInterfaceStyle = "Dark";
         AppleShowAllExtensions = true;
+        ApplePressAndHoldEnabled = false;
+        InitialKeyRepeat = 20;
         KeyRepeat = 2;
+        NSUseAnimatedFocusRing = false;
+        NSDocumentSaveNewDocumentsToCloud = false;
         NSAutomaticSpellingCorrectionEnabled = false;
         NSAutomaticCapitalizationEnabled = false;
         NSAutomaticPeriodSubstitutionEnabled = false;
         NSAutomaticWindowAnimationsEnabled = false;
       };
     };
+
+    keyboard = {
+      enableKeyMapping = true;
+      remapCapsLockToEscape = true;
+    };
+
+    primaryUser = user;
   };
 
   # Enable Touch ID for sudo

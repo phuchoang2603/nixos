@@ -1,9 +1,4 @@
-{
-  pkgs,
-  lib,
-  config,
-  ...
-}:
+{ ... }:
 
 {
   # System settings
@@ -23,15 +18,21 @@
         AppleShowAllFiles = true; # hidden files
         AppleShowAllExtensions = true; # file extensions
         _FXShowPosixPathInTitle = true; # title bar full path
+        FXPreferredViewStyle = "Nlsv"; # list view
         ShowPathbar = true; # breadcrumb nav at bottom
         ShowStatusBar = true; # file count & disk space
       };
 
       # Global settings
       NSGlobalDomain = {
+        AppleICUForce24HourTime = true;
+        AppleInterfaceStyle = "Dark";
         AppleShowAllExtensions = true;
-        InitialKeyRepeat = 15;
         KeyRepeat = 2;
+        NSAutomaticSpellingCorrectionEnabled = false;
+        NSAutomaticCapitalizationEnabled = false;
+        NSAutomaticPeriodSubstitutionEnabled = false;
+        NSAutomaticWindowAnimationsEnabled = false;
       };
     };
   };

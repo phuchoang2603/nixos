@@ -1,9 +1,4 @@
-{
-  pkgs,
-  lib,
-  config,
-  ...
-}:
+{ ... }:
 
 # Homebrew configuration for macOS
 # Manages apps not available in nixpkgs or better installed via Homebrew
@@ -16,16 +11,20 @@
     # Automatically update Homebrew
     onActivation = {
       autoUpdate = true;
-      cleanup = "zap"; # Remove formulae not in the list
+      cleanup = "zap";
       upgrade = true;
     };
+
+    caskArgs.no_quarantine = true;
+    global.brewfile = true;
 
     # Taps
     taps = [ ];
 
-    # CLI packages (prefer nixpkgs when possible)
+    # CLI packages
     brews = [
-      # Add macOS-specific brews here
+      "mas"
+      "docker"
     ];
 
     # GUI applications

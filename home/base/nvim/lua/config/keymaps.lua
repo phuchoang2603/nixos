@@ -21,12 +21,6 @@ map("n", '<leader>"', "<C-W>s", { desc = "Split Window Below", remap = true })
 -- terminal
 map("t", "<C-q>", "<c-\\><c-n>", { desc = "Enter Normal Mode" })
 
--- move cursor in Insert Mode using Alt
-map("i", "<A-h>", "<Left>", opts)
-map("i", "<A-j>", "<Down>", opts)
-map("i", "<A-k>", "<Up>", opts)
-map("i", "<A-l>", "<Right>", opts)
-
 -- clear highlights on search when pressing <Esc> in normal mode
 map("n", "<Esc>", "<cmd>nohlsearch<CR>", opts)
 

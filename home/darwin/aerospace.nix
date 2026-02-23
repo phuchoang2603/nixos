@@ -33,49 +33,53 @@
 
       mode.main.binding = {
         # Launcher
-        cmd-space = "exec-and-forget open -a Raycast";
+        alt-space = "exec-and-forget open -a Raycast";
 
         # Apps
-        alt-1 = "exec-and-forget open -a \"Microsoft Edge\"";
-        alt-2 = "exec-and-forget open -a Ghostty";
-        alt-3 = "exec-and-forget open -a \"Visual Studio Code\"";
-        alt-4 = "exec-and-forget open -a Obsidian";
-        alt-5 = "exec-and-forget open -a Spotify";
-        alt-6 = "exec-and-forget open $HOME";
+        ctrl-1 = "exec-and-forget open -a \"Microsoft Edge\"";
+        ctrl-2 = "exec-and-forget open -a Ghostty";
+        ctrl-3 = "exec-and-forget open -a \"Visual Studio Code\"";
+        ctrl-4 = "exec-and-forget open -a Obsidian";
+        ctrl-5 = "exec-and-forget open -a Spotify";
+        ctrl-6 = "exec-and-forget open $HOME";
 
         # Focus
-        cmd-h = "focus left";
-        cmd-j = "focus down";
-        cmd-k = "focus up";
-        cmd-l = "focus right";
+        alt-h = "focus left";
+        alt-j = "focus down";
+        alt-k = "focus up";
+        alt-l = "focus right";
 
         # Move window
-        cmd-shift-h = "move left";
-        cmd-shift-j = "move down";
-        cmd-shift-k = "move up";
-        cmd-shift-l = "move right";
+        alt-shift-h = "move left";
+        alt-shift-j = "move down";
+        alt-shift-k = "move up";
+        alt-shift-l = "move right";
 
         # Workspace switching
-        cmd-1 = "workspace 1";
-        cmd-2 = "workspace 2";
-        cmd-3 = "workspace 3";
-        cmd-4 = "workspace 4";
-        cmd-5 = "workspace 5";
-        cmd-6 = "workspace 6";
+        alt-1 = "workspace 1";
+        alt-2 = "workspace 2";
+        alt-3 = "workspace 3";
+        alt-4 = "workspace 4";
+        alt-5 = "workspace 5";
+        alt-6 = "workspace 6";
 
         # Move window to workspace
-        cmd-shift-1 = "move-node-to-workspace 1";
-        cmd-shift-2 = "move-node-to-workspace 2";
-        cmd-shift-3 = "move-node-to-workspace 3";
-        cmd-shift-4 = "move-node-to-workspace 4";
-        cmd-shift-5 = "move-node-to-workspace 5";
-        cmd-shift-6 = "move-node-to-workspace 6";
+        alt-shift-1 = "move-node-to-workspace 1";
+        alt-shift-2 = "move-node-to-workspace 2";
+        alt-shift-3 = "move-node-to-workspace 3";
+        alt-shift-4 = "move-node-to-workspace 4";
+        alt-shift-5 = "move-node-to-workspace 5";
+        alt-shift-6 = "move-node-to-workspace 6";
+
+        # Move window to monitor
+        alt-shift-left = "move-node-to-monitor left";
+        alt-shift-right = "move-node-to-monitor right";
 
         # Layout / state
-        cmd-w = "close";
-        cmd-tab = "workspace-back-and-forth";
+        alt-w = "close";
+        alt-tab = "workspace-back-and-forth";
         f11 = "fullscreen";
-        cmd-f = "layout floating tiling";
+        alt-f = "layout floating tiling";
       };
 
       "on-window-detected" = [

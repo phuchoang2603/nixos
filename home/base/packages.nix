@@ -38,7 +38,6 @@
       jetbrains.datagrip
       obsidian
       mupdf
-      vlc
     ]
     ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
       # --- macOS Only ---
@@ -47,6 +46,7 @@
     ]
     ++ lib.optionals (!pkgs.stdenv.hostPlatform.isDarwin) [
       # --- Linux Only ---
+      vlc
       todoist
       libreoffice-fresh
       playerctl

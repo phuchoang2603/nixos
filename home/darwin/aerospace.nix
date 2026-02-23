@@ -1,6 +1,7 @@
 {
   programs.aerospace = {
     enable = true;
+    launchd.enable = true;
 
     settings = {
       "start-at-login" = true;
@@ -13,18 +14,16 @@
       "default-root-container-orientation" = "auto";
 
       "on-focused-monitor-changed" = [ "move-mouse monitor-lazy-center" ];
+      "on-focus-changed" = [ "move-mouse window-lazy-center" ];
 
       "automatically-unhide-macos-hidden-apps" = false;
-
-      "persistent-workspaces" = ["1";  "2"; "3"; "4" ; "5"; "6"; "7"];
-
 
       "key-mapping" = {
         preset = "qwerty";
       };
 
       gaps = {
-        inner.horizontal = 1;
+        inner.horizontal = 2;
         inner.vertical = 4;
         outer.left = 4;
         outer.bottom = 4;
@@ -33,10 +32,10 @@
       };
 
       mode.main.binding = {
-        # Launcher (Hyprland: SUPER+SPACE -> rofi)
-        alt-space = "exec-and-forget open -a Raycast";
+        # Launcher
+        cmd-space = "exec-and-forget open -a Raycast";
 
-        # Apps (Hyprland: ALT+number launchers)
+        # Apps
         alt-1 = "exec-and-forget open -a \"Microsoft Edge\"";
         alt-2 = "exec-and-forget open -a Ghostty";
         alt-3 = "exec-and-forget open -a \"Visual Studio Code\"";
@@ -45,44 +44,38 @@
         alt-6 = "exec-and-forget open $HOME";
 
         # Focus
-        alt-h = "focus left";
-        alt-j = "focus down";
-        alt-k = "focus up";
-        alt-l = "focus right";
+        cmd-h = "focus left";
+        cmd-j = "focus down";
+        cmd-k = "focus up";
+        cmd-l = "focus right";
 
         # Move window
-        alt-shift-h = "move left";
-        alt-shift-j = "move down";
-        alt-shift-k = "move up";
-        alt-shift-l = "move right";
+        cmd-shift-h = "move left";
+        cmd-shift-j = "move down";
+        cmd-shift-k = "move up";
+        cmd-shift-l = "move right";
 
-        # Workspace switching (separated from alt-1..6 launchers)
-        alt-cmd-1 = "workspace 1";
-        alt-cmd-2 = "workspace 2";
-        alt-cmd-3 = "workspace 3";
-        alt-cmd-4 = "workspace 4";
-        alt-cmd-5 = "workspace 5";
-        alt-cmd-6 = "workspace 6";
-        alt-cmd-7 = "workspace 7";
-        alt-cmd-8 = "workspace 8";
-        alt-cmd-9 = "workspace 9";
-        alt-cmd-0 = "workspace 10";
+        # Workspace switching
+        cmd-1 = "workspace 1";
+        cmd-2 = "workspace 2";
+        cmd-3 = "workspace 3";
+        cmd-4 = "workspace 4";
+        cmd-5 = "workspace 5";
+        cmd-6 = "workspace 6";
 
         # Move window to workspace
-        alt-cmd-shift-1 = "move-node-to-workspace 1";
-        alt-cmd-shift-2 = "move-node-to-workspace 2";
-        alt-cmd-shift-3 = "move-node-to-workspace 3";
-        alt-cmd-shift-4 = "move-node-to-workspace 4";
-        alt-cmd-shift-5 = "move-node-to-workspace 5";
-        alt-cmd-shift-6 = "move-node-to-workspace 6";
-        alt-cmd-shift-7 = "move-node-to-workspace 7";
-        alt-cmd-shift-8 = "move-node-to-workspace 8";
-        alt-cmd-shift-9 = "move-node-to-workspace 9";
-        alt-cmd-shift-0 = "move-node-to-workspace 10";
+        cmd-shift-1 = "move-node-to-workspace 1";
+        cmd-shift-2 = "move-node-to-workspace 2";
+        cmd-shift-3 = "move-node-to-workspace 3";
+        cmd-shift-4 = "move-node-to-workspace 4";
+        cmd-shift-5 = "move-node-to-workspace 5";
+        cmd-shift-6 = "move-node-to-workspace 6";
 
         # Layout / state
-        alt-f = "fullscreen";
-        alt-shift-space = "layout floating tiling";
+        cmd-w = "close";
+        cmd-tab = "workspace-back-and-forth";
+        f11 = "fullscreen";
+        cmd-f = "layout floating tiling";
       };
 
       "on-window-detected" = [
@@ -105,6 +98,10 @@
         {
           "if".app-id = "com.spotify.client";
           run = "move-node-to-workspace 5";
+        }
+        {
+          "if".app-id = "com.apple.finder";
+          run = "move-node-to-workspace 6";
         }
       ];
     };

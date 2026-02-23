@@ -37,7 +37,7 @@
       vscode
       jetbrains.datagrip
       obsidian
-      sioyek
+      mupdf
       vlc
     ]
     ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin [

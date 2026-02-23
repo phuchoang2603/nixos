@@ -2,8 +2,8 @@
   xdg.mimeApps = {
     enable = true;
     defaultApplications = {
-      "application/pdf" = [ "sioyek.desktop" ];
-      "application/x-pdf" = [ "sioyek.desktop" ];
+      "application/pdf" = [ "mupdf.desktop" ];
+      "application/x-pdf" = [ "mupdf.desktop" ];
       "image/png" = [ "swappy.desktop" ];
       "image/jpeg" = [ "swappy.desktop" ];
       "image/jpg" = [ "swappy.desktop" ];

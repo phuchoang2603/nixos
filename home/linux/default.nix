@@ -2,7 +2,7 @@
 
 {
   imports = [
-    ../base/gui
+    ../base
     ./rclone.nix
     ./fcitx5.nix
     ./espanso.nix

@@ -1,7 +1,11 @@
-{ pkgs, lib, config, ... }:
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}:
 
 # macOS MacBook host configuration placeholder
-# TODO: Expand when setting up macOS
 
 {
   imports = [

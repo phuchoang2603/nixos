@@ -5,14 +5,10 @@
   ...
 }:
 
-# macOS system configuration placeholder
-# TODO: Expand this when setting up macOS
-
 {
   # System settings
   system = {
-    # Used for backwards compatibility
-    stateVersion = 4;
+    stateVersion = 6;
 
     defaults = {
       # Dock settings
@@ -24,9 +20,11 @@
 
       # Finder settings
       finder = {
-        AppleShowAllExtensions = true;
-        FXEnableExtensionChangeWarning = false;
-        _FXShowPosixPathInTitle = true;
+        AppleShowAllFiles = true; # hidden files
+        AppleShowAllExtensions = true; # file extensions
+        _FXShowPosixPathInTitle = true; # title bar full path
+        ShowPathbar = true; # breadcrumb nav at bottom
+        ShowStatusBar = true; # file count & disk space
       };
 
       # Global settings
@@ -50,14 +48,14 @@
     auto-optimise-store = true;
   };
 
-  # Fonts
-  fonts.packages = with pkgs; [
-    (nerdfonts.override {
-      fonts = [
-        "CascadiaCode"
-        "JetBrainsMono"
-      ];
-    })
-    inter
-  ];
+  # Garbage collection
+  nix.gc = {
+    automatic = true;
+    interval = {
+      Hour = 0;
+      Minute = 0;
+      Weekday = 7;
+    };
+    options = "--delete-older-than 7d";
+  };
 }

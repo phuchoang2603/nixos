@@ -33,6 +33,7 @@
       dock = {
         autohide = true;
         expose-animation-duration = 0.15;
+        expose-group-apps = true;
         show-recents = false;
         persistent-apps = [ ];
         tilesize = 30;
@@ -42,6 +43,10 @@
         TrackpadRightClick = true;
         Clicking = true;
         TrackpadThreeFingerDrag = true;
+      };
+
+      spaces = {
+        spans-displays = true;
       };
 
       finder = {

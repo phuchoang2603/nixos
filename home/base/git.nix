@@ -7,25 +7,17 @@
   programs.git = {
     enable = true;
     lfs.enable = true;
-    extraConfig = {
-      commit.gpgSign = false;
-      format.signOff = true;
-    };
     settings = {
       user = {
         name = "felix";
         email = "xuanphuc.a1gv@gmail.com";
       };
 
-      alias = {
-        co = "checkout";
-        br = "branch";
-        ci = "commit";
-        st = "status";
-      };
-
       pull.rebase = true;
       init.defaultBranch = "main";
+
+      commit.gpgSign = false;
+      format.signOff = true;
     };
   };
 

@@ -4,7 +4,7 @@
 }:
 
 let
-  wallpaperPath = ../../../current.png;
+  wallpaperPath = ../../current.png;
 in
 {
   stylix = {

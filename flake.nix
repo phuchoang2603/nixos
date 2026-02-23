@@ -10,7 +10,7 @@
     };
 
     nix-darwin = {
-      url = "github:LnL7/nix-darwin";
+      url = "github:nix-darwin/nix-darwin/master";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -132,6 +132,7 @@
                   ];
                 };
                 sharedModules = [ inputs.stylix.homeModules.stylix ];
+                backupFileExtension = "backup";
               };
             }
           ];

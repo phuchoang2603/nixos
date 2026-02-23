@@ -1,7 +1,11 @@
-{ ... }:
+{ pkgs, ... }:
 
 {
   imports = [
-    ../base/gui
+    ../base
+  ];
+
+  home.packages = with pkgs; [
+    raycast
   ];
 }

@@ -191,7 +191,11 @@
         "SUPER, 0, workspace, 10"
         "SUPER SHIFT, N, workspace, e+1"
         "SUPER SHIFT, P, workspace, e-1"
-        "SUPER SHIFT, L, workspace, previous"
+        "SUPER, tab, workspace, previous"
+        "SUPER SHIFT, H, movewindow, l"
+        "SUPER SHIFT, L, movewindow, r"
+        "SUPER SHIFT, K, movewindow, u"
+        "SUPER SHIFT, J, movewindow, d"
         "SUPER SHIFT, 1, movetoworkspace, 1"
         "SUPER SHIFT, 2, movetoworkspace, 2"
         "SUPER SHIFT, 3, movetoworkspace, 3"
@@ -226,9 +230,11 @@
         "match:class ^(Spotify)$, workspace 5"
         "match:class ^(org.gnome.Nautilus)$, workspace 6"
         "match:class ^(com.obsproject.Studio)$, workspace 7"
-        "match:initial_title ^(.*?\.pdf - .*)$, workspace 10"
         "match:class ^(microsoft-edge|com.mitchellh.ghostty|code|libreoffice.*|Spotify|obsidian|org.gnome.Nautilus|com.obsproject.Studio)$, tile on"
         "match:class ^(obsidian|microsoft-edge|org.gnome.NautilusPreviewer)$, opacity 1 override"
+        "match:initial_title ^(.*?\.pdf - .*)$, workspace 10"
+        "match:initial_title ^(.*?\.pdf - .*)$, tile on"
+        "match:initial_title ^(.*?\.pdf - .*)$, opacity 1 override"
       ];
     };
   };

@@ -45,6 +45,7 @@
     ]
     ++ lib.optionals (!pkgs.stdenv.hostPlatform.isDarwin) [
       # --- Linux Only ---
+      inotify-tools
       microsoft-edge
       vlc
       todoist

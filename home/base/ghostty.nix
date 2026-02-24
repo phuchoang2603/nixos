@@ -15,14 +15,12 @@
       font-family = "CaskaydiaMono Nerd Font";
       font-size = 13;
 
-      # Shell - use zsh from the system
-      command = "zsh";
-
       # Window settings
       confirm-close-surface = false;
       window-decoration = false;
       window-padding-x = 10;
       window-padding-y = 10;
+      background-opacity = 0.8;
 
       # Keybind
       keybind = [

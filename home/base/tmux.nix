@@ -33,7 +33,6 @@
     # Plugins
     plugins = with pkgs.tmuxPlugins; [
       sensible
-      yank
       resurrect
       continuum
     ];
@@ -55,7 +54,6 @@
       set -g window-status-current-format '#[fg=white,bold]#[fg=black,bg=white,bold] #W #[fg=white,bg=default]'
 
       # WINDOW NAMING
-      # Automatically rename window to command name instead of current path
       set-option -g automatic-rename on
       set-option -g automatic-rename-format "#{pane_current_command}"
 

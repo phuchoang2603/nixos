@@ -30,6 +30,8 @@
     # GUI applications
     casks = [
       "microsoft-edge"
+      "raycast"
+      "multitouch"
     ];
 
     # Mac App Store apps (requires mas CLI)

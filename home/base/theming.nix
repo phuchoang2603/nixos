@@ -1,9 +1,7 @@
-{
-  pkgs,
-  ...
-}:
+{ pkgs, lib, ... }:
 
 let
+  isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
   wallpaperPath = ../../current.png;
 in
 {
@@ -12,7 +10,8 @@ in
     image = wallpaperPath;
     polarity = "dark";
 
-    cursor = {
+    # Cursor: Only enable on Linux
+    cursor = lib.mkIf (!isDarwin) {
       package = pkgs.bibata-cursors;
       name = "Bibata-Modern-Classic";
       size = 16;
@@ -43,7 +42,8 @@ in
       };
     };
 
-    icons = {
+    # Icons: Only enable on Linux
+    icons = lib.mkIf (!isDarwin) {
       enable = true;
       package = pkgs.papirus-icon-theme;
       dark = "Papirus-Dark";
@@ -52,13 +52,13 @@ in
 
     targets = {
       neovim = {
-        enable = false; # Disabled - we manage neovim colorscheme manually via Lazy.nvim
+        enable = false;
       };
       rofi = {
-        enable = false; # We'll use our custom rofi.nix instead
+        enable = false;
       };
       waybar = {
-        enable = false; # We'll use our custom waybar.nix instead
+        enable = false;
       };
     };
   };

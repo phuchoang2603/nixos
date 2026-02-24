@@ -1,13 +1,14 @@
 {
   pkgs,
-  lib,
-  config,
   ...
 }:
 
 {
   programs.ghostty = {
     enable = true;
+
+    # Logic to switch package based on OS
+    package = if pkgs.stdenv.hostPlatform.isDarwin then pkgs.ghostty-bin else pkgs.ghostty;
 
     settings = {
       # Font configuration
@@ -27,6 +28,9 @@
       keybind = [
         "ctrl+enter=unbind"
       ];
+
+      # Recommended for Mac + Neovim (to make Alt/Option work)
+      macos-option-as-meta = true;
     };
   };
 }

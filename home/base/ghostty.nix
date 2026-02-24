@@ -28,9 +28,6 @@
       keybind = [
         "ctrl+enter=unbind"
       ];
-
-      # Recommended for Mac + Neovim (to make Alt/Option work)
-      macos-option-as-meta = true;
     };
   };
 }

@@ -94,7 +94,6 @@
     extraPackages = with pkgs; [
       tree-sitter
       lsof
-      inotify-tools
       copilot-language-server
 
       # BASH / SHELL

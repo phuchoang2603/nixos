@@ -35,8 +35,8 @@ in
         package = pkgs.noto-fonts-color-emoji;
       };
       sizes = {
-        applications = 12;
-        terminal = 10;
+        applications = 14;
+        terminal = 13;
         desktop = 10;
         popups = 12;
       };

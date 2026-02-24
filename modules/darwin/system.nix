@@ -1,4 +1,4 @@
-{ user, ... }:
+{ user, pkgs, ... }:
 
 {
   # System settings
@@ -32,6 +32,8 @@
 
       dock = {
         autohide = true;
+        autohide-delay = 0.0;
+        autohide-time-modifier = 0.0;
         expose-animation-duration = 0.15;
         expose-group-apps = true;
         show-recents = false;
@@ -42,7 +44,6 @@
       trackpad = {
         TrackpadRightClick = true;
         Clicking = true;
-        TrackpadThreeFingerDrag = true;
       };
 
       spaces = {
@@ -95,4 +96,10 @@
     pam.services.sudo_local.touchIdAuth = true;
     sudo.extraConfig = "${user}    ALL = (ALL) NOPASSWD: ALL";
   };
+
+  fonts.packages = with pkgs; [
+    nerd-fonts.caskaydia-mono
+    noto-fonts
+    noto-fonts-color-emoji
+  ];
 }

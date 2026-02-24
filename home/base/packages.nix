@@ -38,11 +38,6 @@
       obsidian
       zathura
     ]
-    ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
-      # --- macOS Only ---
-      hidden-bar
-      raycast
-    ]
     ++ lib.optionals (!pkgs.stdenv.hostPlatform.isDarwin) [
       # --- Linux Only ---
       inotify-tools

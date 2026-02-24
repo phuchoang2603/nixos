@@ -1,3 +1,17 @@
+-- Set transparent
+local function set_transparent()
+	local groups =
+		{ "Normal", "NormalNC", "LineNr", "Folded", "NonText", "SpecialKey", "VertSplit", "SignColumn", "EndOfBuffer" }
+	for _, group in ipairs(groups) do
+		vim.api.nvim_set_hl(0, group, { bg = "NONE", ctermbg = "NONE" })
+	end
+end
+
+-- Run it whenever a colorscheme is loaded
+vim.api.nvim_create_autocmd("ColorScheme", {
+	callback = set_transparent,
+})
+
 -- Read Stylix-generated colors
 local palette_path = vim.fn.expand("~/.config/stylix/palette.json")
 local file = io.open(palette_path, "r")

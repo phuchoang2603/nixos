@@ -3,6 +3,7 @@
 {
   imports = [
     ./system.nix
+    ./homebrew.nix
   ];
 
   # Nix settings

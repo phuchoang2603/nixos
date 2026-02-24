@@ -6,12 +6,11 @@
   ];
 
   # Nix settings
-  nix.settings = {
-    experimental-features = [
-      "nix-command"
-      "flakes"
-    ];
-    auto-optimise-store = true;
+  nix = {
+    settings = {
+      experimental-features = "nix-command flakes";
+    };
+    optimise.automatic = true;
   };
 
   # Garbage collection

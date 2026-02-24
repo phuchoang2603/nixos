@@ -5,11 +5,11 @@
   system = {
     stateVersion = 6;
 
-    loginwindow = {
-      GuestEnabled = false;
-    };
-
     defaults = {
+      loginwindow = {
+        GuestEnabled = false;
+      };
+
       controlcenter = {
         BatteryShowPercentage = true;
         NowPlaying = false;
@@ -56,7 +56,6 @@
         FXPreferredViewStyle = "Nlsv"; # list view
         FXRemoveOldTrashItems = true;
         CreateDesktop = false;
-        DisableAllAnimations = true;
         NewWindowTarget = "Desktop";
         ShowPathbar = true;
         ShowStatusBar = true;
@@ -86,6 +85,13 @@
     primaryUser = user;
   };
 
-  # Enable Touch ID for sudo
-  security.pam.enableSudoTouchIdAuth = true;
+  users.users.${user} = {
+    name = user;
+    home = "/Users/${user}";
+  };
+
+  security = {
+    pam.services.sudo_local.touchIdAuth = true;
+    sudo.extraConfig = "${user}    ALL = (ALL) NOPASSWD: ALL";
+  };
 }

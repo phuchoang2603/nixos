@@ -53,7 +53,7 @@
         AppleShowAllFiles = true;
         AppleShowAllExtensions = true;
         _FXShowPosixPathInTitle = true;
-        FXPreferredViewStyle = "Nlsv"; # list view
+        FXPreferredViewStyle = "clmv"; # column view
         FXRemoveOldTrashItems = true;
         CreateDesktop = false;
         NewWindowTarget = "Desktop";
@@ -80,6 +80,7 @@
     keyboard = {
       enableKeyMapping = true;
       remapCapsLockToEscape = true;
+      swapLeftCtrlAndFn = true;
     };
 
     primaryUser = user;

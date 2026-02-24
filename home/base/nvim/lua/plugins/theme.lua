@@ -7,11 +7,6 @@ local function set_transparent()
 	end
 end
 
--- Run it whenever a colorscheme is loaded
-vim.api.nvim_create_autocmd("ColorScheme", {
-	callback = set_transparent,
-})
-
 -- Read Stylix-generated colors
 local palette_path = vim.fn.expand("~/.config/stylix/palette.json")
 local file = io.open(palette_path, "r")
@@ -41,9 +36,11 @@ if file then
 			base0E = "#" .. palette.base0E,
 			base0F = "#" .. palette.base0F,
 		})
+		set_transparent()
 	else
 		vim.notify("Failed to parse Stylix palette.json", vim.log.levels.WARN)
 		vim.cmd.colorscheme("base16-default-dark")
+		set_transparent()
 	end
 else
 	vim.notify("Stylix palette.json not found, using default theme", vim.log.levels.WARN)

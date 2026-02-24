@@ -33,7 +33,6 @@
       lazydocker
 
       # GUI applications
-      microsoft-edge
       vscode
       jetbrains.datagrip
       obsidian
@@ -46,6 +45,7 @@
     ]
     ++ lib.optionals (!pkgs.stdenv.hostPlatform.isDarwin) [
       # --- Linux Only ---
+      microsoft-edge
       vlc
       todoist
       libreoffice-fresh

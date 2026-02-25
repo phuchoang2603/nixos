@@ -18,6 +18,30 @@
       CustomUserPreferences = {
         "com.apple.symbolichotkeys" = {
           AppleSymbolicHotKeys = {
+            "163" = {
+              # Set 'Option + N' for Show Notification Center
+              enabled = true;
+              value = {
+                parameters = [
+                  110
+                  45
+                  524288
+                ];
+                type = "standard";
+              };
+            };
+            "184" = {
+              # Set 'Option + Shift + S' for Screenshot and recording options
+              enabled = true;
+              value = {
+                parameters = [
+                  115
+                  1
+                  655360
+                ];
+                type = "standard";
+              };
+            };
             "64" = {
               # Disable 'Cmd + Space' for Spotlight Search
               enabled = false;
@@ -29,6 +53,12 @@
           };
         };
       };
+
+      screencapture = {
+        target = "clipboard";
+      };
+
+      hitoolbox.AppleFnUsageType = "Change Input Source";
 
       dock = {
         autohide = true;
@@ -57,7 +87,7 @@
         FXPreferredViewStyle = "clmv"; # column view
         FXRemoveOldTrashItems = true;
         CreateDesktop = false;
-        NewWindowTarget = "Desktop";
+        NewWindowTarget = "Home";
         ShowPathbar = true;
         ShowStatusBar = true;
       };
@@ -75,6 +105,12 @@
         NSAutomaticCapitalizationEnabled = false;
         NSAutomaticPeriodSubstitutionEnabled = false;
         NSAutomaticWindowAnimationsEnabled = false;
+      };
+
+      iCal = {
+        CalendarSidebarShown = true;
+        "TimeZone support enabled" = true;
+        "first day of week" = "Monday";
       };
     };
 

@@ -16,7 +16,7 @@
       "on-focused-monitor-changed" = [ "move-mouse monitor-lazy-center" ];
       "on-focus-changed" = [ "move-mouse window-lazy-center" ];
 
-      "automatically-unhide-macos-hidden-apps" = false;
+      "automatically-unhide-macos-hidden-apps" = true;
 
       "key-mapping" = {
         preset = "qwerty";
@@ -35,13 +35,13 @@
         # Launcher
         cmd-space = "exec-and-forget open -a Raycast";
 
-        # Apps + Workspace switch
-        alt-1 = "exec-and-forget open -a \"Microsoft Edge\"";
-        alt-2 = "exec-and-forget open -a Ghostty";
+        # Workspace switch
+        alt-1 = "workspace 1";
+        alt-2 = "workspace 2";
         alt-3 = "workspace 3";
-        alt-4 = "exec-and-forget open -a Obsidian";
-        alt-5 = "exec-and-forget open -a Spotify";
-        alt-6 = "exec-and-forget open $HOME";
+        alt-4 = "workspace 4";
+        alt-5 = "workspace 5";
+        alt-6 = "workspace 6";
 
         # Focus
         alt-h = "focus left";
@@ -77,29 +77,48 @@
       };
 
       "on-window-detected" = [
+        # 1. Global Rule: Every new window starts floating
+        {
+          check-further-callbacks = true;
+          run = "layout floating";
+        }
         {
           "if".app-id = "com.microsoft.edgemac";
-          run = "move-node-to-workspace 1";
+          run = [
+            "layout tiling"
+            "move-node-to-workspace 1"
+          ];
         }
         {
           "if".app-id = "com.mitchellh.ghostty";
-          run = "move-node-to-workspace 2";
-        }
-        {
-          "if".app-id = "com.microsoft.VSCode";
-          run = "move-node-to-workspace 3";
+          run = [
+            "layout tiling"
+            "move-node-to-workspace 2"
+          ];
         }
         {
           "if".app-id = "md.obsidian";
-          run = "move-node-to-workspace 4";
+          run = [
+            "layout tiling"
+            "move-node-to-workspace 4"
+          ];
         }
         {
           "if".app-id = "com.spotify.client";
-          run = "move-node-to-workspace 5";
+          run = [
+            "layout tiling"
+            "move-node-to-workspace 5"
+          ];
         }
         {
           "if".app-id = "com.apple.finder";
-          run = "move-node-to-workspace 6";
+          run = [
+            "layout tiling"
+            "move-node-to-workspace 6"
+          ];
+        }
+        {
+          run = "move-node-to-workspace 3";
         }
       ];
     };

@@ -30,30 +30,10 @@
                 type = "standard";
               };
             };
-            "184" = {
-              # Set 'Option + Shift + S' for Screenshot and recording options
-              enabled = true;
-              value = {
-                parameters = [
-                  115
-                  1
-                  655360
-                ];
-                type = "standard";
-              };
-            };
-            "64" = {
-              # Disable 'Cmd + Space' for Spotlight Search
-              enabled = false;
-            };
-            "65" = {
-              # Disable 'Cmd + Alt + Space' for Finder search window
-              enabled = false;
-            };
-            "103" = {
-              # Disable 'F11' for Show Desktop
-              enabled = false;
-            };
+            "36".enabled = false; # Show Desktop (F11)
+            "64".enabled = false; # Spotlight Search (Cmd + Space)
+            "65".enabled = false; # Finder Search (Cmd + Alt + Space)
+            "184".enabled = false; # Default Screenshot
           };
         };
         "com.microsoft.edgemac" = {
@@ -105,7 +85,7 @@
       };
 
       finder = {
-        AppleShowAllFiles = true;
+        AppleShowAllFiles = false;
         AppleShowAllExtensions = true;
         _FXShowPosixPathInTitle = true;
         FXPreferredViewStyle = "clmv"; # column view

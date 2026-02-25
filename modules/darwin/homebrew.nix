@@ -35,7 +35,12 @@
 
     # Mac App Store apps (requires mas CLI)
     masApps = {
-      # "App Name" = app-id;
+      "Microsoft Outlook" = 985367838;
+      "Microsoft OneNote" = 784801555;
+      "Microsoft OneDrive" = 823766827;
+      "Microsoft Word" = 462054704;
+      "Microsoft Excel" = 462058435;
+      "Microsoft PowerPoint" = 462062816;
     };
   };
 }

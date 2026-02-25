@@ -20,7 +20,6 @@
 
     # Taps
     taps = [
-      "mediosz/tap"
     ];
 
     # CLI packages
@@ -40,12 +39,11 @@
       "datagrip"
       "obsidian"
       "skim"
-      "swipeaerospace"
+      "bettertouchtool"
     ];
 
     # Mac App Store apps (requires mas CLI)
     masApps = {
-      "Microsoft Outlook" = 985367838;
       "Microsoft OneNote" = 784801555;
       "Microsoft OneDrive" = 823766827;
       "Microsoft Word" = 462054704;

@@ -40,13 +40,25 @@
   };
 
   # NFS mounts
-  fileSystems."/mnt/storage/appdata" = {
-    device = "10.69.1.102:/mnt/storage/appdata";
-    fsType = "nfs";
-    options = [
-      "defaults"
-      "_netdev"
-      "nofail"
-    ];
+  fileSystems = {
+    "/mnt/storage/appdata" = {
+      device = "10.69.1.102:/mnt/storage/appdata";
+      fsType = "nfs";
+      options = [
+        "defaults"
+        "_netdev"
+        "nofail"
+      ];
+    };
+    "/mnt/storage/media" = {
+      device = "10.69.1.102:/mnt/storage/media";
+      fsType = "nfs";
+      options = [
+        "defaults"
+        "_netdev"
+        "nofail"
+      ];
+    };
+
   };
 }

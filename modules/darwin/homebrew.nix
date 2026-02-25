@@ -37,6 +37,7 @@
       "visual-studio-code"
       "datagrip"
       "obsidian"
+      "skim"
     ];
 
     # Mac App Store apps (requires mas CLI)

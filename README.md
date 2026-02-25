@@ -2,7 +2,7 @@
 
 This repo is a flake-based configuration for:
 
-- NixOS (desktop)
+- NixOS (desktop, server, laptop)
 - macOS via nix-darwin (macbook)
 - Home Manager for user-level packages and dotfiles
 
@@ -13,7 +13,9 @@ user modules under `home/`, and thin host entrypoints under `hosts/`.
 
 - `flake.nix`: flake inputs + system outputs
 - `hosts/`
-  - `hosts/nixos-desktop/`: NixOS host entrypoint + hardware config
+  - `hosts/nixos-desktop/`: NixOS desktop host entrypoint + hardware config
+  - `hosts/nixos-server/`: NixOS server host entrypoint + hardware config
+  - `hosts/nixos-laptop/`: NixOS laptop host entrypoint
   - `hosts/macbook/`: nix-darwin host entrypoint
 - `home/`
   - `home/base/cli/`: shared CLI modules + `nvim-config`
@@ -23,57 +25,6 @@ user modules under `home/`, and thin host entrypoints under `hosts/`.
 - `modules/`
   - `modules/nixos/`: NixOS modules (boot, desktop, services, apps, input)
   - `modules/darwin/`: nix-darwin modules (system defaults, homebrew)
-
-## NixOS Modules
-
-`modules/nixos/default.nix` imports:
-
-- `modules/nixos/base.nix`
-  - bootloader + kernel
-  - locale/timezone
-  - user `felix`
-  - flakes enabled + GC defaults
-  - fonts and minimal base packages
-- `modules/nixos/desktop.nix`
-  - Hyprland session (greetd + tuigreet)
-  - portals, polkit, keyring
-  - desktop essentials (waybar/mako/rofi/nautilus/etc)
-  - fcitx5 input methods
-- `modules/nixos/apps.nix`
-  - GUI apps (Edge, VS Code, Obsidian, LibreOffice, ClipHist, Sushi, LocalSend, etc)
-- `modules/nixos/services.nix`
-  - pipewire, bluetooth
-  - docker
-  - tailscale
-  - avahi/udisks/fwupd/openssh
-
-## Home Manager Profiles
-
-Profiles live under `home/`:
-
-- `home/base/cli/default.nix`: base CLI toolset
-  - packages,
-  - shell,
-  - git,
-  - starship,
-  - tmux,
-  - yazi,
-  - opencode,
-  - neovim
-- `home/base/gui/default.nix`: shared UI
-  - stylix,
-  - ghostty,
-  - spicetify
-- `home/linux/gui/default.nix`: Linux GUI
-  - rofi,
-  - mako,
-  - waybar,
-  - hyprland,
-  - hyprpaper,
-  - hyprlock,
-  - hypridle,
-  - espanso
-- `home/darwin/gui/default.nix`: macOS GUI (currently just `base/gui`)
 
 ## Usage
 
@@ -121,13 +72,22 @@ sudo mount /dev/disk/by-label/boot /mnt/boot
 
 ```bash
 # Clone your repo into the mounted system
-sudo git clone https://github.com/your-username/your-repo.git /mnt/etc/nixos
+sudo git clone https://github.com/phuchoang2603/nixos.git /mnt/etc/nixos
 
-sudo nixos-generate-config --root /mnt --show-hardware-config > /mnt/etc/nixos/hardware-configuration.nix
+sudo nixos-generate-config --root /mnt --show-hardware-config | sudo tee /mnt/etc/nixos/hardware-configuration.nix
 
 # Install the system
 # Using --root /mnt tells NixOS to install to the disk, not the live ISO
 sudo nixos-install --flake /mnt/etc/nixos#nixos-desktop
+```
+
+5. Change Password with nixos-enter
+   If you need to change the root password or any user password after installation:
+
+```bash
+# Reboot into the installed system, then run:
+sudo nixos-enter --root /mnt -c "passwd root"
+sudo nixos-enter --root /mnt -c "passwd felix"
 ```
 
 ### macOS (nix-darwin)

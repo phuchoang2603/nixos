@@ -38,6 +38,7 @@
       "datagrip"
       "obsidian"
       "skim"
+      "mediosz/tap/swipeaerospace"
     ];
 
     # Mac App Store apps (requires mas CLI)

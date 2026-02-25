@@ -77,7 +77,6 @@
       };
 
       "on-window-detected" = [
-        # 1. Global Rule: Every new window starts floating
         {
           check-further-callbacks = true;
           run = "layout floating";

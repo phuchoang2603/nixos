@@ -1,9 +1,16 @@
 -- VimTeX configuration
-vim.g.vimtex_view_method = "zathura"
-vim.g.vimtex_view_general_viewer = "zathura"
+local is_mac = vim.loop.os_uname().sysname == "Darwin"
+
+if is_mac then
+	vim.g.vimtex_view_method = "skim"
+	vim.g.vimtex_view_general_viewer = "skim"
+else
+	vim.g.vimtex_view_method = "zathura"
+	vim.g.vimtex_view_general_viewer = "zathura"
+end
+
 vim.g.vimtex_mappings_prefix = "<leader>l"
 
--- Filetype specific description for Which-Key (if you use it)
 vim.api.nvim_create_autocmd("FileType", {
 	pattern = "tex",
 	callback = function()

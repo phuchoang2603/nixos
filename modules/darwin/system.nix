@@ -50,6 +50,10 @@
               # Disable 'Cmd + Alt + Space' for Finder search window
               enabled = false;
             };
+            "103" = {
+              # Disable 'F11' for Show Desktop
+              enabled = false;
+            };
           };
         };
         "com.microsoft.edgemac" = {
@@ -88,7 +92,12 @@
 
       trackpad = {
         TrackpadRightClick = true;
+        TrackpadThreeFingerDrag = false;
+        TrackpadThreeFingerHorizSwipeGesture = 0;
+        TrackpadThreeFingerTapGesture = 0;
+        TrackpadThreeFingerVertSwipeGesture = 0;
         Clicking = true;
+        Dragging = true;
       };
 
       spaces = {

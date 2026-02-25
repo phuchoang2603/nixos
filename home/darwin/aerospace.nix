@@ -42,6 +42,7 @@
         alt-4 = "workspace 4";
         alt-5 = "workspace 5";
         alt-6 = "workspace 6";
+        alt-7 = "workspace 7";
 
         # Focus
         alt-h = "focus left";

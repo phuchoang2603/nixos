@@ -2,7 +2,8 @@
 
 {
   imports = [
-    ../base
+    ../base/cli.nix
+    ../base/gui.nix
     ./aerospace.nix
   ];
 }

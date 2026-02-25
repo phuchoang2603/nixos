@@ -1,0 +1,8 @@
+{ ... }:
+
+{
+  imports = [
+    ./cli
+    ./home.nix
+  ];
+}

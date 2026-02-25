@@ -63,6 +63,7 @@
 
       # COPY MODE
       bind -T copy-mode-vi v send-keys -X begin-selection
+      bind -T copy-mode-vi y send-keys -X copy-selection-and-cancel
 
       # SESSION MANAGEMENT (via sesh)
       bind "o" run-shell "sesh connect \"$(

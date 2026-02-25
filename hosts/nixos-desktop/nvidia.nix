@@ -1,4 +1,9 @@
-{ pkgs, lib, config, ... }:
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}:
 
 {
   # NVIDIA driver configuration
@@ -26,7 +31,7 @@
     open = true;
 
     # Enable nvidia-settings GUI
-    nvidiaSettings = true;
+    nvidiaSettings = false;
 
     # Use the latest stable driver
     package = config.boot.kernelPackages.nvidiaPackages.stable;
@@ -52,5 +57,10 @@
   ];
 
   # Load NVIDIA modules early
-  boot.initrd.kernelModules = [ "nvidia" "nvidia_modeset" "nvidia_uvm" "nvidia_drm" ];
+  boot.initrd.kernelModules = [
+    "nvidia"
+    "nvidia_modeset"
+    "nvidia_uvm"
+    "nvidia_drm"
+  ];
 }

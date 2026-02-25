@@ -1,7 +1,6 @@
 { pkgs, ... }:
 
 {
-  security.rtkit.enable = true;
   services = {
     # Audio - PipeWire
     pipewire = {
@@ -41,19 +40,6 @@
       openFirewall = true;
     };
 
-    # Tailscale VPN
-    tailscale = {
-      enable = true;
-      useRoutingFeatures = "client";
-    };
-
-    # Avahi for network discovery
-    avahi = {
-      enable = true;
-      nssmdns4 = true;
-      openFirewall = true;
-    };
-
     # USB automounting
     udisks2.enable = true;
 
@@ -64,15 +50,6 @@
 
     # Firmware updates
     fwupd.enable = true;
-
-    # SSH (optional - enable if needed)
-    openssh = {
-      enable = true;
-      settings = {
-        PasswordAuthentication = true;
-        PermitRootLogin = "no";
-      };
-    };
   };
 
   programs = {
@@ -88,6 +65,7 @@
 
   # Security/Authentication
   security = {
+    rtkit.enable = true;
     polkit.enable = true;
     pam.services.login.enableGnomeKeyring = true;
     pam.services.greetd.enableGnomeKeyring = true;
@@ -114,16 +92,6 @@
         Enable = "Source,Sink,Media,Socket";
         Experimental = true;
       };
-    };
-  };
-
-  # Docker
-  virtualisation.docker = {
-    enable = true;
-    enableOnBoot = true;
-    autoPrune = {
-      enable = true;
-      dates = "weekly";
     };
   };
 }

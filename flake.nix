@@ -110,6 +110,30 @@
             }
           ];
         };
+
+        nixos-server = nixpkgs.lib.nixosSystem {
+          system = linuxSystem;
+          specialArgs = mkSpecialArgs linuxSystem;
+          modules = [
+            ./hosts/nixos-server
+            home-manager.nixosModules.home-manager
+            {
+              nixpkgs.config.allowUnfree = true;
+
+              home-manager = {
+                useGlobalPkgs = true;
+                useUserPackages = true;
+                extraSpecialArgs = mkSpecialArgs linuxSystem;
+                users.${user} = {
+                  imports = [
+                    ./home/base/cli.nix
+                  ];
+                };
+                backupFileExtension = "backup";
+              };
+            }
+          ];
+        };
       };
 
       # macOS configurations (nix-darwin)

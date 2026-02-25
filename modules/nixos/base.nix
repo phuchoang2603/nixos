@@ -18,6 +18,8 @@
     kernelModules = [ "uinput" ];
 
     growPartition = true;
+
+    supportedFilesystems = [ "nfs" ];
   };
 
   # Networking

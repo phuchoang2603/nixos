@@ -1,6 +1,7 @@
 {
   imports = [
     ./base.nix
-    ./services.nix
+    ./desktop-services.nix
+    ./server-services.nix
   ];
 }

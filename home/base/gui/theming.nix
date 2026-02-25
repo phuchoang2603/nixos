@@ -2,7 +2,7 @@
 
 let
   isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
-  wallpaperPath = ../../current.png;
+  wallpaperPath = ../../../current.png;
 in
 {
   stylix = {

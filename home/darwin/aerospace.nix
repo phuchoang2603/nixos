@@ -52,10 +52,10 @@
         alt-0 = "workspace 10";
 
         # Focus
-        alt-h = "focus left";
-        alt-j = "focus down";
-        alt-k = "focus up";
-        alt-l = "focus right";
+        alt-h = "focus --boundaries all-monitors-outer-frame --boundaries-action wrap-around-all-monitors left";
+        alt-j = "focus --boundaries all-monitors-outer-frame --boundaries-action wrap-around-all-monitors down";
+        alt-k = "focus --boundaries all-monitors-outer-frame --boundaries-action wrap-around-all-monitors up";
+        alt-l = "focus --boundaries all-monitors-outer-frame --boundaries-action wrap-around-all-monitors right";
 
         # Move window
         alt-shift-h = "move left";
@@ -114,8 +114,9 @@
 
         # Layout / state
         alt-tab = "workspace-back-and-forth";
-        f11 = "fullscreen";
+        f11 = "macos-native-fullscreen";
         alt-f = "layout floating tiling";
+        alt-q = "close";
       };
 
       "on-window-detected" = [

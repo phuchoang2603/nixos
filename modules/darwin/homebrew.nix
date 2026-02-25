@@ -19,7 +19,9 @@
     global.brewfile = true;
 
     # Taps
-    taps = [ ];
+    taps = [
+      "mediosz/tap"
+    ];
 
     # CLI packages
     brews = [
@@ -38,7 +40,7 @@
       "datagrip"
       "obsidian"
       "skim"
-      "mediosz/tap/swipeaerospace"
+      "swipeaerospace"
     ];
 
     # Mac App Store apps (requires mas CLI)

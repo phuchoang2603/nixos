@@ -17,5 +17,6 @@
     ./rofi.nix
     ./waybar.nix
     ./scripts.nix
+    ./packages.nix
   ];
 }

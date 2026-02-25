@@ -34,6 +34,9 @@
     casks = [
       "microsoft-edge"
       "raycast"
+      "visual-studio-code"
+      "datagrip"
+      "obsidian"
     ];
 
     # Mac App Store apps (requires mas CLI)

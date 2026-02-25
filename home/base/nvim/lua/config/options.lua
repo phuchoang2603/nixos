@@ -44,7 +44,6 @@ opt.confirm = true -- Confirm to save changes before exiting modified buffer
 opt.backup = false -- Don't create backup files
 opt.writebackup = false -- Don't create backup before writing
 opt.swapfile = false -- Don't create swap files
-opt.undofile = true -- Persistent undo
 opt.autoread = true -- Auto reload files changed outside vim
 opt.autowrite = true -- Auto save
 opt.clipboard = vim.env.SSH_TTY and "" or "unnamedplus" -- Sync with system clipboard
@@ -63,3 +62,13 @@ opt.timeoutlen = 300 -- Lower timeout key press
 vim.g.autoformat = true
 vim.g.trouble_lualine = true
 vim.g.markdown_recommended_style = 0
+
+-- Undo history
+local undodir = vim.fn.expand("~/.local/state/nvim/undo")
+
+if vim.fn.isdirectory(undodir) == 0 then
+	vim.fn.mkdir(undodir, "p")
+end
+
+vim.opt.undofile = true
+vim.opt.undodir = undodir

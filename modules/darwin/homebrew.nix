@@ -24,7 +24,10 @@
     # CLI packages
     brews = [
       "mas"
+      "colima"
       "docker"
+      "docker-compose"
+      "docker-credential-helper"
     ];
 
     # GUI applications

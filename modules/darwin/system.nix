@@ -32,6 +32,7 @@
             };
             "36".enabled = false; # Show Desktop (F11)
             "64".enabled = false; # Spotlight Search (Cmd + Space)
+            "60".enabled = false; # Disable '^ + Space' for selecting the previous input source
             "65".enabled = false; # Finder Search (Cmd + Alt + Space)
             "184".enabled = false; # Default Screenshot
           };
@@ -88,7 +89,7 @@
         AppleShowAllFiles = false;
         AppleShowAllExtensions = true;
         _FXShowPosixPathInTitle = true;
-        FXPreferredViewStyle = "clmv"; # column view
+        FXPreferredViewStyle = "Nlsv";
         FXRemoveOldTrashItems = true;
         CreateDesktop = false;
         NewWindowTarget = "Home";

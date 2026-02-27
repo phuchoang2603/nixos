@@ -15,9 +15,7 @@
     plugins = with pkgs.vimPlugins; [
       # LSP related
       blink-cmp # completion
-      luasnip # snippets
       friendly-snippets # snippets
-      quicker-nvim # quickfix
       conform-nvim # format
       (nvim-treesitter.withPlugins (p: [
         # Core / Utils
@@ -69,6 +67,7 @@
       # Core
       plenary-nvim
       opencode-nvim
+      quicker-nvim
 
       # Mini ecosystem
       mini-surround

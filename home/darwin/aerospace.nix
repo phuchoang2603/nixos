@@ -40,12 +40,27 @@
         cmd-space = "exec-and-forget open -a Raycast";
 
         # Workspace switch
-        alt-1 = "workspace 1";
-        alt-2 = "workspace 2";
+        alt-1 = [
+          "workspace 1"
+          "exec-and-forget open -a 'Microsoft Edge'"
+        ];
+        alt-2 = [
+          "workspace 2"
+          "exec-and-forget open -a 'Ghostty'"
+        ];
         alt-3 = "workspace 3";
-        alt-4 = "workspace 4";
-        alt-5 = "workspace 5";
-        alt-6 = "workspace 6";
+        alt-4 = [
+          "workspace 4"
+          "exec-and-forget open -a 'Obsidian'"
+        ];
+        alt-5 = [
+          "workspace 5"
+          "exec-and-forget open -a 'Spotify'"
+        ];
+        alt-6 = [
+          "workspace 6"
+          "exec-and-forget open -a 'Finder'"
+        ];
         alt-7 = "workspace 7";
         alt-8 = "workspace 8";
         alt-9 = "workspace 9";
@@ -120,10 +135,6 @@
       };
 
       "on-window-detected" = [
-        {
-          check-further-callbacks = true;
-          run = "layout floating";
-        }
         {
           "if".app-id = "com.microsoft.edgemac";
           run = [

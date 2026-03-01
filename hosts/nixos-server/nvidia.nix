@@ -20,6 +20,8 @@
     package = config.boot.kernelPackages.nvidiaPackages.stable;
   };
 
+  hardware.nvidia-container-toolkit.enable = true;
+
   boot.kernelParams = [
     "nvidia-drm.modeset=1"
   ];

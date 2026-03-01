@@ -25,7 +25,6 @@ vim.api.nvim_create_autocmd("InsertEnter", {
 			},
 			appearance = {
 				nerd_font_variant = "mono",
-				use_nvim_cmp_as_default = true,
 			},
 			completion = {
 				list = { selection = { preselect = false, auto_insert = false } },

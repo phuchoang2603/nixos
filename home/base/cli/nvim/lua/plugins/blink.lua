@@ -8,8 +8,7 @@ vim.api.nvim_create_autocmd("InsertEnter", {
 		require("blink.cmp").setup({
 			keymap = {
 				preset = "none",
-				["<C-space>"] = { "show", "show_documentation", "hide_documentation" },
-				["<C-e>"] = { "hide", "fallback" },
+				["<C-space>"] = { "show", "hide", "show_documentation", "hide_documentation" },
 				["<CR>"] = { "accept", "fallback" },
 
 				["<C-l>"] = { "snippet_forward", "fallback" },

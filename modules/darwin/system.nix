@@ -37,21 +37,6 @@
             "184".enabled = false; # Default Screenshot
           };
         };
-        "com.microsoft.edgemac" = {
-          NSUserKeyEquivalents = {
-            "Close Tab" = "^w";
-            "Find..." = "^f";
-            "New Window" = "^n";
-            "New InPrivate Window" = "^$n";
-            "New Tab" = "^t";
-            "Open Location..." = "^l";
-            "Refresh This Page" = "^r";
-            "Reopen Closed Tab" = "^$t";
-            "Actual Size" = "^0";
-            "Zoom In" = "^=";
-            "Zoom Out" = "^-";
-          };
-        };
       };
 
       screencapture = {

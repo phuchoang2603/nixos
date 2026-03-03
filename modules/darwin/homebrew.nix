@@ -38,7 +38,6 @@
       "datagrip"
       "obsidian"
       "skim"
-      "bettertouchtool"
       "karabiner-elements"
     ];
 

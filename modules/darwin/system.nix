@@ -105,9 +105,7 @@
     };
 
     keyboard = {
-      enableKeyMapping = true;
-      remapCapsLockToEscape = true;
-      swapLeftCtrlAndFn = true;
+      enableKeyMapping = false;
     };
 
     primaryUser = user;

@@ -10,7 +10,6 @@
 
     # Automatically update Homebrew
     onActivation = {
-      autoUpdate = true;
       cleanup = "zap";
       upgrade = true;
     };

@@ -40,6 +40,7 @@
       "obsidian"
       "skim"
       "bettertouchtool"
+      "karabiner-elements"
     ];
 
     # Mac App Store apps (requires mas CLI)

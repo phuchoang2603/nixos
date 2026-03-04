@@ -123,10 +123,6 @@
           "workspace 10"
         ];
 
-        # Move window to monitor
-        alt-shift-left = "move-node-to-monitor left";
-        alt-shift-right = "move-node-to-monitor right";
-
         # Layout / state
         alt-tab = "workspace-back-and-forth";
         f11 = "macos-native-fullscreen";

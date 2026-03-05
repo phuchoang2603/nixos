@@ -59,6 +59,15 @@
         "nofail"
       ];
     };
+    "/mnt/storage/iso" = {
+      device = "10.69.1.102:/mnt/storage/iso";
+      fsType = "nfs";
+      options = [
+        "defaults"
+        "_netdev"
+        "nofail"
+      ];
+    };
 
   };
 }

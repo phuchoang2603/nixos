@@ -13,6 +13,7 @@
     playerctl
     gimp
     zathura
+    lutris
 
     # Wayland Essentials
     wayland

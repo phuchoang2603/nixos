@@ -37,6 +37,8 @@
     package = config.boot.kernelPackages.nvidiaPackages.stable;
   };
 
+  hardware.nvidia-container-toolkit.enable = true;
+
   # NVIDIA-specific environment variables for Wayland/Hyprland
   environment.sessionVariables = {
     # Force GBM backend

@@ -1,11 +1,15 @@
-{ pkgs, lib, config, ... }:
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}:
 
 # NixOS Desktop host configuration
 
 {
   imports = [
     ./hardware-configuration.nix
-    ./nvidia.nix  # Include NVIDIA module for this host
     ../../modules/nixos
   ];
 

@@ -1,3 +1,7 @@
+-- Icons
+require("mini.icons").setup()
+MiniIcons.mock_nvim_web_devicons()
+
 -- Set transparent
 local function set_transparent()
 	local groups =

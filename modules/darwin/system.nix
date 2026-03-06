@@ -87,6 +87,7 @@
         AppleInterfaceStyle = "Dark";
         AppleShowAllExtensions = true;
         ApplePressAndHoldEnabled = false;
+        AppleFontSmoothing = 0;
         InitialKeyRepeat = 20;
         KeyRepeat = 2;
         NSUseAnimatedFocusRing = false;

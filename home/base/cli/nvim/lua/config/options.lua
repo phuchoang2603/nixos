@@ -26,6 +26,7 @@ opt.incsearch = true -- Show matches as you type
 -- Visual settings
 opt.signcolumn = "yes" -- Always show sign column
 opt.showmatch = true -- Highlight matching brackets
+opt.showmode = true -- Show all modes in statusline
 opt.winborder = "rounded" -- Round popup window
 vim.wo.foldmethod = "expr"
 opt.foldlevel = 99 -- Start buffer unfold

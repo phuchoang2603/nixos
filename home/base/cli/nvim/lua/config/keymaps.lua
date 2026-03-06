@@ -39,3 +39,16 @@ map("n", "gcO", "O<esc>Vcx<esc><cmd>normal gcc<cr>fxa<bs>", opts)
 map("i", ",", ",<c-g>u")
 map("i", ".", ".<c-g>u")
 map("i", ";", ";<c-g>u")
+
+-- wrap selection
+map("v", '"', [[c"<C-r>""<Esc>]], opts)
+map("v", "(", [[c(<C-r>")<Esc>]], opts)
+map("v", "{", [[c{<C-r>"}<Esc>]], opts)
+
+-- auto close pairs
+map("i", "`", "``<left>")
+map("i", '"', '""<left>')
+map("i", "(", "()<left>")
+map("i", "[", "[]<left>")
+map("i", "{", "{}<left>")
+map("i", "<", "<><left>")

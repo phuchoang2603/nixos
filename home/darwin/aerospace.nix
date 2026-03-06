@@ -36,9 +36,6 @@
       };
 
       mode.main.binding = {
-        # Launcher
-        cmd-space = "exec-and-forget open -a Raycast";
-
         # Workspace switch
         alt-1 = [
           "workspace 1"

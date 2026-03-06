@@ -1,7 +1,3 @@
--- Icons
-require("mini.icons").setup()
-MiniIcons.mock_nvim_web_devicons()
-
 -- Set transparent
 local function set_transparent()
 	local groups =
@@ -50,3 +46,34 @@ else
 	vim.notify("Stylix palette.json not found, using default theme", vim.log.levels.WARN)
 	vim.cmd.colorscheme("base16-default-dark")
 end
+
+-- Icons
+require("mini.icons").setup()
+MiniIcons.mock_nvim_web_devicons()
+
+-- Statusline
+local statusline = require("mini.statusline")
+statusline.setup({
+	use_icons = vim.g.have_nerd_font or true, -- Force true if you know you have one
+	content = {
+		active = function()
+			local mode, mode_hl = statusline.section_mode({ trunc_width = 120 })
+			local diff = statusline.section_diff({ trunc_width = 75 })
+			local diagnostics = statusline.section_diagnostics({ trunc_width = 75 })
+			local recording = vim.fn.reg_recording()
+			local macro = recording ~= "" and ("Recording @" .. recording) or ""
+			local filename = statusline.section_filename({ trunc_width = 140 })
+			local fileinfo = statusline.section_fileinfo({ trunc_width = 120 })
+
+			return statusline.combine_groups({
+				{ hl = mode_hl, strings = { mode } },
+				{ hl = "MiniStatuslineDevinfo", strings = { diff, diagnostics } },
+				"%<", -- Mark general truncate point
+				{ hl = "MiniStatuslineFilename", strings = { filename } },
+				"%=", -- End left alignment
+				{ hl = "MiniStatuslineFileinfo", strings = { fileinfo } },
+				{ hl = mode_hl, strings = { macro } },
+			})
+		end,
+	},
+})

@@ -58,9 +58,11 @@
 
       # UI stuff
       mini-icons
+      mini-statusline
       base16-nvim
       gitsigns-nvim
       yazi-nvim
+      which-key-nvim
       noice-nvim
       nui-nvim
       snacks-nvim

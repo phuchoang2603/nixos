@@ -185,6 +185,11 @@
     atuin = {
       enable = true;
       enableZshIntegration = true;
+      settings = {
+        enter_accept = false;
+        keymap_mode = "auto";
+        scroll_exits = false;
+      };
     };
 
     # FZF - fuzzy finder

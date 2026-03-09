@@ -41,9 +41,10 @@ map("i", ".", ".<c-g>u")
 map("i", ";", ";<c-g>u")
 
 -- wrap selection
-map("v", '"', [[c"<C-r>""<Esc>]], opts)
-map("v", "(", [[c(<C-r>")<Esc>]], opts)
-map("v", "{", [[c{<C-r>"}<Esc>]], opts)
+map("v", 's"', [[c"<C-r>""<Esc>]], opts)
+map("v", "s(", [[c(<C-r>")<Esc>]], opts)
+map("v", "s{", [[c{<C-r>"}<Esc>]], opts)
+map("v", "s[", [[c[<C-r>"]<Esc>]], opts)
 
 -- auto close pairs
 map("i", "`", "``<left>")

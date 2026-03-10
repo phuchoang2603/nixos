@@ -10,11 +10,6 @@ map("n", "<S-l>", "<cmd>bnext<cr>", opts)
 map("n", "<leader>bb", "<cmd>e #<cr>", opts)
 
 -- windows navigation
-map("n", "<C-h>", "<C-w>h", opts)
-map("n", "<C-l>", "<C-w>l", opts)
-map("n", "<C-j>", "<C-w>j", opts)
-map("n", "<C-k>", "<C-w>k", opts)
-map("n", "<C-d>", "<C-w>c", opts)
 map("n", "<leader>%", "<C-W>v", { desc = "Split Window Right", remap = true })
 map("n", '<leader>"', "<C-W>s", { desc = "Split Window Below", remap = true })
 
@@ -53,3 +48,9 @@ map("i", "(", "()<left>")
 map("i", "[", "[]<left>")
 map("i", "{", "{}<left>")
 map("i", "<", "<><left>")
+
+-- move text up and down
+map("n", "<C-j>", ":m .+1<CR>==", opts)
+map("n", "<C-k>", ":m .-2<CR>==", opts)
+map("v", "<C-j>", ":m '>+1<CR>gv=gv", opts)
+map("v", "<C-k>", ":m '<-2<CR>gv=gv", opts)

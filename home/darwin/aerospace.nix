@@ -122,7 +122,7 @@
 
         # Layout / state
         alt-tab = "workspace-back-and-forth";
-        f11 = "macos-native-fullscreen";
+        alt-comma = "layout accordion tiles";
         alt-f = "layout floating tiling";
         alt-q = "close";
       };

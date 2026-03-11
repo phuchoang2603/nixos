@@ -39,6 +39,7 @@
       "obsidian"
       "skim"
       "karabiner-elements"
+      "yaak"
     ];
 
     # Mac App Store apps (requires mas CLI)

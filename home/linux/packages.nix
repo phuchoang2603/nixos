@@ -5,6 +5,7 @@
     microsoft-edge
     vscode
     jetbrains.datagrip
+    yaak
     obsidian
     inotify-tools
     vlc

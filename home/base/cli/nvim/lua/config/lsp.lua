@@ -14,6 +14,7 @@ local servers = {
 	"helm_ls",
 	"html",
 	"jsonls",
+	"ts_ls",
 	"lua_ls",
 	"marksman",
 	"nixd",

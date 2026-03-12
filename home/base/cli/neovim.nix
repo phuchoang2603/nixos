@@ -94,6 +94,7 @@
 
       # JSON / HTML / CSS / ESLINT
       vscode-langservers-extracted
+      typescript-language-server
       prettierd
 
       # LUA

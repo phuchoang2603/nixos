@@ -10,7 +10,7 @@
       "enable-normalization-flatten-containers" = true;
       "enable-normalization-opposite-orientation-for-nested-containers" = true;
 
-      "default-root-container-layout" = "tiles";
+      "default-root-container-layout" = "accordion";
       "default-root-container-orientation" = "auto";
 
       "on-focused-monitor-changed" = [ "move-mouse monitor-lazy-center" ];

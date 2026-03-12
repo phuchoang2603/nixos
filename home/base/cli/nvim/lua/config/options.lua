@@ -57,8 +57,7 @@ opt.splitright = true -- Vertical splits go right
 -- Performance improvements
 opt.redrawtime = 10000
 opt.maxmempattern = 20000
-opt.updatetime = 300 -- Faster completion
-opt.timeoutlen = 300 -- Lower timeout key press
+opt.updatetime = 300
 
 vim.g.autoformat = true
 vim.g.trouble_lualine = true

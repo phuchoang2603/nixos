@@ -13,6 +13,11 @@ map("n", "<leader>bb", "<cmd>e #<cr>", opts)
 map("n", "<leader>%", "<C-W>v", { desc = "Split Window Right", remap = true })
 map("n", '<leader>"', "<C-W>s", { desc = "Split Window Below", remap = true })
 
+-- focus on float window
+map("n", "<leader>f", function()
+	vim.diagnostic.open_float({ focusable = true })
+end, opts)
+
 -- terminal
 map("t", "<C-q>", "<c-\\><c-n>", { desc = "Enter Normal Mode" })
 

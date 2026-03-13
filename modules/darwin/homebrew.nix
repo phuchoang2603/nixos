@@ -39,6 +39,7 @@
       "obsidian"
       "skim"
       "karabiner-elements"
+      "bettertouchtool"
       "yaak"
     ];
 

@@ -131,35 +131,30 @@
         {
           "if".app-id = "com.microsoft.edgemac";
           run = [
-            "layout tiling"
             "move-node-to-workspace 1"
           ];
         }
         {
           "if".app-id = "com.mitchellh.ghostty";
           run = [
-            "layout tiling"
             "move-node-to-workspace 2"
           ];
         }
         {
           "if".app-id = "md.obsidian";
           run = [
-            "layout tiling"
             "move-node-to-workspace 4"
           ];
         }
         {
           "if".app-id = "com.spotify.client";
           run = [
-            "layout tiling"
             "move-node-to-workspace 5"
           ];
         }
         {
           "if".app-id = "com.apple.finder";
           run = [
-            "layout tiling"
             "move-node-to-workspace 6"
           ];
         }

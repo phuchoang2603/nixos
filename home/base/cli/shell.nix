@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 
 {
   programs = {
@@ -6,6 +6,9 @@
     zsh = {
       enable = true;
       enableCompletion = true;
+
+      # Silence upcoming default change warning; keep legacy behavior.
+      dotDir = config.home.homeDirectory;
 
       # Vi mode
       defaultKeymap = "viins";

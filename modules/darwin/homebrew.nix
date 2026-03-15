@@ -27,6 +27,7 @@
       "colima"
       "docker"
       "docker-compose"
+      "docker-buildx"
       "docker-credential-helper"
     ];
 

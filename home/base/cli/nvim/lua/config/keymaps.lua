@@ -54,7 +54,6 @@ map("i", '"', '""<left>')
 map("i", "(", "()<left>")
 map("i", "[", "[]<left>")
 map("i", "{", "{}<left>")
-map("i", "<", "<><left>")
 
 -- move text up and down
 map("n", "<C-j>", ":m .+1<CR>==", opts)

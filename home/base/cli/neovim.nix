@@ -109,7 +109,7 @@
       nixfmt
 
       # PYTHON
-      basedpyright
+      ty
       ruff
       black
       isort

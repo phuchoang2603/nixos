@@ -7,20 +7,8 @@
       enable = true;
       enableCompletion = true;
 
-      # Silence upcoming default change warning; keep legacy behavior.
-      dotDir = config.home.homeDirectory;
-
       # Vi mode
       defaultKeymap = "viins";
-
-      # History configuration
-      history = {
-        size = 50000;
-        save = 50000;
-        ignoreDups = true;
-        ignoreAllDups = true;
-        share = true;
-      };
 
       # Shell aliases
       shellAliases = {
@@ -31,7 +19,8 @@
 
         # Application shortcuts
         v = "nvim";
-        g = "git";
+        gaa = "git add --all";
+        gcam = "git commit --all --message";
         d = "docker";
         dcp = "docker compose";
         lzg = "lazygit";
@@ -52,57 +41,14 @@
         KEYTIMEOUT = "1";
       };
 
-      # Local variables (defined at top of .zshrc)
-      localVariables = {
-        # fzf-tab zstyles
-        ZSH_FZF_TAB_SWITCH_GROUP = "'<' '>'";
-      };
-
       # Plugins
       plugins = [
-        {
-          name = "fzf-tab";
-          src = pkgs.zsh-fzf-tab;
-          file = "share/fzf-tab/fzf-tab.plugin.zsh";
-        }
         {
           name = "zsh-autosuggestions";
           src = pkgs.zsh-autosuggestions;
           file = "share/zsh-autosuggestions/zsh-autosuggestions.zsh";
         }
       ];
-
-      # Completion initialization
-      completionInit = ''
-        fpath+=(${pkgs.zsh-completions}/share/zsh/site-functions)
-
-        autoload -Uz compinit
-
-        typeset _zcompdump_dir="''${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
-        typeset _zcompdump_file="$_zcompdump_dir/zcompdump-''${ZSH_VERSION}"
-        mkdir -p "$_zcompdump_dir"
-
-        if [[ -f "$_zcompdump_file" ]]; then
-          compinit -C -d "$_zcompdump_file"
-        else
-          compinit -d "$_zcompdump_file"
-        fi
-
-        zstyle ':completion:*' use-cache on
-        zstyle ':completion:*' cache-path "$_zcompdump_dir"
-
-        # Case insensitive completion
-        zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
-
-        # Enable group descriptions
-        zstyle ':completion:*:descriptions' format '[%d]'
-
-        # Enable filename colorizing
-        zstyle ':completion:*' list-colors "''${(s.:.)LS_COLORS}"
-
-        # Disable default menu for fzf-tab
-        zstyle ':completion:*' menu no
-      '';
 
       # Main zsh initialization content
       initContent = ''
@@ -134,18 +80,16 @@
         autoload -Uz edit-command-line
         zle -N edit-command-line
 
-        # KUBECONFIG - merge all kube config files
-        export KUBECONFIG=$(find ~/.kube -name "*.yml" 2>/dev/null | tr '\n' ':' | sed 's/:$//')
-
         # kubectl completion
         if command -v kubectl &>/dev/null; then
           source <(kubectl completion zsh)
         fi
+        export KUBECONFIG=$(find ~/.kube -name "*.yml" 2>/dev/null | tr '\n' ':' | sed 's/:$//')
 
-        # fzf-tab configuration
-        zstyle ':fzf-tab:*' switch-group '<' '>'
-        zstyle ':fzf-tab:complete:*' fzf-flags --preview-window hidden
-        zstyle ':fzf-tab:*' menu no
+        # docker completion
+        if [ -d "$HOME/.docker/completions" ]; then
+          fpath=($HOME/.docker/completions $fpath)
+        fi
       '';
 
       # Custom functions as site functions (autoloadable)

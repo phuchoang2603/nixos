@@ -4,7 +4,6 @@ end
 
 -- LSP
 local servers = {
-	"basedpyright",
 	"bashls",
 	"clangd",
 	"cssls",
@@ -14,7 +13,6 @@ local servers = {
 	"helm_ls",
 	"html",
 	"jsonls",
-	"ts_ls",
 	"lua_ls",
 	"marksman",
 	"nixd",
@@ -22,6 +20,8 @@ local servers = {
 	"taplo",
 	"terraformls",
 	"tflint",
+	"ts_ls",
+	"ty",
 	"yamlls",
 }
 vim.lsp.enable(servers)

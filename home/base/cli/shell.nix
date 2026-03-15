@@ -1,4 +1,4 @@
-{ pkgs, config, ... }:
+{ pkgs, ... }:
 
 {
   programs = {
@@ -13,7 +13,6 @@
       # Shell aliases
       shellAliases = {
         # File operations
-        ls = "eza -lh --group-directories-first --icons=auto";
         lt = "eza --tree --level=2";
         copy = "rclone copy --progress --multi-thread-streams=32";
 
@@ -80,15 +79,9 @@
         autoload -Uz edit-command-line
         zle -N edit-command-line
 
-        # kubectl completion
-        if command -v kubectl &>/dev/null; then
-          source <(kubectl completion zsh)
-        fi
-        export KUBECONFIG=$(find ~/.kube -name "*.yml" 2>/dev/null | tr '\n' ':' | sed 's/:$//')
-
-        # docker completion
-        if [ -d "$HOME/.docker/completions" ]; then
-          fpath=($HOME/.docker/completions $fpath)
+        # Optimized KUBECONFIG finder
+        if [ -d "$HOME/.kube" ]; then
+          export KUBECONFIG=$(find "$HOME/.kube" -maxdepth 1 -name "*.yml" 2>/dev/null | tr '\n' ':' | sed 's/:$//')
         fi
       '';
 
@@ -123,6 +116,12 @@
           fi
         '';
       };
+    };
+
+    # Carapace
+    carapace = {
+      enable = true;
+      enableZshIntegration = true;
     };
 
     # Atuin - shell history
@@ -173,6 +172,7 @@
     # Eza - ls replacement
     eza = {
       enable = true;
+      enableZshIntegration = true;
       icons = "auto";
       git = true;
     };

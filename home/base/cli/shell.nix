@@ -90,15 +90,6 @@
 
       # Custom functions as site functions (autoloadable)
       siteFunctions = {
-        y = ''
-          local tmp="$(mktemp -t "yazi-cwd.XXXXXX")"
-          yazi "$@" --cwd-file="$tmp"
-          if cwd="$(cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
-            cd -- "$cwd"
-          fi
-          rm -f -- "$tmp"
-        '';
-
         img2png = ''
           if [ -z "$1" ]; then
             echo "Usage: img2png <input_file>"

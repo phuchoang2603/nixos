@@ -23,7 +23,6 @@ configuration {
 	show-icons: true;
   icon-theme: "Papirus";
   steal-focus: true;
-  terminal: "ghostty";
   font: "CaskaydiaMono Nerd Font 10";
 	sort: false;
 	threads: 0;
@@ -32,11 +31,6 @@ configuration {
 	/*---------- Matching setting ----------*/
 	matching: "normal";
 	tokenize: true;
-	/*---------- SSH settings ----------*/
-	ssh-client: "ssh";
-  ssh-command: "ghostty -e ssh {host}";
-	parse-hosts: true;
-	parse-known-hosts: true;
 	/*---------- Run settings ----------*/
 	run-command: "{cmd}";
 	run-list-command: "";

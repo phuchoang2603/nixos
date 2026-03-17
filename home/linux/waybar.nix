@@ -151,7 +151,6 @@ let
       exec = "waybar-docker";
       interval = 15;
       tooltip = true;
-      on-click = "ghostty -e lazydocker";
     };
 
     "custom/todoist" = {

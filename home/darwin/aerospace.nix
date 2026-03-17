@@ -43,7 +43,7 @@
         ];
         alt-2 = [
           "workspace 2"
-          "exec-and-forget open -a 'Ghostty'"
+          "exec-and-forget open -a 'Alacritty'"
         ];
         alt-3 = "workspace 3";
         alt-4 = [
@@ -135,7 +135,7 @@
           ];
         }
         {
-          "if".app-id = "com.mitchellh.ghostty";
+          "if".app-id = "org.alacritty";
           run = [
             "move-node-to-workspace 2"
           ];

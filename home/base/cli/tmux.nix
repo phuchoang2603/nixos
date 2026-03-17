@@ -69,12 +69,11 @@
       bind "o" run-shell "sesh connect \"$(
         sesh list --icons | fzf-tmux -p 80%,80% \
           --no-sort --ansi --border-label ' sesh ' --prompt '⚡  ' \
-          --header 'Alt-a all | Alt-t tmux | Alt-z zoxide | Alt-x tmux kill' \
-          --bind 'tab:down,btab:up' \
-          --bind 'alt-a:change-prompt(⚡  )+reload(sesh list --icons)' \
-          --bind 'alt-t:change-prompt(🪟  )+reload(sesh list -t --icons)' \
-          --bind 'alt-z:change-prompt(📁  )+reload(sesh list -z --icons)' \
-          --bind 'alt-x:execute(tmux kill-session -t {2..})+change-prompt(⚡  )+reload(sesh list -t --icons)' \
+          --header 'Ctrl-a all | Ctrl-t tmux | Ctrl-z zoxide | Ctrl-x tmux kill' \
+          --bind 'ctrl-a:change-prompt(⚡  )+reload(sesh list --icons)' \
+          --bind 'ctrl-t:change-prompt(🪟  )+reload(sesh list -t --icons)' \
+          --bind 'ctrl-z:change-prompt(📁  )+reload(sesh list -z --icons)' \
+          --bind 'ctrl-x:execute(tmux kill-session -t {2..})+change-prompt(⚡  )+reload(sesh list -t --icons)' \
           --preview-window 'top:60%' \
           --preview 'sesh preview {}'
       )\""

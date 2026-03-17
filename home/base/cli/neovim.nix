@@ -49,7 +49,6 @@
 
       # Core
       plenary-nvim
-      opencode-nvim
       quicker-nvim
 
       # Document

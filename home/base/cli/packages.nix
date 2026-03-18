@@ -29,5 +29,7 @@
     kubectx
     krew
     lazydocker
+    awscli2
+    google-cloud-sdk
   ];
 }

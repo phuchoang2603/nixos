@@ -27,6 +27,7 @@
     kubernetes-helm
     kubectl
     kubectx
+    minikube
     krew
     lazydocker
     awscli2

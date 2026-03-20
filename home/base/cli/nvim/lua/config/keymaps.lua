@@ -5,8 +5,6 @@ local map = vim.keymap.set
 local opts = { noremap = true, silent = true }
 
 -- buffer navigation
-map("n", "<S-h>", "<cmd>bprevious<cr>", opts)
-map("n", "<S-l>", "<cmd>bnext<cr>", opts)
 map("n", "<leader>bb", "<cmd>e #<cr>", opts)
 
 -- windows navigation

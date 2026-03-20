@@ -57,6 +57,10 @@ for _, map in ipairs({
 	-- Loops
 	{ { "n", "x", "o" }, "]l", mv.goto_next_start, { "@loop.inner", "@loop.outer" } },
 	{ { "n", "x", "o" }, "[l", mv.goto_previous_start, { "@loop.inner", "@loop.outer" } },
+
+	-- Key-value pairs
+	{ { "n", "x", "o" }, "]k", mv.goto_next_start, "@assignment.outer" },
+	{ { "n", "x", "o" }, "[k", mv.goto_previous_start, "@assignment.outer" },
 }) do
 	local modes, lhs, fn, query = map[1], map[2], map[3], map[4]
 

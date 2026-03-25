@@ -87,6 +87,7 @@
       gopls
       gotools
       gofumpt
+      protols
 
       # HELM
       helm-ls

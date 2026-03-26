@@ -123,6 +123,9 @@
 
       # YAML
       yaml-language-server
+
+      # Latex
+      texlab
     ];
   };
 

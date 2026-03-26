@@ -20,6 +20,7 @@ local servers = {
 	"ruff",
 	"taplo",
 	"terraformls",
+	"texlab",
 	"tflint",
 	"ts_ls",
 	"ty",

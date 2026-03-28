@@ -1,9 +1,13 @@
-{ pkgs, lib, ... }:
-
 {
   imports = [
     ./system.nix
     ./homebrew.nix
+    ./custom-user-preferences.nix
+    ./dock.nix
+    ./trackpad.nix
+    ./finder.nix
+    ./ns-global-domain.nix
+    ./launchd.nix
   ];
 
   # Nix settings

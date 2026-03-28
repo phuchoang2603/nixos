@@ -19,14 +19,14 @@ opt.autoindent = true -- Copy indent from current line
 
 -- Search settings
 opt.ignorecase = true -- Case insensitive search
-opt.smartcase = true -- Case sensitive if uppercase in search
+opt.smartcase = true -- Case-sensitive if uppercase in search
 opt.hlsearch = true -- Highlight search results
 opt.incsearch = true -- Show matches as you type
 
 -- Visual settings
 opt.signcolumn = "yes" -- Always show sign column
 opt.showmatch = true -- Highlight matching brackets
-opt.showmode = true -- Show all modes in statusline
+opt.showmode = true -- Show all modes in status line
 opt.winborder = "rounded" -- Round popup window
 vim.wo.foldmethod = "expr"
 opt.foldlevel = 99 -- Start buffer unfold
@@ -46,7 +46,7 @@ opt.backup = false -- Don't create backup files
 opt.writebackup = false -- Don't create backup before writing
 opt.swapfile = false -- Don't create swap files
 opt.autoread = true -- Auto reload files changed outside vim
-opt.autowrite = true -- Auto save
+opt.autowrite = true -- Autosave
 opt.clipboard = vim.env.SSH_TTY and "" or "unnamedplus" -- Sync with system clipboard
 
 -- Behavior settings

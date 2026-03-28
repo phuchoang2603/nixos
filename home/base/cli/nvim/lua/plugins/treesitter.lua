@@ -3,9 +3,9 @@ require("nvim-treesitter-textobjects").setup({
 		enable = true,
 		lookahead = true,
 		selection_modes = {
-			["@parameter.outer"] = "v", -- charwise
-			["@function.outer"] = "V", -- linewise
-			["@class.outer"] = "<c-v>", -- blockwise
+			["@parameter.outer"] = "v", -- char wise
+			["@function.outer"] = "V", -- line wise
+			["@class.outer"] = "<c-v>", -- block wise
 		},
 		include_surrounding_whitespace = false,
 	},

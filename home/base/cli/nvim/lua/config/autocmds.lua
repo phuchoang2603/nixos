@@ -7,7 +7,7 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 	end,
 })
 
--- no auto continue comments on new line
+-- no auto continue comments on newline
 vim.api.nvim_create_autocmd("FileType", {
 	group = vim.api.nvim_create_augroup("no_auto_comment", {}),
 	callback = function()

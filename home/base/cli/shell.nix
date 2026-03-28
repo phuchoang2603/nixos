@@ -27,7 +27,7 @@
         dcp = "docker compose";
         lzg = "lazygit";
         lzd = "lazydocker";
-        oc = "opencode --port";
+        oc = "opencode attach http://localhost:4096";
 
         # Kubernetes
         kx = "kubectx";
@@ -88,7 +88,6 @@
         fi
       '';
 
-      # Custom functions as site functions (autoloadable)
       siteFunctions = {
         img2png = ''
           if [ -z "$1" ]; then

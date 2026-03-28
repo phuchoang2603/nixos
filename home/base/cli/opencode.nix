@@ -1,49 +1,31 @@
 { pkgs, ... }:
 
 {
-  programs.opencode = {
-    enable = true;
-    package = pkgs.opencode;
-
-    # Basic configuration
-    settings = {
-      "$schema" = "https://opencode.ai/config.json";
-
-      # TUI settings
-      tui = {
-        scroll_acceleration = {
-          enabled = true;
+  programs = {
+    opencode = {
+      enable = true;
+      package = pkgs.opencode;
+      enableMcpIntegration = true;
+      settings = {
+        permission = {
+          edit = "ask";
+          bash = "ask";
         };
-      };
-
-      # Permission settings
-      permission = {
-        edit = "ask";
-        bash = "ask";
-      };
-
-      # Keybindings
-      keybinds = {
-        messages_half_page_up = "{";
-        messages_half_page_down = "}";
-      };
-
-      # MCP servers (disabled)
-      mcp = {
-        "mcp-obsidian" = {
-          type = "local";
-          command = [
-            "uvx"
-            "mcp-obsidian"
-          ];
-          enabled = false;
-        };
-        "context7" = {
-          type = "remote";
-          url = "https://mcp.context7.com/mcp";
-          enabled = false;
+        keybinds = {
+          messages_half_page_up = "{";
+          messages_half_page_down = "}";
         };
       };
     };
+
+    mcp = {
+      enable = true;
+      servers = {
+        "context7" = {
+          url = "https://mcp.context7.com/mcp";
+        };
+      };
+    };
+
   };
 }

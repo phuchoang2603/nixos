@@ -89,20 +89,21 @@
       gofumpt
       protols
 
-      # HELM
-      helm-ls
-
-      # JSON / HTML / CSS / ESLINT
+      # JSON / HTML / CSS / JAVASCRIPT / YAML/ TOML
       vscode-langservers-extracted
-      typescript-language-server
+      taplo
+      yaml-language-server
+      typescript-go
       prettierd
 
       # LUA
       lua-language-server
       stylua
 
-      # MARKDOWN
+      # Documents
       marksman
+      texlab
+      harper
 
       # NIX
       nixd
@@ -118,14 +119,8 @@
       terraform-ls
       tflint
 
-      # TOML
-      taplo
-
-      # YAML
-      yaml-language-server
-
-      # Latex
-      texlab
+      # HELM
+      helm-ls
     ];
   };
 

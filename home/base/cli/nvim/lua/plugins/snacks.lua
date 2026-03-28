@@ -391,13 +391,6 @@ local keymaps = {
 
 	-- Snacks Toggles (UI)
 	{
-		"<leader>us",
-		function()
-			Snacks.toggle.option("spell", { name = "Spelling" }):toggle()
-		end,
-		desc = "Toggle Spelling",
-	},
-	{
 		"<leader>uw",
 		function()
 			Snacks.toggle.option("wrap", { name = "Wrap" }):toggle()

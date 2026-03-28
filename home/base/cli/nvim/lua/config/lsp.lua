@@ -10,6 +10,7 @@ local servers = {
 	"copilot",
 	"docker_language_server",
 	"gopls",
+	"harper_ls",
 	"helm_ls",
 	"html",
 	"jsonls",
@@ -22,7 +23,7 @@ local servers = {
 	"terraformls",
 	"texlab",
 	"tflint",
-	"ts_ls",
+	"tsgo",
 	"ty",
 	"yamlls",
 }
@@ -89,12 +90,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
 			-- Inlay hints
 			if client:supports_method("textDocument/inlayHint") then
 				vim.lsp.inlay_hint.enable(true, { bufnr = args.buf })
-			end
-
-			if client:supports_method("textDocument/documentColor") then
-				vim.lsp.document_color.enable(true, args.buf, {
-					style = "background",
-				})
 			end
 
 			-- Configure Keymaps

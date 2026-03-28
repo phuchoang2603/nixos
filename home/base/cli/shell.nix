@@ -27,7 +27,7 @@
         dcp = "docker compose";
         lzg = "lazygit";
         lzd = "lazydocker";
-        oc = "opencode attach http://localhost:4096";
+        oc = "opencode";
 
         # Kubernetes
         kx = "kubectx";

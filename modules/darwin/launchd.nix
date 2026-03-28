@@ -1,10 +1,11 @@
-{ pkgs, ... }:
+{ user, pkgs, ... }:
 
 {
   launchd.agents.opencode-serve = {
-    command = "${pkgs.opencode}/bin/opencode serve";
+    command = "${pkgs.opencode}/bin/opencode serve --port 4096";
 
     serviceConfig = {
+      UserName = user;
       KeepAlive = true;
       RunAtLoad = true;
 

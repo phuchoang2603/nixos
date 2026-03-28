@@ -38,6 +38,7 @@
       "visual-studio-code"
       "datagrip"
       "obsidian"
+      "zalo"
       "skim"
       "karabiner-elements"
       "bettertouchtool"

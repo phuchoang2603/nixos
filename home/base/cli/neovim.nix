@@ -47,6 +47,7 @@
         p.helm
       ]))
       nvim-treesitter-textobjects
+      helm-ls-nvim
 
       # Core
       plenary-nvim

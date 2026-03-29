@@ -15,9 +15,6 @@ vim.filetype.add({
 		[".gitlab-ci.yml"] = "yaml.gitlab",
 	},
 	pattern = {
-		-- Match Helm templates (usually in a 'templates' folder)
-		[".*/templates/.*%.yaml"] = "helm",
-		[".*/templates/.*%.tpl"] = "gotmpl",
 		-- Terraform vars
 		[".*%.tfvars"] = "terraform-vars",
 		-- Web stuff

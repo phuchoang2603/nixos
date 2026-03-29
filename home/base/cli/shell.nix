@@ -82,9 +82,8 @@
         autoload -Uz edit-command-line
         zle -N edit-command-line
 
-        # Optimized KUBECONFIG finder
         if [ -d "$HOME/.kube" ]; then
-          export KUBECONFIG=$(find "$HOME/.kube" -maxdepth 1 -name "*.yml" 2>/dev/null | tr '\n' ':' | sed 's/:$//')
+          export KUBECONFIG=$(find "$HOME/.kube" -maxdepth 1 \( -name "config" -o -name "*.yaml" -o -name "*.yml" \) 2>/dev/null | tr '\n' ':' | sed 's/:$//')
         fi
       '';
 

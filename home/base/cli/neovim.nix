@@ -42,6 +42,7 @@
         p.nix
         p.latex
         p.dockerfile
+        p.starlark
         p.hcl
         p.helm
       ]))
@@ -80,19 +81,14 @@
       # C / C++
       clang-tools
 
-      # DOCKER
-      docker-language-server
-
       # GO
       gopls
       gotools
       gofumpt
       protols
 
-      # JSON / HTML / CSS / JAVASCRIPT / YAML/ TOML
+      # JSON / HTML / CSS / JavaScript
       vscode-langservers-extracted
-      taplo
-      yaml-language-server
       typescript-go
       prettierd
 
@@ -115,12 +111,14 @@
       black
       isort
 
-      # TERRAFORM
+      # DevOps
       terraform-ls
       tflint
-
-      # HELM
+      tilt
+      docker-language-server
       helm-ls
+      taplo
+      yaml-language-server
     ];
   };
 

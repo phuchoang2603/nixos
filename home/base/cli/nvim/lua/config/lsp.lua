@@ -23,6 +23,7 @@ local servers = {
 	"terraformls",
 	"texlab",
 	"tflint",
+	"tilt_ls",
 	"tsgo",
 	"ty",
 	"yamlls",

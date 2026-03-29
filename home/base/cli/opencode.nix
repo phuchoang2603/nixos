@@ -6,6 +6,9 @@
       enable = true;
       package = pkgs.opencode;
       enableMcpIntegration = true;
+      skills = {
+        find-skills = ./skills/find-skills;
+      };
       settings = {
         permission = {
           edit = "ask";

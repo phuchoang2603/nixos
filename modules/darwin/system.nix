@@ -14,10 +14,6 @@
         NowPlaying = false;
       };
 
-      screencapture = {
-        target = "clipboard";
-      };
-
       hitoolbox.AppleFnUsageType = "Change Input Source";
 
       spaces = {

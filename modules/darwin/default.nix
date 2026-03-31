@@ -8,6 +8,7 @@
     ./trackpad.nix
     ./finder.nix
     ./ns-global-domain.nix
+    ./screencapture.nix
   ];
 
   # Nix settings

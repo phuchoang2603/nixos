@@ -23,7 +23,7 @@ configuration {
 	show-icons: true;
   icon-theme: "Papirus";
   steal-focus: true;
-  font: "CaskaydiaMono Nerd Font 10";
+  font: "CaskaydiaCove Nerd Font 10";
 	sort: false;
 	threads: 0;
 	click-to-exit: true;

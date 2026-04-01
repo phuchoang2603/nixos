@@ -186,7 +186,7 @@ in
         in
         ''
           * {
-            font-family: CaskaydiaMono Nerd Font;
+            font-family: CaskaydiaCove Nerd Font;
             font-weight: 700;
             font-size: 14px;
           }

@@ -45,7 +45,7 @@
   };
 
   fonts.packages = with pkgs; [
-    nerd-fonts.caskaydia-mono
+    nerd-fonts.caskaydia-cove
     noto-fonts
     noto-fonts-color-emoji
   ];

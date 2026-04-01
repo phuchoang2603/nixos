@@ -2,7 +2,7 @@
 
 {
   imports = [
-    ./alacritty.nix
+    ./kitty.nix
     ./theming.nix
     ./spicetify.nix
   ];

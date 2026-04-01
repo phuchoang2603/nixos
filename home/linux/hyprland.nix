@@ -30,7 +30,7 @@
 
       # Variables
       "$browser" = "microsoft-edge";
-      "$terminal" = "alacritty";
+      "$terminal" = "kitty";
       "$editor" = "code";
       "$music" = "spotify";
       "$note" = "obsidian";
@@ -224,13 +224,13 @@
         "match:class (.*), center on"
         "match:class (.*), size 95% 95%"
         "match:class ^(microsoft-edge)$, workspace 1"
-        "match:class ^(Alacritty)$, workspace 2"
+        "match:class ^(kitty)$, workspace 2"
         "match:class ^(code|jetbrains-datagrip|libreoffice.*)$, workspace 3"
         "match:class ^(obsidian)$, workspace 4"
         "match:class ^(Spotify)$, workspace 5"
         "match:class ^(org.gnome.Nautilus)$, workspace 6"
         "match:class ^(com.obsproject.Studio)$, workspace 7"
-        "match:class ^(microsoft-edge|Alacritty|code|libreoffice.*|Spotify|obsidian|org.gnome.Nautilus|com.obsproject.Studio|org.pwmt.zathura)$, tile on"
+        "match:class ^(microsoft-edge|kitty|code|libreoffice.*|Spotify|obsidian|org.gnome.Nautilus|com.obsproject.Studio|org.pwmt.zathura)$, tile on"
         "match:class ^(obsidian|microsoft-edge|org.gnome.NautilusPreviewer|org.pwmt.zathura)$, opacity 1 override"
       ];
     };

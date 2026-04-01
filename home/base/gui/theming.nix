@@ -19,8 +19,8 @@ in
 
     fonts = {
       monospace = {
-        name = "CaskaydiaMono Nerd Font";
-        package = pkgs.nerd-fonts.caskaydia-mono;
+        name = "CaskaydiaCove Nerd Font Mono";
+        package = pkgs.nerd-fonts.caskaydia-cove;
       };
       sansSerif = {
         name = "Noto Sans";

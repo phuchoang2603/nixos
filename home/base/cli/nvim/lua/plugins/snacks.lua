@@ -1,13 +1,21 @@
 local Snacks = require("snacks")
 require("todo-comments").setup()
 
+vim.api.nvim_set_hl(0, "SnacksDim", { fg = "#444444", bg = "NONE" })
+
 Snacks.setup({
 	bigfile = { enabled = true },
 	input = { enabled = true },
 	layout = { enabled = true },
 	notifier = { enabled = true },
 	quickfile = { enabled = true },
-	dim = { enabled = true },
+	dim = {
+		scope = {
+			min_size = 3,
+			max_size = 10,
+			siblings = true,
+		},
+	},
 	scope = { enabled = true },
 	statuscolumn = { enabled = true },
 	toggle = { enabled = true },
@@ -399,6 +407,13 @@ local keymaps = {
 	},
 	{
 		"<leader>ud",
+		function()
+			Snacks.toggle.dim():toggle()
+		end,
+		desc = "Toggle Dim",
+	},
+	{
+		"<leader>ux",
 		function()
 			Snacks.toggle.diagnostics():toggle()
 		end,

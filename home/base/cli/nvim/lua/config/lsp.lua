@@ -16,7 +16,7 @@ local servers = {
 	"jsonls",
 	"lua_ls",
 	"protols",
-	"marksman",
+	"markdown_oxide",
 	"nixd",
 	"ruff",
 	"taplo",

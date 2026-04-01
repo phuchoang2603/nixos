@@ -98,7 +98,7 @@
       stylua
 
       # Documents
-      marksman
+      markdown-oxide
       texlab
       harper
 

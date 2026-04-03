@@ -52,7 +52,16 @@ in
 
     targets = {
       neovim = {
-        enable = false;
+        enable = true;
+        plugin = "base16-nvim";
+        colors = {
+          enable = true;
+        };
+        transparentBackground = {
+          main = true;
+          numberLine = true;
+          signColumn = true;
+        };
       };
       rofi = {
         enable = false;

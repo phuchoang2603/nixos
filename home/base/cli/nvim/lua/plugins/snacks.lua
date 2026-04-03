@@ -5,7 +5,10 @@ vim.api.nvim_set_hl(0, "SnacksDim", { fg = "#444444", bg = "NONE" })
 
 Snacks.setup({
 	bigfile = { enabled = true },
-	explorer = { enabled = true },
+	explorer = {
+		replace_netrw = true,
+		trash = true,
+	},
 	input = { enabled = true },
 	layout = { enabled = true },
 	notifier = { enabled = true },
@@ -91,7 +94,23 @@ Snacks.setup({
 				},
 			},
 			explorer = {
+				hidden = true,
+				ignored = true,
+				exclude = {
+					".git",
+					".pnpm-store",
+					".venv",
+					".DS_Store",
+					"**/.node-gyp/**",
+				},
 				layout = { layout = { position = "right" } },
+				win = {
+					list = {
+						keys = {
+							["x"] = "explorer_move",
+						},
+					},
+				},
 			},
 		},
 	},
@@ -125,6 +144,13 @@ local keymaps = {
 			Snacks.picker.notifications()
 		end,
 		desc = "Notification History",
+	},
+	{
+		"<leader>f",
+		function()
+			Snacks.explorer()
+		end,
+		desc = "File Explorer",
 	},
 
 	-- buffers
@@ -439,13 +465,6 @@ local keymaps = {
 		end,
 		mode = { "n", "t" },
 		desc = "Toggle terminal",
-	},
-	{
-		"<leader>ue",
-		function()
-			Snacks.explorer()
-		end,
-		desc = "Toggle file tree",
 	},
 }
 

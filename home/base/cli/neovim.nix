@@ -11,41 +11,17 @@
     vimAlias = true;
     viAlias = true;
     defaultEditor = true;
+    extraLuaConfig = ''
+      require("config")
+      require("plugins")
+    '';
 
     plugins = with pkgs.vimPlugins; [
       # LSP related
-      blink-cmp # completion
-      friendly-snippets # snippets
-      conform-nvim # format
-      (nvim-treesitter.withPlugins (p: [
-        p.comment
-        p.markdown
-        p.markdown_inline
-        p.query
-        p.vim
-        p.json
-        p.xml
-        p.yaml
-        p.ini
-        p.toml
-        p.bash
-        p.c
-        p.cpp
-        p.python
-        p.go
-        p.lua
-        p.html
-        p.css
-        p.javascript
-        p.typescript
-        p.sql
-        p.nix
-        p.latex
-        p.dockerfile
-        p.starlark
-        p.hcl
-        p.helm
-      ]))
+      blink-cmp
+      friendly-snippets
+      conform-nvim
+      nvim-treesitter.withAllGrammars
       nvim-treesitter-textobjects
       helm-ls-nvim
 
@@ -60,7 +36,6 @@
       # UI stuff
       mini-icons
       mini-statusline
-      base16-nvim
       gitsigns-nvim
       yazi-nvim
       which-key-nvim
@@ -68,6 +43,13 @@
       nui-nvim
       snacks-nvim
       todo-comments-nvim
+
+      # My Neovim config
+      (pkgs.vimUtils.buildVimPlugin {
+        name = "my-neovim-config";
+        src = ./nvim;
+        doCheck = false;
+      })
     ];
 
     extraPackages = with pkgs; [
@@ -121,19 +103,5 @@
       taplo
       yaml-language-server
     ];
-  };
-
-  xdg.configFile = {
-    "nvim/lua" = {
-      source = ./nvim/lua;
-      recursive = true;
-    };
-
-    "nvim/lsp" = {
-      source = ./nvim/lsp;
-      recursive = true;
-    };
-
-    "nvim/init.lua".source = ./nvim/init.lua;
   };
 }

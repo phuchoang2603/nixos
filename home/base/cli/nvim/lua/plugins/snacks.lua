@@ -5,6 +5,7 @@ vim.api.nvim_set_hl(0, "SnacksDim", { fg = "#444444", bg = "NONE" })
 
 Snacks.setup({
 	bigfile = { enabled = true },
+	explorer = { enabled = true },
 	input = { enabled = true },
 	layout = { enabled = true },
 	notifier = { enabled = true },
@@ -67,15 +68,6 @@ Snacks.setup({
 			grep = {
 				hidden = true,
 				ignored = true,
-				win = {
-					input = {
-						keys = {
-							["<S-h>"] = "toggle_hidden",
-							["<S-i>"] = "toggle_ignored",
-							["<S-f>"] = "toggle_follow",
-						},
-					},
-				},
 				exclude = {
 					"**/.git/*",
 					"**/node_modules/*",
@@ -98,7 +90,9 @@ Snacks.setup({
 					"**/.node-gyp/**",
 				},
 			},
-			grep_buffers = {},
+			explorer = {
+				layout = { layout = { position = "right" } },
+			},
 		},
 	},
 })
@@ -445,6 +439,13 @@ local keymaps = {
 		end,
 		mode = { "n", "t" },
 		desc = "Toggle terminal",
+	},
+	{
+		"<leader>ue",
+		function()
+			Snacks.explorer()
+		end,
+		desc = "Toggle file tree",
 	},
 }
 

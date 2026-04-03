@@ -78,6 +78,18 @@
           --preview 'sesh preview {}'
       )\""
 
+      bind "g" display-popup \
+        -d "#{pane_current_path}" \
+        -w 80% \
+        -h 80% \
+        -E "lazygit"
+
+      bind "y" display-popup \
+        -d "#{pane_current_path}" \
+        -w 80% \
+        -h 80% \
+        -E "lazydocker"
+
       bind -N "last-session (via sesh) " L run-shell "sesh last"
     '';
   };

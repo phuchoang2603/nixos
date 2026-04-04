@@ -39,22 +39,9 @@ local default_keymaps = {
 	{ keys = "K", func = vim.lsp.buf.hover, desc = "Hover (alt)", has = "hoverProvider" },
 	{ keys = "gd", func = vim.lsp.buf.definition, desc = "Goto Definition", has = "definitionProvider" },
 	{
-		keys = "<leader>uc",
-		func = function()
-			local is_enabled = vim.lsp.inline_completion.is_enabled()
-			vim.lsp.inline_completion.enable(not is_enabled)
-			vim.notify("Copilot: " .. (not is_enabled and "Enabled" or "Disabled"))
-		end,
-		desc = "Toggle Copilot Suggestions",
-	},
-	{
 		mode = "i",
 		keys = "<Tab>",
 		func = function()
-			if require("sidekick").nes_jump_or_apply() then
-				return
-			end
-
 			if vim.lsp.inline_completion.get() then
 				return
 			end
@@ -107,37 +94,31 @@ function AcceptCompletion(item)
 	if type(insert_text) == "string" then
 		local range = item.range
 		if range then
+			local s_row, s_col, e_row, e_col = range:get()
 			local lines = vim.split(insert_text, "\n")
-			local current_lines = vim.api.nvim_buf_get_text(
-				range.start.buf,
-				range.start.row,
-				range.start.col,
-				range.end_.row,
-				range.end_.col,
-				{}
-			)
+			local current_lines = vim.api.nvim_buf_get_text(0, s_row, s_col, e_row, e_col, {})
 
 			local row = 1
 			while row <= #lines and row <= #current_lines and lines[row] == current_lines[row] do
 				row = row + 1
 			end
 
-			local col = 1
-			while
-				row <= #lines
-				and col <= #lines[row]
-				and row <= #current_lines
-				and col <= #current_lines[row]
-				and lines[row][col] == current_lines[row][col]
-			do
-				col = col + 1
-			end
+			-- Logic to find the next word
+			if row <= #lines then
+				local line = lines[row]
+				local curr = current_lines[row] or ""
+				local col = 1
+				while col <= #line and col <= #curr and line:sub(col, col) == curr:sub(col, col) do
+					col = col + 1
+				end
 
-			local word = string.match(lines[row]:sub(col), "%s*[^%s]%w*")
-			item.insert_text = table.concat(vim.list_slice(lines, 1, row - 1), "\n")
-				.. (row <= #current_lines and "" or "\n")
-				.. (row <= #lines and col <= #lines[row] and lines[row]:sub(1, col - 1) or "")
-				.. word
+				local word = string.match(line:sub(col), "%s*[^%s]+%s*") or ""
+				-- Reconstruct the item
+				item.insert_text = table.concat(vim.list_slice(lines, 1, row - 1), "\n")
+					.. (row > 1 and "\n" or "")
+					.. line:sub(1, col - 1)
+					.. word
+			end
 		end
 	end
 	return item

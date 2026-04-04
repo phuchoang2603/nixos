@@ -36,6 +36,21 @@ Snacks.setup({
 	},
 
 	picker = {
+		actions = {
+			sidekick_send = function(...)
+				return require("sidekick.cli.picker.snacks").send(...)
+			end,
+		},
+		win = {
+			input = {
+				keys = {
+					["<a-a>"] = {
+						"sidekick_send",
+						mode = { "n", "i" },
+					},
+				},
+			},
+		},
 		sources = {
 			files = {
 				hidden = true,
@@ -108,6 +123,8 @@ Snacks.setup({
 					list = {
 						keys = {
 							["x"] = "explorer_move",
+							["]h"] = "explorer_git_next",
+							["[h"] = "explorer_git_prev",
 						},
 					},
 				},
@@ -418,6 +435,33 @@ local keymaps = {
 	},
 
 	-- Snacks Toggles (UI)
+	{
+		"<leader>uc",
+		function()
+			local core_enabled = vim.lsp.inline_completion.is_enabled()
+			local next_state = not core_enabled
+
+			-- Toggle Core Neovim Inline Completion
+			vim.lsp.inline_completion.enable(next_state)
+
+			-- Toggle Sidekick NES
+			local nes = require("sidekick.nes")
+			if next_state then
+				nes.enable()
+			else
+				nes.disable()
+			end
+
+			local status_text = next_state and "ON" or "OFF"
+			local icon = next_state and "󰚩 " or "󱚧 "
+			vim.notify(
+				string.format("%s Copilot & Inline: %s", icon, status_text),
+				vim.log.levels.INFO,
+				{ title = "LSP Completion" }
+			)
+		end,
+		desc = "Toggle Copilot Suggestions",
+	},
 	{
 		"<leader>uw",
 		function()

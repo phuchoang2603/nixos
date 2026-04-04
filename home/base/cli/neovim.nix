@@ -25,9 +25,11 @@
       nvim-treesitter-textobjects
       helm-ls-nvim
 
-      # Core
+      # Other
       plenary-nvim
+      yazi-nvim
       quicker-nvim
+      sidekick-nvim
 
       # Document
       vimtex
@@ -37,7 +39,6 @@
       mini-icons
       mini-statusline
       gitsigns-nvim
-      yazi-nvim
       which-key-nvim
       noice-nvim
       nui-nvim

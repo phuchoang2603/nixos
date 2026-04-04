@@ -51,16 +51,14 @@ local default_keymaps = {
 		mode = "i",
 		keys = "<Tab>",
 		func = function()
-			-- If it's already enabled, try to accept a suggestion
-			if vim.lsp.inline_completion.is_enabled() then
-				if vim.lsp.inline_completion.get() then
-					return ""
-				end
-			else
-				-- If disabled, enable it and trigger a request
-				vim.lsp.inline_completion.enable(true)
-				return ""
+			if require("sidekick").nes_jump_or_apply() then
+				return
 			end
+
+			if vim.lsp.inline_completion.get() then
+				return
+			end
+
 			return "<Tab>"
 		end,
 		expr = true,
@@ -88,12 +86,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
 		local client = vim.lsp.get_client_by_id(args.data.client_id)
 		local buf = args.buf
 		if client then
-			-- Inlay hints
-			if client:supports_method("textDocument/inlayHint") then
-				vim.lsp.inlay_hint.enable(true, { bufnr = args.buf })
-			end
-
-			-- Configure Keymaps
 			for _, km in ipairs(default_keymaps) do
 				-- Only bind if there's no `has` requirement, or the server supports it
 				if not km.has or client.server_capabilities[km.has] then

@@ -1,5 +1,5 @@
-local Snacks = require("snacks")
 require("todo-comments").setup()
+local Snacks = require("snacks")
 
 vim.api.nvim_set_hl(0, "SnacksDim", { fg = "#444444", bg = "NONE" })
 

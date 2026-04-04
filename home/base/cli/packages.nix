@@ -21,9 +21,14 @@
     btop
     htop
 
+    # Lang
+    python3
+    go
+
     # Infrastructure & DevOps
     terraform
     ansible
+    tilt
     kubernetes-helm
     kubectl
     kubectx

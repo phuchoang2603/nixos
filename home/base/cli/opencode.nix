@@ -9,14 +9,16 @@
       skills = {
         find-skills = ./skills/find-skills;
       };
+      tui = {
+        keybinds = {
+          messages_half_page_up = "{";
+          messages_half_page_down = "}";
+        };
+      };
       settings = {
         permission = {
           edit = "ask";
           bash = "ask";
-        };
-        keybinds = {
-          messages_half_page_up = "{";
-          messages_half_page_down = "}";
         };
       };
     };

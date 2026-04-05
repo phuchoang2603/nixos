@@ -1,13 +1,11 @@
 {
   pkgs,
-  inputs,
   ...
 }:
 
 {
   programs.neovim = {
     enable = true;
-    package = inputs.neovim-nightly-overlay.packages.${pkgs.system}.default;
     vimAlias = true;
     viAlias = true;
     defaultEditor = true;
@@ -51,7 +49,16 @@
         p.helm
       ]))
       nvim-treesitter-textobjects
-      neotest
+      (pkgs.vimUtils.buildVimPlugin {
+        name = "neotest";
+        src = pkgs.fetchFromGitHub {
+          owner = "nvim-neotest";
+          repo = "neotest";
+          rev = "master";
+          hash = "sha256-tcbO1138SICtWg2ER973KcZvY18QvAW72MW0si6abFI=";
+        };
+        doCheck = false;
+      })
       neotest-golang
       neotest-python
       helm-ls-nvim

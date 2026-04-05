@@ -32,7 +32,7 @@
     kubernetes-helm
     kubectl
     kubectx
-    minikube
+    k9s
     krew
     lazydocker
     awscli2

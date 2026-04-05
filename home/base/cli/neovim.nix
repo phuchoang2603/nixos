@@ -81,7 +81,16 @@
 
       # Document
       vimtex
-      live-preview-nvim
+      (pkgs.vimUtils.buildVimPlugin {
+        name = "live-preview-nvim";
+        src = pkgs.fetchFromGitHub {
+          owner = "brianhuster";
+          repo = "live-preview.nvim";
+          rev = "main";
+          hash = "sha256-8R4WNFKMz72MoycBK736A5YC8NH1K8TBea2Px4udGZ8=";
+        };
+        doCheck = false;
+      })
 
       # UI stuff
       mini-icons

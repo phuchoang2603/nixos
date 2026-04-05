@@ -11,6 +11,7 @@ require("helm-ls").setup({
 	},
 })
 
+require("nvim-treesitter").setup({})
 require("nvim-treesitter-textobjects").setup({
 	select = {
 		enable = true,

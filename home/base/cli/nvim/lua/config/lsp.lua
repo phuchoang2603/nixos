@@ -93,9 +93,14 @@ function AcceptCompletion(item)
 	local insert_text = item.insert_text
 	if type(insert_text) == "string" then
 		local range = item.range
-		if range then
-			local s_row, s_col, e_row, e_col = range:get()
+		if range and range.start and range["end"] then
+			local s_row = range.start.line
+			local s_col = range.start.character
+			local e_row = range["end"].line
+			local e_col = range["end"].character
+
 			local lines = vim.split(insert_text, "\n")
+
 			local current_lines = vim.api.nvim_buf_get_text(0, s_row, s_col, e_row, e_col, {})
 
 			local row = 1
@@ -103,7 +108,6 @@ function AcceptCompletion(item)
 				row = row + 1
 			end
 
-			-- Logic to find the next word
 			if row <= #lines then
 				local line = lines[row]
 				local curr = current_lines[row] or ""
@@ -113,7 +117,7 @@ function AcceptCompletion(item)
 				end
 
 				local word = string.match(line:sub(col), "%s*[^%s]+%s*") or ""
-				-- Reconstruct the item
+
 				item.insert_text = table.concat(vim.list_slice(lines, 1, row - 1), "\n")
 					.. (row > 1 and "\n" or "")
 					.. line:sub(1, col - 1)

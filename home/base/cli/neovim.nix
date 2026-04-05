@@ -11,7 +11,7 @@
     vimAlias = true;
     viAlias = true;
     defaultEditor = true;
-    extraLuaConfig = ''
+    initLua = ''
       require("config")
       require("plugins")
     '';
@@ -21,12 +21,44 @@
       blink-cmp
       friendly-snippets
       conform-nvim
-      nvim-treesitter.withAllGrammars
+      nvim-treesitter
+      (nvim-treesitter.withPlugins (p: [
+        p.comment
+        p.markdown
+        p.markdown_inline
+        p.vim
+        p.json
+        p.xml
+        p.yaml
+        p.ini
+        p.toml
+        p.bash
+        p.c
+        p.cpp
+        p.python
+        p.go
+        p.lua
+        p.html
+        p.css
+        p.javascript
+        p.typescript
+        p.sql
+        p.nix
+        p.latex
+        p.dockerfile
+        p.starlark
+        p.hcl
+        p.helm
+      ]))
       nvim-treesitter-textobjects
+      neotest
+      neotest-golang
+      neotest-python
       helm-ls-nvim
 
       # Other
       plenary-nvim
+      nvim-nio
       yazi-nvim
       quicker-nvim
       sidekick-nvim

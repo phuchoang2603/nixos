@@ -13,6 +13,10 @@ neotest.setup({
 	summary = {
 		animated = false,
 	},
+	output = {
+		enabled = true,
+		open_on_run = true,
+	},
 	adapters = {
 		require("neotest-golang"),
 		require("neotest-python")({
@@ -37,9 +41,16 @@ local keymaps = {
 		desc = "Run Current File Tests",
 	},
 	{
+		"<leader>tl",
+		function()
+			require("neotest").run.run_last()
+		end,
+		desc = "Run Last Test",
+	},
+	{
 		"<leader>to",
 		function()
-			require("neotest").output.open({ enter = true })
+			require("neotest").output.open({ enter = true, auto_close = true })
 		end,
 		desc = "Open Test Output",
 	},
@@ -49,6 +60,13 @@ local keymaps = {
 			require("neotest").summary.toggle()
 		end,
 		desc = "Toggle Test Summary",
+	},
+	{
+		"<leader>tw",
+		function()
+			require("neotest").watch.toggle(vim.fn.expand("%"))
+		end,
+		desc = "Toggle Test Watch",
 	},
 }
 

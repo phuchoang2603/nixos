@@ -88,41 +88,42 @@ vim.api.nvim_create_autocmd("LspAttach", {
 	end,
 })
 
--- Helper for Partial Word Acceptance
 function AcceptCompletion(item)
 	local insert_text = item.insert_text
 	if type(insert_text) == "string" then
 		local range = item.range
-		if range and range.start and range["end"] then
-			local s_row = range.start.line
-			local s_col = range.start.character
-			local e_row = range["end"].line
-			local e_col = range["end"].character
-
+		if range then
 			local lines = vim.split(insert_text, "\n")
-
-			local current_lines = vim.api.nvim_buf_get_text(0, s_row, s_col, e_row, e_col, {})
+			local current_lines = vim.api.nvim_buf_get_text(
+				range.start.buf,
+				range.start.row,
+				range.start.col,
+				range.end_.row,
+				range.end_.col,
+				{}
+			)
 
 			local row = 1
 			while row <= #lines and row <= #current_lines and lines[row] == current_lines[row] do
 				row = row + 1
 			end
 
-			if row <= #lines then
-				local line = lines[row]
-				local curr = current_lines[row] or ""
-				local col = 1
-				while col <= #line and col <= #curr and line:sub(col, col) == curr:sub(col, col) do
-					col = col + 1
-				end
-
-				local word = string.match(line:sub(col), "%s*[^%s]+%s*") or ""
-
-				item.insert_text = table.concat(vim.list_slice(lines, 1, row - 1), "\n")
-					.. (row > 1 and "\n" or "")
-					.. line:sub(1, col - 1)
-					.. word
+			local col = 1
+			while
+				row <= #lines
+				and col <= #lines[row]
+				and row <= #current_lines
+				and col <= #current_lines[row]
+				and lines[row][col] == current_lines[row][col]
+			do
+				col = col + 1
 			end
+
+			local word = string.match(lines[row]:sub(col), "%s*[^%s]%w*")
+			item.insert_text = table.concat(vim.list_slice(lines, 1, row - 1), "\n")
+				.. (row <= #current_lines and "" or "\n")
+				.. (row <= #lines and col <= #lines[row] and lines[row]:sub(1, col - 1) or "")
+				.. word
 		end
 	end
 	return item

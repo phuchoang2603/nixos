@@ -167,6 +167,12 @@
       enableZshIntegration = true;
       icons = "auto";
       git = true;
+      extraOptions = [
+        "--long"
+        "--header"
+        "--group-directories-first"
+        "--git"
+      ];
     };
 
     # Starship - beautiful prompt

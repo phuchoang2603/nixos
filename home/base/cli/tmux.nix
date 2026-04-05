@@ -90,6 +90,12 @@
         -h 90% \
         -E "lazydocker"
 
+      bind "t" display-popup \
+        -d "#{pane_current_path}" \
+        -w 80% \
+        -h 90% \
+        -E "zsh"
+
       bind -N "last-session (via sesh) " L run-shell "sesh last"
     '';
   };

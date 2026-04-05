@@ -18,9 +18,11 @@ neotest.setup({
 		open_on_run = true,
 	},
 	adapters = {
-		require("neotest-golang"),
+		require("neotest-golang")({
+			dap_go_enabled = true,
+		}),
 		require("neotest-python")({
-			dap = { justMyCode = false },
+			dap = { adapter = "python" },
 		}),
 	},
 })
@@ -46,6 +48,13 @@ local keymaps = {
 			require("neotest").run.run_last()
 		end,
 		desc = "Run Last Test",
+	},
+	{
+		"<leader>td",
+		function()
+			require("neotest").run.run({ strategy = "dap" })
+		end,
+		desc = "Debug Nearest Test",
 	},
 	{
 		"<leader>to",

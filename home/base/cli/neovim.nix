@@ -49,6 +49,9 @@
         p.helm
       ]))
       nvim-treesitter-textobjects
+      helm-ls-nvim
+
+      # Test
       (pkgs.vimUtils.buildVimPlugin {
         name = "neotest";
         src = pkgs.fetchFromGitHub {
@@ -61,7 +64,13 @@
       })
       neotest-golang
       neotest-python
-      helm-ls-nvim
+
+      # Debug
+      nvim-dap
+      nvim-dap-virtual-text
+      nvim-dap-view
+      nvim-dap-go
+      nvim-dap-python
 
       # Other
       plenary-nvim
@@ -104,7 +113,7 @@
       # C / C++
       clang-tools
 
-      # GO
+      # GO / GRPC
       gopls
       gotools
       gofumpt

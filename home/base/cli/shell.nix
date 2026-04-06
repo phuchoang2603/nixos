@@ -30,9 +30,10 @@
         oc = "opencode";
 
         # Kubernetes
-        kx = "kubectx";
-        kn = "kubens";
         k = "kubectl";
+        kx = "kubie ctx";
+        kn = "kubie ns";
+        ke = "kubie edit";
         ka = "kubectl get all";
         h = "helm";
       };
@@ -81,10 +82,6 @@
         # Edit command line in editor
         autoload -Uz edit-command-line
         zle -N edit-command-line
-
-        if [ -d "$HOME/.kube" ]; then
-          export KUBECONFIG=$(find "$HOME/.kube" -maxdepth 1 \( -name "config" -o -name "*.yaml" -o -name "*.yml" \) 2>/dev/null | tr '\n' ':' | sed 's/:$//')
-        fi
       '';
 
       siteFunctions = {
@@ -182,11 +179,6 @@
 
       settings = {
         add_newline = false;
-
-        kubernetes = {
-          disabled = false;
-          symbol = "";
-        };
 
         gcloud = {
           disabled = true;

@@ -31,9 +31,10 @@
     tilt
     kubernetes-helm
     kubectl
-    kubectx
-    k9s
     krew
+    kubelogin-oidc
+    kubie
+    k9s
     lazydocker
     awscli2
     google-cloud-sdk

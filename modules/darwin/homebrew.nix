@@ -43,6 +43,7 @@
       "karabiner-elements"
       "bettertouchtool"
       "yaak"
+      "jdownloader"
     ];
 
     # Mac App Store apps (requires mas CLI)

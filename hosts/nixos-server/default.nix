@@ -8,4 +8,5 @@
   ];
 
   networking.hostName = "nixos-server";
+  programs.nix-ld.enable = true;
 }

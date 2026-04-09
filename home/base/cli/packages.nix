@@ -26,9 +26,6 @@
     go
 
     # Infrastructure & DevOps
-    terraform
-    ansible
-    tilt
     kubernetes-helm
     kubectl
     krew
@@ -36,7 +33,5 @@
     kubie
     k9s
     lazydocker
-    awscli2
-    google-cloud-sdk
   ];
 }

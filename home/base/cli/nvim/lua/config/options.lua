@@ -65,10 +65,12 @@ vim.g.markdown_recommended_style = 0
 
 -- Undo history
 local undodir = vim.fn.expand("~/.local/state/nvim/undo")
-
 if vim.fn.isdirectory(undodir) == 0 then
 	vim.fn.mkdir(undodir, "p")
 end
+opt.undofile = true
+opt.undodir = undodir
 
-vim.opt.undofile = true
-vim.opt.undodir = undodir
+--
+opt.exrc = true -- Allow project-specific .nvim.lua or .nvimrc
+opt.secure = true -- Disable unsafe commands in project configs

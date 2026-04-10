@@ -53,3 +53,14 @@ map("n", "<C-j>", ":m .+1<CR>==", opts)
 map("n", "<C-k>", ":m .-2<CR>==", opts)
 map("v", "<C-j>", ":m '>+1<CR>gv=gv", opts)
 map("v", "<C-k>", ":m '<-2<CR>gv=gv", opts)
+
+-- jump mark to the file and go to the last exit of the buffer
+local function remap_uppercase_marks()
+	for i = string.byte("A"), string.byte("Z") do
+		local mark = string.char(i)
+		map("n", "`" .. mark, function()
+			vim.cmd("normal! `" .. mark .. "'\"zz")
+		end, opts)
+	end
+end
+remap_uppercase_marks()

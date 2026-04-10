@@ -36,6 +36,7 @@
       "microsoft-edge"
       "raycast"
       "visual-studio-code"
+      "cursor"
       "datagrip"
       "obsidian"
       "zalo"

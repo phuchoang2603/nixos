@@ -65,4 +65,10 @@
     "nvidia_uvm"
     "nvidia_drm"
   ];
+
+  # Install nvtop for monitoring NVIDIA GPU usage
+  environment.systemPackages = with pkgs; [
+    nvtopPackages.nvidia
+  ];
+
 }

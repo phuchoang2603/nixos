@@ -20,7 +20,6 @@
     fastfetch
     btop
     htop
-    nvtopPackages.nvidia
 
     # Lang
     python3

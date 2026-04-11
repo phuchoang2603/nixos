@@ -114,6 +114,7 @@
       tree-sitter
       lsof
       copilot-language-server
+      sqruff
 
       # BASH / SHELL
       bash-language-server

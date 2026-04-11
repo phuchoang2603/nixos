@@ -26,6 +26,7 @@ local servers = {
 	"tilt_ls",
 	"tsgo",
 	"ty",
+	"sqruff",
 	"yamlls",
 }
 vim.lsp.enable(servers)

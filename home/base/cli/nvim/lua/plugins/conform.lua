@@ -16,6 +16,7 @@ require("conform").setup({
 		yaml = { "prettierd" },
 		terraform = { "terraform_fmt" },
 		hcl = { "terraform_fmt" },
+		sql = { "sqruff" },
 	},
 	default_format_opts = {
 		lsp_format = "fallback",

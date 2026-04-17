@@ -34,6 +34,7 @@
     # GUI applications
     casks = [
       "microsoft-edge"
+      "microsoft-teams"
       "raycast"
       "visual-studio-code"
       "cursor"

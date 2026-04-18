@@ -11,5 +11,8 @@
       hide_window_decorations = "yes";
       window_padding_width = 10;
     };
+    keybindings = {
+      "cmd+enter" = "no_op";
+    };
   };
 }

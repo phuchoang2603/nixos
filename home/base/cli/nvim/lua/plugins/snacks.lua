@@ -156,13 +156,6 @@ local keymaps = {
 		desc = "Command History",
 	},
 	{
-		"<leader>n",
-		function()
-			Snacks.picker.notifications()
-		end,
-		desc = "Notification History",
-	},
-	{
 		"<leader>f",
 		function()
 			Snacks.explorer()
@@ -221,11 +214,19 @@ local keymaps = {
 		desc = "Git Log",
 	},
 	{
+		"<leader>gL",
+		function()
+			Snacks.picker.git_log_line()
+		end,
+		desc = "Git Log Line",
+	},
+
+	{
 		"<leader>gs",
 		function()
-			Snacks.picker.git_stash()
+			Snacks.picker.git_status()
 		end,
-		desc = "Git Stash",
+		desc = "Git Status",
 	},
 	{
 		"<leader>gp",
@@ -313,6 +314,13 @@ local keymaps = {
 			Snacks.picker.loclist()
 		end,
 		desc = "Location List",
+	},
+	{
+		"<leader>sn",
+		function()
+			Snacks.picker.notifications()
+		end,
+		desc = "Notification History",
 	},
 	{
 		"<leader>sm",

@@ -87,7 +87,6 @@
       mini-icons
       gitsigns-nvim
       which-key-nvim
-      nui-nvim
       snacks-nvim
       todo-comments-nvim
 

@@ -47,6 +47,16 @@ require("gitsigns").setup({
 
 		map({ "n", "v" }, "<leader>ghs", ":Gitsigns stage_hunk<CR>", "Stage Hunk")
 		map({ "n", "v" }, "<leader>ghr", ":Gitsigns reset_hunk<CR>", "Reset Hunk")
+		map("n", "<leader>ghp", function()
+			gs.preview_hunk_inline()
+		end, "Preview Hunk Inline")
+
+		map("n", "<leader>ghS", function()
+			gs.stage_buffer()
+		end, "Stage Buffer")
+		map("n", "<leader>ghR", function()
+			gs.reset_buffer()
+		end, "Reset Buffer")
 
 		map("n", "<leader>ghb", function()
 			gs.blame_line({ full = true })
@@ -54,6 +64,7 @@ require("gitsigns").setup({
 		map("n", "<leader>ghB", function()
 			gs.blame()
 		end, "Blame Buffer")
+
 		map("n", "<leader>ghd", gs.diffthis, "Diff This")
 		map("n", "<leader>ghD", function()
 			gs.diffthis("~")

@@ -52,16 +52,7 @@
       helm-ls-nvim
 
       # Test
-      (pkgs.vimUtils.buildVimPlugin {
-        name = "neotest";
-        src = pkgs.fetchFromGitHub {
-          owner = "nvim-neotest";
-          repo = "neotest";
-          rev = "master";
-          hash = "sha256-tcbO1138SICtWg2ER973KcZvY18QvAW72MW0si6abFI=";
-        };
-        doCheck = false;
-      })
+      neotest
       neotest-golang
       neotest-python
 

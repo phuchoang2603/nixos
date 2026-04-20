@@ -28,6 +28,7 @@ opt.signcolumn = "yes" -- Always show sign column
 opt.showmatch = true -- Highlight matching brackets
 opt.showmode = true -- Show all modes in status line
 opt.winborder = "rounded" -- Round popup window
+opt.completeopt:append("popup") -- Shows LSP resolve documentation inline
 vim.wo.foldmethod = "expr"
 opt.foldlevel = 99 -- Start buffer unfold
 opt.foldlevelstart = 99

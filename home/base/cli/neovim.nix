@@ -97,7 +97,6 @@
       mini-statusline
       gitsigns-nvim
       which-key-nvim
-      noice-nvim
       nui-nvim
       snacks-nvim
       todo-comments-nvim

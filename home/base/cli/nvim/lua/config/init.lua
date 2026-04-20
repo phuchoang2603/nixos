@@ -1,6 +1,7 @@
-require 'config.options'
-require 'config.keymaps'
-require 'config.autocmds'
-require 'config.filetypes'
-require 'config.diagnostics'
-require 'config.lsp'
+require("config.options")
+require("config.keymaps")
+require("config.autocmds")
+require("config.filetypes")
+require("config.diagnostics")
+require("config.lsp")
+require("config.ui2")

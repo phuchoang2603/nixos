@@ -52,19 +52,6 @@ local default_keymaps = {
 		expr = true,
 		desc = "Accept Copilot Suggestions or Tab",
 	},
-	{
-		mode = "i",
-		keys = "<C-b>",
-		func = function()
-			local result = vim.lsp.inline_completion.get({ on_accept = AcceptCompletion })
-			if not result then
-				return "<C-b>"
-			end
-		end,
-		expr = true,
-		replace_keycodes = true,
-		desc = "Accept Next Word of Copilot Suggestions",
-	},
 }
 
 -- Events
@@ -89,43 +76,17 @@ vim.api.nvim_create_autocmd("LspAttach", {
 	end,
 })
 
-function AcceptCompletion(item)
-	local insert_text = item.insert_text
-	if type(insert_text) == "string" then
-		local range = item.range
-		if range then
-			local lines = vim.split(insert_text, "\n")
-			local current_lines = vim.api.nvim_buf_get_text(
-				range.start.buf,
-				range.start.row,
-				range.start.col,
-				range.end_.row,
-				range.end_.col,
-				{}
-			)
-
-			local row = 1
-			while row <= #lines and row <= #current_lines and lines[row] == current_lines[row] do
-				row = row + 1
-			end
-
-			local col = 1
-			while
-				row <= #lines
-				and col <= #lines[row]
-				and row <= #current_lines
-				and col <= #current_lines[row]
-				and lines[row][col] == current_lines[row][col]
-			do
-				col = col + 1
-			end
-
-			local word = string.match(lines[row]:sub(col), "%s*[^%s]%w*")
-			item.insert_text = table.concat(vim.list_slice(lines, 1, row - 1), "\n")
-				.. (row <= #current_lines and "" or "\n")
-				.. (row <= #lines and col <= #lines[row] and lines[row]:sub(1, col - 1) or "")
-				.. word
-		end
-	end
-	return item
-end
+-- Loading Progress
+vim.api.nvim_create_autocmd("LspProgress", {
+	callback = function(ev)
+		local value = ev.data.params.value
+		vim.api.nvim_echo({ { value.message or "done" } }, false, {
+			id = "lsp." .. ev.data.client_id,
+			kind = "progress",
+			source = "vim.lsp",
+			title = value.title,
+			status = value.kind ~= "end" and "running" or "success",
+			percent = value.percentage,
+		})
+	end,
+})

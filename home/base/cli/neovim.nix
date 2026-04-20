@@ -94,7 +94,6 @@
 
       # UI stuff
       mini-icons
-      mini-statusline
       gitsigns-nvim
       which-key-nvim
       nui-nvim

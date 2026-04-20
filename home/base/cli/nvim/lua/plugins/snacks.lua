@@ -158,7 +158,7 @@ local keymaps = {
 	{
 		"<leader>n",
 		function()
-			Snacks.notifier.show_history()
+			Snacks.picker.notifications()
 		end,
 		desc = "Notification History",
 	},

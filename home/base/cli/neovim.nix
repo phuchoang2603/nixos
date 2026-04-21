@@ -50,22 +50,10 @@
         p.helm
       ]))
       nvim-treesitter-textobjects
-      helm-ls-nvim
 
-      # Test
-      neotest
-      neotest-golang
-      neotest-python
-
-      # Debug
-      nvim-dap
-      nvim-dap-virtual-text
-      nvim-dap-view
-      nvim-dap-go
-      nvim-dap-python
-
-      # Document
+      # Language-support
       vimtex
+      helm-ls-nvim
       (pkgs.vimUtils.buildVimPlugin {
         name = "live-preview-nvim";
         src = pkgs.fetchFromGitHub {
@@ -76,6 +64,17 @@
         };
         doCheck = false;
       })
+
+      # Test
+      neotest
+      neotest-golang
+      neotest-python
+
+      # Debug
+      nvim-dap
+      nvim-dap-view
+      nvim-dap-go
+      nvim-dap-python
 
       # Other
       plenary-nvim
@@ -143,7 +142,6 @@
       # DevOps
       terraform-ls
       tflint
-      tilt
       docker-language-server
       helm-ls
       taplo

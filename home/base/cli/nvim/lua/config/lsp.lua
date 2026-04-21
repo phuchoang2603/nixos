@@ -62,7 +62,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
 		local buf = args.buf
 		if client then
 			for _, km in ipairs(default_keymaps) do
-				-- Only bind if there's no `has` requirement, or the server supports it
 				if not km.has or client.server_capabilities[km.has] then
 					vim.keymap.set(
 						km.mode or "n",

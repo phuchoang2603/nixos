@@ -33,6 +33,7 @@
     kubelogin-oidc
     kubie
     k9s
+    tilt
     lazydocker
   ];
 }

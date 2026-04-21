@@ -1,19 +1,60 @@
-{ pkgs, config, ... }:
+{ pkgs, ... }:
 
 {
   programs = {
     # Zsh
     zsh = {
       enable = true;
+
       enableCompletion = true;
+      completionInit = ''
+        autoload -Uz compinit
+        # Only regenerate the dump file once a day, or if it doesn't exist
+        if [[ -n "''${ZDOTDIR:-''$HOME}/.zcompdump(#qN.m-1)" ]]; then
+          compinit -C
+        else
+          compinit
+        fi
+      '';
 
-      # Silence upcoming default change warning; keep legacy behavior.
-      dotDir = config.home.homeDirectory;
+      initContent = ''
+        # Custom keybindings
+        bindkey '^W' forward-word
+        bindkey '^B' backward-delete-word
+        bindkey '^E' end-of-line
+        bindkey '^A' beginning-of-line
+        bindkey '^U' kill-whole-line
 
-      # Vi mode
+        # Edit command line in editor
+        bindkey '^X' edit-command-line
+        autoload -Uz edit-command-line
+        zle -N edit-command-line
+      '';
+
       defaultKeymap = "viins";
 
-      # Shell aliases
+      plugins = [
+        {
+          name = "zsh-autosuggestions";
+          src = pkgs.zsh-autosuggestions;
+          file = "share/zsh-autosuggestions/zsh-autosuggestions.zsh";
+        }
+      ];
+
+      syntaxHighlighting = {
+        enable = true;
+        highlighters = [
+          "main"
+          "brackets"
+          "pattern"
+        ];
+      };
+
+      sessionVariables = {
+        TERM = "xterm-256color";
+        KEYTIMEOUT = "1";
+      };
+
       shellAliases = {
         # File operations
         lt = "eza --tree --level=2";
@@ -38,52 +79,6 @@
         h = "helm";
       };
 
-      # Session variables
-      sessionVariables = {
-        TERM = "xterm-256color";
-        KEYTIMEOUT = "1";
-      };
-
-      # Plugins
-      plugins = [
-        {
-          name = "zsh-autosuggestions";
-          src = pkgs.zsh-autosuggestions;
-          file = "share/zsh-autosuggestions/zsh-autosuggestions.zsh";
-        }
-      ];
-
-      # Main zsh initialization content
-      initContent = ''
-        # Vi cursor shapes
-        function zle-keymap-select {
-          if [[ ''${KEYMAP} == vicmd ]] || [[ $1 = 'block' ]]; then
-            echo -ne '\e[1 q'
-          elif [[ ''${KEYMAP} == main ]] || [[ ''${KEYMAP} == viins ]] || [[ -z ''${KEYMAP} ]] || [[ $1 = 'beam' ]]; then
-            echo -ne '\e[5 q'
-          fi
-        }
-        zle -N zle-keymap-select
-        echo -ne '\e[5 q'
-
-        function zle-line-init {
-          echo -ne '\e[5 q'
-        }
-        zle -N zle-line-init
-
-        # Custom keybindings
-        bindkey '^W' forward-word
-        bindkey '^B' backward-delete-word
-        bindkey '^E' end-of-line
-        bindkey '^A' beginning-of-line
-        bindkey '^U' kill-whole-line
-        bindkey '^X' edit-command-line
-
-        # Edit command line in editor
-        autoload -Uz edit-command-line
-        zle -N edit-command-line
-      '';
-
       siteFunctions = {
         img2png = ''
           if [ -z "$1" ]; then
@@ -107,7 +102,7 @@
       };
     };
 
-    # Carapace
+    # Carapace - command completion
     carapace = {
       enable = true;
       enableZshIntegration = true;

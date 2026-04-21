@@ -136,16 +136,14 @@
       # PYTHON
       ty
       ruff
-      black
-      isort
 
       # DevOps
       terraform-ls
       tflint
-      docker-language-server
-      helm-ls
       taplo
       yaml-language-server
+      docker-language-server
+      helm-ls
     ];
   };
 }

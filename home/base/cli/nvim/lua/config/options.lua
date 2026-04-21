@@ -24,6 +24,7 @@ opt.hlsearch = true -- Highlight search results
 opt.incsearch = true -- Show matches as you type
 
 -- Visual settings
+opt.laststatus = 0 -- Hide status line
 opt.signcolumn = "yes" -- Always show sign column
 opt.showmatch = true -- Highlight matching brackets
 opt.showmode = true -- Show all modes in status line

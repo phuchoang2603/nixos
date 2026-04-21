@@ -5,7 +5,7 @@ require("conform").setup({
 		nix = { "nixfmt" },
 		lua = { "stylua" },
 		go = { "gofumpt", "goimports", stop_after_first = true },
-		python = { "ruff_format", "black", "isort", stop_after_first = true },
+		python = { "ruff_format" },
 		json = { "prettierd" },
 		markdown = { "prettierd" },
 		javascript = { "prettierd" },

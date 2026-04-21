@@ -13,9 +13,4 @@ local map = vim.keymap.set
 map({ "n", "v" }, "<leader>e", "<cmd>Yazi<cr>", { desc = "Open yazi at the current file", silent = true })
 
 -- Open yazi at the root working directory
-map(
-	"n",
-	"<leader>E",
-	"<cmd>Yazi cwd<cr>",
-	{ desc = "Open the file manager in nvim's working directory", silent = true }
-)
+map("n", "<leader>E", "<cmd>Yazi cwd<cr>", { desc = "Open yazi at root directory", silent = true })

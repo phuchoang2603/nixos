@@ -63,13 +63,6 @@
       nvim-dap-go
       nvim-dap-python
 
-      # Other
-      plenary-nvim
-      nvim-nio
-      yazi-nvim
-      quicker-nvim
-      sidekick-nvim
-
       # Document
       vimtex
       (pkgs.vimUtils.buildVimPlugin {
@@ -83,7 +76,12 @@
         doCheck = false;
       })
 
-      # UI stuff
+      # Other
+      plenary-nvim
+      nvim-nio
+      yazi-nvim
+      quicker-nvim
+      sidekick-nvim
       mini-icons
       gitsigns-nvim
       which-key-nvim

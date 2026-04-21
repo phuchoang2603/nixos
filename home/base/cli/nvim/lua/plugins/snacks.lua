@@ -5,14 +5,12 @@ vim.api.nvim_set_hl(0, "SnacksDim", { fg = "#444444", bg = "NONE" })
 
 Snacks.setup({
 	bigfile = { enabled = true },
+	quickfile = { enabled = true },
 	explorer = {
 		replace_netrw = true,
 		trash = true,
 	},
-	input = { enabled = true },
-	layout = { enabled = true },
 	notifier = { enabled = true },
-	quickfile = { enabled = true },
 	dim = {
 		scope = {
 			min_size = 3,
@@ -25,14 +23,9 @@ Snacks.setup({
 	toggle = { enabled = true },
 	indent = { enabled = true },
 	words = { enabled = true },
-	terminal = {
-		win = {
-			position = "float",
-			backdrop = 60,
-			width = 0.8,
-			height = 0.9,
-			border = "rounded",
-		},
+	gitbrowse = {
+		enabled = true,
+		what = "repo",
 	},
 
 	picker = {
@@ -220,21 +213,6 @@ local keymaps = {
 		end,
 		desc = "Git Log Line",
 	},
-
-	{
-		"<leader>gs",
-		function()
-			Snacks.picker.git_status()
-		end,
-		desc = "Git Status",
-	},
-	{
-		"<leader>gp",
-		function()
-			Snacks.picker.git_diff()
-		end,
-		desc = "Git Diff Picker (Hunks)",
-	},
 	{
 		"<leader>gf",
 		function()
@@ -243,11 +221,31 @@ local keymaps = {
 		desc = "Git Log File",
 	},
 	{
+		"<leader>gs",
+		function()
+			Snacks.picker.git_status()
+		end,
+		desc = "Git Status",
+	},
+	{
+		"<leader>gd",
+		function()
+			Snacks.picker.git_diff()
+		end,
+		desc = "Git Diff Picker (Hunks)",
+	},
+	{
+		"<leader>go",
+		function()
+			Snacks.gitbrowse()
+		end,
+		desc = "Git Browse (Open PR in browser)",
+	},
+	{
 		"<leader>gg",
 		function()
 			Snacks.lazygit()
 		end,
-		desc = "Lazygit (Root Dir)",
 	},
 
 	-- search
@@ -260,28 +258,7 @@ local keymaps = {
 		mode = { "n", "x" },
 	},
 	{
-		'<leader>s"',
-		function()
-			Snacks.picker.registers()
-		end,
-		desc = "Registers",
-	},
-	{
 		"<leader>s/",
-		function()
-			Snacks.picker.search_history()
-		end,
-		desc = "Search History",
-	},
-	{
-		"<leader>sa",
-		function()
-			Snacks.picker.autocmds()
-		end,
-		desc = "Autocmds",
-	},
-	{
-		"<leader>sb",
 		function()
 			Snacks.picker.lines()
 		end,
@@ -295,18 +272,18 @@ local keymaps = {
 		desc = "Diagnostics",
 	},
 	{
+		"<leader>sD",
+		function()
+			Snacks.picker.diagnostics_buffer()
+		end,
+		desc = "Buffer Diagnostics",
+	},
+	{
 		"<leader>sj",
 		function()
 			Snacks.picker.jumps()
 		end,
 		desc = "Jumps",
-	},
-	{
-		"<leader>sk",
-		function()
-			Snacks.picker.keymaps()
-		end,
-		desc = "Keymaps",
 	},
 	{
 		"<leader>sl",
@@ -342,6 +319,13 @@ local keymaps = {
 			Snacks.picker.undo()
 		end,
 		desc = "Undo History",
+	},
+	{
+		"<leader>sq",
+		function()
+			Snacks.picker.qflist()
+		end,
+		desc = "Quickfix List",
 	},
 	{
 		"<leader>st",
@@ -504,19 +488,6 @@ local keymaps = {
 			Snacks.toggle.inlay_hints():toggle()
 		end,
 		desc = "Toggle Inlay Hints",
-	},
-	{
-		"<leader>ut",
-		function()
-			local terminal = Snacks.terminal.list()[1]
-			if terminal then
-				terminal:toggle()
-			else
-				Snacks.terminal.open()
-			end
-		end,
-		mode = { "n", "t" },
-		desc = "Toggle terminal",
 	},
 }
 

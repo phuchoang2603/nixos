@@ -51,7 +51,7 @@
         ];
         alt-5 = [
           "workspace 5"
-          "exec-and-forget open -a 'Spotify'"
+          "exec-and-forget open -a 'YouTube Music'"
         ];
         alt-6 = [
           "workspace 6"
@@ -146,7 +146,7 @@
           ];
         }
         {
-          "if".app-id = "com.spotify.client";
+          "if".app-id = "com.microsoft.edgemac.app.cinhimbnkkaeohfgghhklpknlkffjgod";
           run = [
             "move-node-to-workspace 5"
           ];

@@ -24,6 +24,7 @@
         p.comment
         p.markdown
         p.markdown_inline
+        p.regex
         p.vim
         p.json
         p.xml

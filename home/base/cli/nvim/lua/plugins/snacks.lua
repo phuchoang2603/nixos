@@ -22,7 +22,6 @@ Snacks.setup({
 	statuscolumn = { enabled = true },
 	toggle = { enabled = true },
 	indent = { enabled = true },
-	words = { enabled = true },
 	gitbrowse = {
 		enabled = true,
 		what = "repo",
@@ -232,20 +231,21 @@ local keymaps = {
 		function()
 			Snacks.picker.git_diff()
 		end,
-		desc = "Git Diff Picker (Hunks)",
+		desc = "Git Diff Picker",
 	},
 	{
 		"<leader>go",
 		function()
 			Snacks.gitbrowse()
 		end,
-		desc = "Git Browse (Open PR in browser)",
+		desc = "Git Browse",
 	},
 	{
 		"<leader>gg",
 		function()
 			Snacks.lazygit()
 		end,
+		desc = "Lazygit",
 	},
 
 	-- search
@@ -385,29 +385,6 @@ local keymaps = {
 			Snacks.picker.lsp_workspace_symbols()
 		end,
 		desc = "LSP Workspace Symbols",
-	},
-	{
-		"<leader>cR",
-		function()
-			Snacks.rename.rename_file()
-		end,
-		desc = "Rename File",
-	},
-	{
-		"]]",
-		function()
-			Snacks.words.jump(vim.v.count1)
-		end,
-		desc = "Next Reference",
-		mode = { "n", "t" },
-	},
-	{
-		"[[",
-		function()
-			Snacks.words.jump(-vim.v.count1)
-		end,
-		desc = "Prev Reference",
-		mode = { "n", "t" },
 	},
 	{
 		"gai",

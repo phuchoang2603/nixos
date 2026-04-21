@@ -3,6 +3,7 @@
 {
   home.packages = with pkgs; [
     # System
+    coreutils-prefixed
     vim
     wget
     curl

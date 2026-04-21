@@ -4,7 +4,6 @@ end
 
 -- LSP
 local servers = {
-	"copilot",
 	"sqruff",
 	"bashls",
 	"clangd",
@@ -36,7 +35,7 @@ local default_keymaps = {
 	{ keys = "<leader>ca", func = vim.lsp.buf.code_action, desc = "Code Actions" },
 	{ keys = "<leader>cr", func = vim.lsp.buf.rename, desc = "Code Rename" },
 	{ keys = "<leader>cf", func = vim.lsp.buf.format, desc = "Code Format" },
-	{ keys = "<leader>k", func = vim.lsp.buf.hover, desc = "Hover Documentation", has = "hoverProvider" },
+	{ keys = "<leader>cl", func = vim.lsp.codelens.run, desc = "Run Code Lens", has = "codeLensProvider" },
 	{ keys = "K", func = vim.lsp.buf.hover, desc = "Hover (alt)", has = "hoverProvider" },
 	{ keys = "gd", func = vim.lsp.buf.definition, desc = "Goto Definition", has = "definitionProvider" },
 	{
@@ -51,6 +50,52 @@ local default_keymaps = {
 		end,
 		expr = true,
 		desc = "Accept Copilot Suggestions or Tab",
+	},
+	{
+		keys = "<leader>uc",
+		func = function()
+			local copilot_active = false
+			local clients = vim.lsp.get_clients({ name = "copilot" })
+			if #clients > 0 then
+				copilot_active = true
+			end
+
+			local next_state = not copilot_active
+
+			if next_state then
+				vim.lsp.enable("copilot")
+				vim.lsp.inline_completion.enable(true)
+				require("sidekick.nes").enable()
+			else
+				for _, client in ipairs(clients) do
+					client:stop(false)
+				end
+				vim.lsp.inline_completion.enable(false)
+				require("sidekick.nes").disable()
+			end
+
+			local status_text = next_state and "ON" or "OFF"
+			local icon = next_state and "󰚩 " or "󱚧 "
+			vim.notify(
+				string.format("%s Copilot LSP: %s", icon, status_text),
+				vim.log.levels.INFO,
+				{ title = "LSP Completion" }
+			)
+		end,
+		desc = "Toggle Copilot LSP & Suggestions",
+	},
+	{
+		keys = "<leader>ul",
+		func = function()
+			if vim.lsp.codelens.is_enabled() then
+				vim.lsp.codelens.enable(false)
+				vim.notify("Code Lenses: OFF", vim.log.levels.INFO, { title = "LSP Code Lenses" })
+			else
+				vim.lsp.codelens.enable(true)
+				vim.notify("Code Lenses: ON", vim.log.levels.INFO, { title = "LSP Code Lenses" })
+			end
+		end,
+		desc = "Toggle Code Lenses",
 	},
 }
 

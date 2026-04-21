@@ -23,6 +23,7 @@ return {
 	filetypes = {
 		"gitcommit",
 		"markdown",
+		"tex",
 	},
 	root_markers = { ".harper-dictionary.txt", ".git" },
 	settings = {

@@ -22,29 +22,31 @@
       nvim-treesitter
       (nvim-treesitter.withPlugins (p: [
         p.comment
-        p.markdown
-        p.markdown_inline
         p.regex
         p.vim
-        p.json
-        p.xml
-        p.yaml
         p.ini
-        p.toml
+        p.sql
         p.bash
         p.c
         p.cpp
         p.python
         p.go
+        p.gomod
+        p.gosum
+        p.gowork
         p.lua
         p.html
         p.css
         p.javascript
         p.typescript
-        p.sql
+        p.json
         p.nix
         p.latex
+        p.markdown
+        p.markdown_inline
         p.dockerfile
+        p.yaml
+        p.toml
         p.starlark
         p.hcl
         p.helm

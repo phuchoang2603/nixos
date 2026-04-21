@@ -1,6 +1,6 @@
 require("sidekick").setup({
 	nes = {
-		enabled = true,
+		enabled = false,
 	},
 	cli = {
 		mux = {

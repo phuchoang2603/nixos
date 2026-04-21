@@ -405,33 +405,6 @@ local keymaps = {
 
 	-- Snacks Toggles (UI)
 	{
-		"<leader>uc",
-		function()
-			local core_enabled = vim.lsp.inline_completion.is_enabled()
-			local next_state = not core_enabled
-
-			-- Toggle Core Neovim Inline Completion
-			vim.lsp.inline_completion.enable(next_state)
-
-			-- Toggle Sidekick NES
-			local nes = require("sidekick.nes")
-			if next_state then
-				nes.enable()
-			else
-				nes.disable()
-			end
-
-			local status_text = next_state and "ON" or "OFF"
-			local icon = next_state and "󰚩 " or "󱚧 "
-			vim.notify(
-				string.format("%s Copilot & Inline: %s", icon, status_text),
-				vim.log.levels.INFO,
-				{ title = "LSP Completion" }
-			)
-		end,
-		desc = "Toggle Copilot Suggestions",
-	},
-	{
 		"<leader>uw",
 		function()
 			Snacks.toggle.option("wrap", { name = "Wrap" }):toggle()

@@ -2,6 +2,7 @@
 vim.filetype.add({
 	extension = {
 		env = "dotenv",
+		sarif = "sarif",
 	},
 	filename = {
 		[".env"] = "dotenv",

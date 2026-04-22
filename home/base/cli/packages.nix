@@ -15,6 +15,7 @@
     nh
     rclone
     ripgrep
+    ffmpeg
     ffmpegthumbnailer
     poppler
     imagemagick

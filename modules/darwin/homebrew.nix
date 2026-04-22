@@ -47,6 +47,7 @@
       "bettertouchtool"
       "yaak"
       "jdownloader"
+      "vlc"
     ];
   };
 }

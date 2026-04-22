@@ -7,23 +7,19 @@
   # Enable Homebrew
   homebrew = {
     enable = true;
+    enableZshIntegration = true;
 
     # Automatically update Homebrew
     onActivation = {
       cleanup = "zap";
+      autoUpdate = true;
       upgrade = true;
     };
 
-    caskArgs.no_quarantine = true;
     global.brewfile = true;
-
-    # Taps
-    taps = [
-    ];
 
     # CLI packages
     brews = [
-      "mas"
       "colima"
       "docker"
       "docker-compose"
@@ -33,8 +29,13 @@
 
     # GUI applications
     casks = [
+      "onedrive"
       "microsoft-edge"
       "microsoft-teams"
+      "microsoft-onenote"
+      "microsoft-word"
+      "microsoft-excel"
+      "microsoft-powerpoint"
       "raycast"
       "visual-studio-code"
       "cursor"
@@ -47,14 +48,5 @@
       "yaak"
       "jdownloader"
     ];
-
-    # Mac App Store apps (requires mas CLI)
-    masApps = {
-      "Microsoft OneNote" = 784801555;
-      "Microsoft OneDrive" = 823766827;
-      "Microsoft Word" = 462054704;
-      "Microsoft Excel" = 462058435;
-      "Microsoft PowerPoint" = 462062816;
-    };
   };
 }

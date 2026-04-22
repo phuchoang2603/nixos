@@ -20,37 +20,7 @@
       friendly-snippets
       conform-nvim
       nvim-treesitter
-      (nvim-treesitter.withPlugins (p: [
-        p.comment
-        p.regex
-        p.vim
-        p.ini
-        p.sql
-        p.bash
-        p.c
-        p.cpp
-        p.python
-        p.go
-        p.gomod
-        p.gosum
-        p.gowork
-        p.lua
-        p.html
-        p.css
-        p.javascript
-        p.typescript
-        p.json
-        p.nix
-        p.latex
-        p.markdown
-        p.markdown_inline
-        p.dockerfile
-        p.yaml
-        p.toml
-        p.starlark
-        p.hcl
-        p.helm
-      ]))
+      nvim-treesitter.withAllGrammars
       nvim-treesitter-textobjects
 
       # Language-support
@@ -126,6 +96,10 @@
       gotools
       gofumpt
       protols
+
+      # Rust
+      rust-analyzer
+      rustfmt
 
       # JSON / HTML / CSS / JavaScript
       vscode-langservers-extracted

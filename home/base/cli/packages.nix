@@ -26,6 +26,8 @@
     # Lang
     python3
     go
+    rustc
+    cargo
 
     # Infrastructure & DevOps
     kubernetes-helm

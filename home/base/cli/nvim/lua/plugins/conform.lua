@@ -6,6 +6,7 @@ require("conform").setup({
 		lua = { "stylua" },
 		go = { "gofumpt", "goimports", stop_after_first = true },
 		python = { "ruff_format" },
+		rust = { "rustfmt" },
 		json = { "prettierd" },
 		markdown = { "prettierd" },
 		javascript = { "prettierd" },

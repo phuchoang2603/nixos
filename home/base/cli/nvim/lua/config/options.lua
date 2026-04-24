@@ -6,7 +6,8 @@ opt.cursorline = true -- Highlight current line
 opt.wrap = true -- Wrap lines
 opt.linebreak = true -- Wrap based on word
 opt.breakindent = true -- Keep indent when wrap
-opt.scrolloff = 16 -- Keep 10 lines above/below cursor
+opt.scrolloff = 16 -- Keep lines above/below cursor
+opt.scrolloffpad = 16 -- preserve scrolloff when go to end of buffer
 opt.sidescrolloff = 8 -- Keep 8 columns left/right of cursor
 
 -- Indentation
@@ -24,7 +25,7 @@ opt.hlsearch = true -- Highlight search results
 opt.incsearch = true -- Show matches as you type
 
 -- Visual settings
-opt.laststatus = 0 -- Hide status line
+opt.laststatus = 3 -- Only display statusline in recent window
 opt.signcolumn = "yes" -- Always show sign column
 opt.showmatch = true -- Highlight matching brackets
 opt.showmode = true -- Show all modes in status line
@@ -66,6 +67,7 @@ vim.g.trouble_lualine = true
 vim.g.markdown_recommended_style = 0
 
 -- Undo history
+vim.cmd.packadd("nvim.undotree")
 local undodir = vim.fn.expand("~/.local/state/nvim/undo")
 if vim.fn.isdirectory(undodir) == 0 then
 	vim.fn.mkdir(undodir, "p")

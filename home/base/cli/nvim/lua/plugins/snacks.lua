@@ -313,13 +313,6 @@ local keymaps = {
 		desc = "Recent",
 	},
 	{
-		"<leader>su",
-		function()
-			Snacks.picker.undo()
-		end,
-		desc = "Undo History",
-	},
-	{
 		"<leader>sq",
 		function()
 			Snacks.picker.qflist()

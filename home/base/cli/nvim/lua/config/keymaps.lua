@@ -33,6 +33,11 @@ map("i", ",", ",<c-g>u")
 map("i", ".", ".<c-g>u")
 map("i", ";", ";<c-g>u")
 
+-- undotree
+map("n", "<leader>ut", function()
+	require("undotree").open()
+end, { desc = "Toggle undotree" })
+
 -- wrap selection
 map("v", "s`", [[c`<C-r>"`<Esc>]], opts)
 map("v", 's"', [[c"<C-r>""<Esc>]], opts)

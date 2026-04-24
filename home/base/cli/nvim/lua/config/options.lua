@@ -7,7 +7,7 @@ opt.wrap = true -- Wrap lines
 opt.linebreak = true -- Wrap based on word
 opt.breakindent = true -- Keep indent when wrap
 opt.scrolloff = 16 -- Keep lines above/below cursor
-opt.scrolloffpad = 16 -- preserve scrolloff when go to end of buffer
+opt.scrolloffpad = 1 -- preserve scrolloff when go to end of buffer
 opt.sidescrolloff = 8 -- Keep 8 columns left/right of cursor
 
 -- Indentation
@@ -31,7 +31,6 @@ opt.showmatch = true -- Highlight matching brackets
 opt.showmode = true -- Show all modes in status line
 opt.winborder = "rounded" -- Round popup window
 opt.completeopt:append("popup") -- Shows LSP resolve documentation inline
-vim.wo.foldmethod = "expr"
 opt.foldlevel = 99 -- Start buffer unfold
 opt.foldlevelstart = 99
 opt.fillchars = {

@@ -11,9 +11,6 @@ map("n", "<leader>bb", "<cmd>e #<cr>", opts)
 map("n", "<leader>%", "<C-W>v", { desc = "Split Window Right", remap = true })
 map("n", '<leader>"', "<C-W>s", { desc = "Split Window Below", remap = true })
 
--- terminal
-map("t", "<C-q>", "<c-\\><c-n>", { desc = "Enter Normal Mode" })
-
 -- clear highlights on search when pressing <Esc> in normal mode
 map("n", "<Esc>", "<cmd>nohlsearch<CR>", opts)
 
@@ -36,7 +33,7 @@ map("i", ";", ";<c-g>u")
 -- undotree
 map("n", "<leader>ut", function()
 	require("undotree").open()
-end, { desc = "Toggle undotree" })
+end, { desc = "Toggle Undotree" })
 
 -- wrap selection
 map("v", "s`", [[c`<C-r>"`<Esc>]], opts)
@@ -69,3 +66,11 @@ local function remap_uppercase_marks()
 	end
 end
 remap_uppercase_marks()
+
+-- Restart session and restore window, buffer layout
+local session_file = vim.fn.stdpath("state") .. "/Session.vim"
+vim.keymap.set("n", "ZR", function()
+	vim.cmd("wall")
+	vim.cmd("mksession! " .. vim.fn.fnameescape(session_file))
+	vim.cmd("restart source " .. vim.fn.fnameescape(session_file))
+end, { silent = true, desc = "Restart and restore session" })

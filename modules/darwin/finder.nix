@@ -5,7 +5,7 @@
     AppleShowAllFiles = false;
     AppleShowAllExtensions = true;
     _FXShowPosixPathInTitle = true;
-    FXPreferredViewStyle = "Nlsv";
+    FXPreferredViewStyle = "clmv";
     FXRemoveOldTrashItems = true;
     CreateDesktop = false;
     NewWindowTarget = "Home";

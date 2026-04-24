@@ -1,4 +1,3 @@
-require("nvim-treesitter").setup({})
 require("nvim-treesitter-textobjects").setup({
 	select = {
 		enable = true,
@@ -55,10 +54,6 @@ for _, map in ipairs({
 	{ { "n", "x", "o" }, "[a", mv.goto_previous_start, "@parameter.inner" },
 	{ { "n", "x", "o" }, "[A", mv.goto_previous_end, "@parameter.inner" },
 
-	-- Loops
-	{ { "n", "x", "o" }, "]l", mv.goto_next_start, { "@loop.inner", "@loop.outer" } },
-	{ { "n", "x", "o" }, "[l", mv.goto_previous_start, { "@loop.inner", "@loop.outer" } },
-
 	-- Key-value pairs
 	{ { "n", "x", "o" }, "]k", mv.goto_next_start, "@assignment.outer" },
 	{ { "n", "x", "o" }, "[k", mv.goto_previous_start, "@assignment.outer" },
@@ -72,10 +67,6 @@ for _, map in ipairs({
 	end, { desc = "Move: " .. qstr })
 end
 
--- Enable folding
-vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
-vim.bo.indentexpr = "v:lua.vim.treesitter.indentexpr()"
-
 -- Autostart treesitter
 vim.api.nvim_create_autocmd("FileType", {
 	pattern = "*",
@@ -84,6 +75,8 @@ vim.api.nvim_create_autocmd("FileType", {
 		if filetype and filetype ~= "" then
 			pcall(vim.treesitter.start)
 		end
+		vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+		vim.wo.foldmethod = "expr"
+		vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
 	end,
 })
-vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"

@@ -22,7 +22,6 @@
       blink-cmp
       friendly-snippets
       conform-nvim
-      nvim-treesitter
       nvim-treesitter.withAllGrammars
       nvim-treesitter-textobjects
 
@@ -36,16 +35,6 @@
           repo = "live-preview.nvim";
           rev = "main";
           hash = "sha256-8R4WNFKMz72MoycBK736A5YC8NH1K8TBea2Px4udGZ8=";
-        };
-        doCheck = false;
-      })
-      (pkgs.vimUtils.buildVimPlugin {
-        name = "sfer-nvim";
-        src = pkgs.fetchFromGitHub {
-          owner = "fguisso";
-          repo = "sfer.nvim";
-          rev = "main";
-          hash = "sha256-cEFHm1a4vank2AknpzDhoVzUU55maZVSheHONcDOjEA=";
         };
         doCheck = false;
       })

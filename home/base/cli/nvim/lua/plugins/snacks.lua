@@ -120,6 +120,23 @@ Snacks.setup({
 					},
 				},
 			},
+			lsp_symbols = {
+				tree = true,
+				keep_parents = false,
+				filter = {
+					default = {
+						"Class",
+						"Constructor",
+						"Enum",
+						"Function",
+						"Interface",
+						"Method",
+						"Module",
+						"Namespace",
+						"Struct",
+					},
+				},
+			},
 		},
 	},
 })

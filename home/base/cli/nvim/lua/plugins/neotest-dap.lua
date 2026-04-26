@@ -8,19 +8,29 @@ local function init_dap()
 
 	-- Load the main modules
 	local dapview = require("dap-view")
-	local dapgo = require("dap-go")
-	local dappython = require("dap-python")
-
-	-- Run the setups
 	dapview.setup({
+		winbar = {
+			default_section = "scopes",
+		},
 		virtual_text = {
 			enabled = true,
 		},
 		auto_toggle = true,
 		follow_tab = true,
 	})
-	dapgo.setup()
-	dappython.setup("python3")
+
+	local ft = vim.bo.filetype
+	if ft == "go" then
+		local ok, dapgo = pcall(require, "dap-go")
+		if ok then
+			dapgo.setup()
+		end
+	elseif ft == "python" then
+		local ok, dappython = pcall(require, "dap-python")
+		if ok then
+			dappython.setup("python3")
+		end
+	end
 end
 
 -- Lazyload Neotest
@@ -33,6 +43,25 @@ local function init_neotest()
 
 	local neotest = require("neotest")
 
+	local ft = vim.bo.filetype
+	local adapters = {}
+	if ft == "go" then
+		table.insert(
+			adapters,
+			require("neotest-golang")({
+				dap_go_enabled = true,
+			})
+		)
+	end
+	if ft == "python" then
+		table.insert(
+			adapters,
+			require("neotest-python")({
+				dap = { adapter = "python" },
+			})
+		)
+	end
+
 	neotest.setup({
 		discovery = { enabled = false },
 		running = { concurrent = true },
@@ -41,14 +70,7 @@ local function init_neotest()
 			enabled = true,
 			open_on_run = true,
 		},
-		adapters = {
-			require("neotest-golang")({
-				dap_go_enabled = true,
-			}),
-			require("neotest-python")({
-				dap = { adapter = "python" },
-			}),
-		},
+		adapters = adapters,
 	})
 end
 
@@ -86,6 +108,30 @@ local keymaps = {
 			require("dap").run_to_cursor()
 		end,
 		desc = "Run to Cursor",
+	},
+	{
+		"<leader>do",
+		function()
+			init_dap()
+			require("dap").step_over()
+		end,
+		desc = "Step Over (Next Line)",
+	},
+	{
+		"<leader>di",
+		function()
+			init_dap()
+			require("dap").step_into()
+		end,
+		desc = "Step Into",
+	},
+	{
+		"<leader>dO",
+		function()
+			init_dap()
+			require("dap").step_out()
+		end,
+		desc = "Step Out",
 	},
 	{
 		"<leader>ds",

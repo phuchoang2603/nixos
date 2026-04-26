@@ -49,12 +49,12 @@ for _, map in ipairs({
 	{ { "n", "x", "o" }, "[b", mv.goto_previous, "@block.outer", "Prev Block" },
 
 	-- Parameters / Arguments
-	{ { "n", "x", "o" }, "]a", mv.goto_next, "@parameter.inner", "Next Argument" },
-	{ { "n", "x", "o" }, "[a", mv.goto_previous, "@parameter.inner", "Prev Argument" },
+	{ { "n", "x", "o" }, "]a", mv.goto_next_start, "@parameter.inner", "Next Argument" },
+	{ { "n", "x", "o" }, "[a", mv.goto_previous_start, "@parameter.inner", "Prev Argument" },
 
 	-- Assignments / Key-Value Pairs
-	{ { "n", "x", "o" }, "]k", mv.goto_next, "@assignment.outer", "Next Assignment" },
-	{ { "n", "x", "o" }, "[k", mv.goto_previous, "@assignment.outer", "Prev Assignment" },
+	{ { "n", "x", "o" }, "]k", mv.goto_next_start, "@assignment.outer", "Next Assignment" },
+	{ { "n", "x", "o" }, "[k", mv.goto_previous_start, "@assignment.outer", "Prev Assignment" },
 }) do
 	local modes, lhs, fn, query = map[1], map[2], map[3], map[4]
 

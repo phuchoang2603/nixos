@@ -21,5 +21,13 @@ vim.filetype.add({
 		-- Web stuff
 		["[jt]sconfig.*.json"] = "jsonc",
 		["%.env%.[%w_.-]+"] = "dotenv",
+		-- Ansible
+		[".*/host_vars/.*%.ya?ml"] = "yaml.ansible",
+		[".*/group_vars/.*%.ya?ml"] = "yaml.ansible",
+		[".*/playbooks/.*%.ya?ml"] = "yaml.ansible",
+		[".*/roles/.*/tasks/.*%.ya?ml"] = "yaml.ansible",
+		[".*/roles/.*/handlers/.*%.ya?ml"] = "yaml.ansible",
+		["site%.ya?ml"] = "yaml.ansible",
+		["main%.ya?ml"] = "yaml.ansible",
 	},
 })

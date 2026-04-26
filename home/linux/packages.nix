@@ -13,7 +13,6 @@
     libreoffice-fresh
     playerctl
     gimp
-    zathura
     lutris
 
     # Wayland Essentials

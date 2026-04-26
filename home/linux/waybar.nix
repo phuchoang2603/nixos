@@ -135,8 +135,7 @@ let
         paused = "";
         stopped = "";
       };
-      player = "spotify";
-      on-click = "playerctl play-pause --player=spotify";
+      on-click = "playerctl play-pause";
       enable-tooltip-len-limits = true;
     };
 

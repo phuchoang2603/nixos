@@ -28,14 +28,6 @@
         "PATH,$HOME/.local/bin:$PATH"
       ];
 
-      # Variables
-      "$browser" = "microsoft-edge";
-      "$terminal" = "kitty";
-      "$editor" = "code";
-      "$music" = "spotify";
-      "$note" = "obsidian";
-      "$fileManager" = "nautilus";
-
       # General settings
       general = {
         gaps_in = 1;
@@ -156,12 +148,6 @@
       ];
 
       bind = [
-        "ALT, 1, exec, $browser"
-        "ALT, 2, exec, $terminal"
-        "ALT, 3, exec, $editor"
-        "ALT, 4, exec, $note"
-        "ALT, 5, exec, $music"
-        "ALT, 6, exec, $fileManager"
         "SUPER, SPACE, exec, rofi -show combi -normal-window"
         "SUPER, F, togglefloating,"
         "SUPER, I, setprop, active opaque toggle"
@@ -227,11 +213,10 @@
         "match:class ^(kitty)$, workspace 2"
         "match:class ^(code|jetbrains-datagrip|libreoffice.*)$, workspace 3"
         "match:class ^(obsidian)$, workspace 4"
-        "match:class ^(Spotify)$, workspace 5"
         "match:class ^(org.gnome.Nautilus)$, workspace 6"
         "match:class ^(com.obsproject.Studio)$, workspace 7"
-        "match:class ^(microsoft-edge|kitty|code|libreoffice.*|Spotify|obsidian|org.gnome.Nautilus|com.obsproject.Studio|org.pwmt.zathura)$, tile on"
-        "match:class ^(obsidian|microsoft-edge|org.gnome.NautilusPreviewer|org.pwmt.zathura)$, opacity 1 override"
+        "match:class ^(microsoft-edge|kitty|code|libreoffice.*|obsidian|org.gnome.Nautilus|com.obsproject.Studio)$, tile on"
+        "match:class ^(obsidian|microsoft-edge|org.gnome.NautilusPreviewer)$, opacity 1 override"
       ];
     };
   };

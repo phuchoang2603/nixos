@@ -42,7 +42,6 @@
       "datagrip"
       "obsidian"
       "zalo"
-      "skim"
       "karabiner-elements"
       "bettertouchtool"
       "yaak"

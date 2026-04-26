@@ -1,13 +1,47 @@
-local is_mac = vim.loop.os_uname().sysname == "Darwin"
+local opts = { buffer = true, silent = true }
 
-if is_mac then
-	vim.g.vimtex_view_method = "skim"
-	vim.g.vimtex_view_general_viewer = "skim"
-else
-	vim.g.vimtex_view_method = "zathura"
-	vim.g.vimtex_view_general_viewer = "zathura"
-end
+-- Build and View
+vim.keymap.set("n", "<leader>lb", "<cmd>LspTexlabBuild<cr>", { buffer = true, desc = "TexLab: Build PDF" })
+vim.keymap.set(
+	"n",
+	"<leader>lv",
+	"<cmd>LspTexlabForward<cr>",
+	{ buffer = true, desc = "TexLab: Forward Search (View)" }
+)
+vim.keymap.set("n", "<leader>lk", "<cmd>LspTexlabCancelBuild<cr>", { buffer = true, desc = "TexLab: Cancel Build" })
 
-vim.g.vimtex_mappings_prefix = "<leader>l"
+-- Cleaning
+vim.keymap.set(
+	"n",
+	"<leader>lc",
+	"<cmd>LspTexlabCleanAuxiliary<cr>",
+	{ buffer = true, desc = "TexLab: Clean Aux Files" }
+)
+vim.keymap.set(
+	"n",
+	"<leader>lC",
+	"<cmd>LspTexlabCleanArtifacts<cr>",
+	{ buffer = true, desc = "TexLab: Clean All Artifacts" }
+)
 
-vim.keymap.set("n", "<leader>l", "", { desc = "+vimtex", buffer = true })
+-- Environment Management
+vim.keymap.set(
+	"n",
+	"<leader>le",
+	"<cmd>LspTexlabFindEnvironments<cr>",
+	{ buffer = true, desc = "TexLab: List Environments" }
+)
+vim.keymap.set(
+	"n",
+	"<leader>lr",
+	"<cmd>LspTexlabChangeEnvironment<cr>",
+	{ buffer = true, desc = "TexLab: Rename Environment" }
+)
+
+-- Misc
+vim.keymap.set(
+	"n",
+	"<leader>lg",
+	"<cmd>LspTexlabDependencyGraph<cr>",
+	{ buffer = true, desc = "TexLab: Show Dependency Graph" }
+)

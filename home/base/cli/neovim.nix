@@ -26,7 +26,6 @@
       nvim-treesitter-textobjects
 
       # Language-support
-      vimtex
       helm-ls-nvim
       (pkgs.vimUtils.buildVimPlugin {
         name = "live-preview-nvim";

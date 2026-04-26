@@ -38,25 +38,23 @@ local mv = require("nvim-treesitter-textobjects.move")
 for _, map in ipairs({
 	-- Function
 	{ { "n", "x", "o" }, "]f", mv.goto_next_start, "@function.outer" },
-	{ { "n", "x", "o" }, "]F", mv.goto_next_end, "@function.outer" },
 	{ { "n", "x", "o" }, "[f", mv.goto_previous_start, "@function.outer" },
-	{ { "n", "x", "o" }, "[F", mv.goto_previous_end, "@function.outer" },
 
 	-- Class
 	{ { "n", "x", "o" }, "]c", mv.goto_next_start, "@class.outer" },
-	{ { "n", "x", "o" }, "]C", mv.goto_next_end, "@class.outer" },
 	{ { "n", "x", "o" }, "[c", mv.goto_previous_start, "@class.outer" },
-	{ { "n", "x", "o" }, "[C", mv.goto_previous_end, "@class.outer" },
 
-	-- Parameter/Argument
-	{ { "n", "x", "o" }, "]a", mv.goto_next_start, "@parameter.inner" },
-	{ { "n", "x", "o" }, "]A", mv.goto_next_end, "@parameter.inner" },
-	{ { "n", "x", "o" }, "[a", mv.goto_previous_start, "@parameter.inner" },
-	{ { "n", "x", "o" }, "[A", mv.goto_previous_end, "@parameter.inner" },
+	-- Blocks (Conditionals & Loops)
+	{ { "n", "x", "o" }, "]b", mv.goto_next, "@block.outer", "Next Block" },
+	{ { "n", "x", "o" }, "[b", mv.goto_previous, "@block.outer", "Prev Block" },
 
-	-- Key-value pairs
-	{ { "n", "x", "o" }, "]k", mv.goto_next_start, "@assignment.outer" },
-	{ { "n", "x", "o" }, "[k", mv.goto_previous_start, "@assignment.outer" },
+	-- Parameters / Arguments
+	{ { "n", "x", "o" }, "]a", mv.goto_next, "@parameter.inner", "Next Argument" },
+	{ { "n", "x", "o" }, "[a", mv.goto_previous, "@parameter.inner", "Prev Argument" },
+
+	-- Assignments / Key-Value Pairs
+	{ { "n", "x", "o" }, "]k", mv.goto_next, "@assignment.outer", "Next Assignment" },
+	{ { "n", "x", "o" }, "[k", mv.goto_previous, "@assignment.outer", "Prev Assignment" },
 }) do
 	local modes, lhs, fn, query = map[1], map[2], map[3], map[4]
 

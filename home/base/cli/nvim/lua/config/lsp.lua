@@ -52,52 +52,6 @@ local default_keymaps = {
 		expr = true,
 		desc = "Accept Copilot Suggestions or Tab",
 	},
-	{
-		keys = "<leader>uc",
-		func = function()
-			local copilot_active = false
-			local clients = vim.lsp.get_clients({ name = "copilot" })
-			if #clients > 0 then
-				copilot_active = true
-			end
-
-			local next_state = not copilot_active
-
-			if next_state then
-				vim.lsp.enable("copilot")
-				vim.lsp.inline_completion.enable(true)
-				require("sidekick.nes").enable()
-			else
-				for _, client in ipairs(clients) do
-					client:stop(false)
-				end
-				vim.lsp.inline_completion.enable(false)
-				require("sidekick.nes").disable()
-			end
-
-			local status_text = next_state and "ON" or "OFF"
-			local icon = next_state and "󰚩 " or "󱚧 "
-			vim.notify(
-				string.format("%s Copilot LSP: %s", icon, status_text),
-				vim.log.levels.INFO,
-				{ title = "LSP Completion" }
-			)
-		end,
-		desc = "Toggle Copilot LSP & Suggestions",
-	},
-	{
-		keys = "<leader>ul",
-		func = function()
-			if vim.lsp.codelens.is_enabled() then
-				vim.lsp.codelens.enable(false)
-				vim.notify("Code Lenses: OFF", vim.log.levels.INFO, { title = "LSP Code Lenses" })
-			else
-				vim.lsp.codelens.enable(true)
-				vim.notify("Code Lenses: ON", vim.log.levels.INFO, { title = "LSP Code Lenses" })
-			end
-		end,
-		desc = "Toggle Code Lenses",
-	},
 }
 
 -- Events

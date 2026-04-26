@@ -5,6 +5,8 @@ end
 -- LSP
 local servers = {
 	"bashls",
+	"sqls",
+	"sqruff",
 	"clangd",
 	"gopls",
 	"protols",

@@ -55,6 +55,16 @@
       # Language-support
       helm-ls-nvim
       (pkgs.vimUtils.buildVimPlugin {
+        name = "sqls-nvim";
+        src = pkgs.fetchFromGitHub {
+          owner = "nanotee";
+          repo = "sqls.nvim";
+          rev = "main";
+          hash = "sha256-543z6Rjs1ClKYcSrOosX0evxYOdPtYjG05VEvZVoznc=";
+        };
+        doCheck = false;
+      })
+      (pkgs.vimUtils.buildVimPlugin {
         name = "live-preview-nvim";
         src = pkgs.fetchFromGitHub {
           owner = "brianhuster";

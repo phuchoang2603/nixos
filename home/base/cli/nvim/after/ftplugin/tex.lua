@@ -8,7 +8,7 @@ vim.keymap.set(
 	"<cmd>LspTexlabForward<cr>",
 	{ buffer = true, desc = "TexLab: Forward Search (View)" }
 )
-vim.keymap.set("n", "<leader>lk", "<cmd>LspTexlabCancelBuild<cr>", { buffer = true, desc = "TexLab: Cancel Build" })
+vim.keymap.set("n", "<leader>ls", "<cmd>LspTexlabCancelBuild<cr>", { buffer = true, desc = "TexLab: Stop Build" })
 
 -- Cleaning
 vim.keymap.set(
@@ -36,12 +36,4 @@ vim.keymap.set(
 	"<leader>lr",
 	"<cmd>LspTexlabChangeEnvironment<cr>",
 	{ buffer = true, desc = "TexLab: Rename Environment" }
-)
-
--- Misc
-vim.keymap.set(
-	"n",
-	"<leader>lg",
-	"<cmd>LspTexlabDependencyGraph<cr>",
-	{ buffer = true, desc = "TexLab: Show Dependency Graph" }
 )

@@ -20,6 +20,7 @@ local servers = {
 	"nixd",
 	"ty",
 	"ruff",
+	"ansiblels",
 	"terraformls",
 	"tflint",
 	"taplo",

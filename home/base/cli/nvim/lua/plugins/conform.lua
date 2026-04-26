@@ -14,7 +14,7 @@ require("conform").setup({
 		css = { "prettierd" },
 		html = { "prettierd" },
 		toml = { "taplo" },
-		yaml = { "prettierd" },
+		yaml = { "prettierd", "ansible-lint", stop_after_first = true },
 		terraform = { "terraform_fmt" },
 		hcl = { "terraform_fmt" },
 	},

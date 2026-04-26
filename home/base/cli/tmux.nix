@@ -69,10 +69,10 @@
       bind "o" run-shell "sesh connect \"$(
         sesh list --icons | fzf-tmux -p 80%,80% \
           --no-sort --ansi --border-label ' sesh ' --prompt '⚡  ' \
-          --header 'Ctrl-a all | Ctrl-t tmux | Ctrl-z zoxide | Ctrl-x tmux kill' \
+          --header 'Ctrl-a all | Ctrl-t tmux | Ctrl-r repos | Ctrl-x tmux kill' \
           --bind 'ctrl-a:change-prompt(⚡  )+reload(sesh list --icons)' \
           --bind 'ctrl-t:change-prompt(🪟  )+reload(sesh list -t --icons)' \
-          --bind 'ctrl-z:change-prompt(📁  )+reload(sesh list -z --icons)' \
+          --bind 'ctrl-r:change-prompt(🔎  )+reload(fd -d 2 -t d . ~/repos)' \
           --bind 'ctrl-x:execute(tmux kill-session -t {2..})+change-prompt(⚡  )+reload(sesh list -t --icons)' \
           --preview-window 'top:60%' \
           --preview 'sesh preview {}'
@@ -89,12 +89,6 @@
         -w 80% \
         -h 90% \
         -E "lazydocker"
-
-      bind "t" display-popup \
-        -d "#{pane_current_path}" \
-        -w 80% \
-        -h 90% \
-        -E "zsh"
 
       bind -N "last-session (via sesh) " L run-shell "sesh last"
     '';

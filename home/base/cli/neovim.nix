@@ -99,50 +99,22 @@
     extraPackages = with pkgs; [
       tree-sitter
       lsof
-      copilot-language-server
 
-      # BASH / SHELL
+      # LSP
       bash-language-server
-      shfmt
-
-      # C / C++
-      clang-tools
-
-      # GO / GRPC
-      gopls
-      gotools
-      gofumpt
-      protols
-
-      # JSON / HTML / CSS / JavaScript
+      copilot-language-server
       vscode-langservers-extracted
-      typescript-go
-      prettierd
-
-      # LUA
       lua-language-server
-      stylua
-
-      # Documents
-      markdown-oxide
-      texlab
-      harper
-
-      # NIX
       nixd
-      nixfmt
-
-      # PYTHON
-      ty
-      ruff
-
-      # DevOps
-      terraform-ls
-      tflint
-      taplo
+      markdown-oxide
+      harper
       yaml-language-server
-      docker-language-server
-      helm-ls
+
+      # Formatter
+      shfmt
+      prettierd
+      stylua
+      nixfmt
     ];
   };
 }

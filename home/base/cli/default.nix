@@ -7,7 +7,7 @@
     ./tmux.nix
     ./git.nix
     ./yazi.nix
-    ./opencode.nix
+    ./ai.nix
     ./neovim.nix
     ./direnv.nix
   ];

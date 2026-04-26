@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }:
+{ pkgs, ... }:
 
 {
   home.packages = with pkgs; [
@@ -23,12 +23,6 @@
     btop
     htop
 
-    # Lang
-    python3
-    go
-    rustc
-    cargo
-
     # Infrastructure & DevOps
     kubernetes-helm
     kubectl
@@ -36,7 +30,6 @@
     kubelogin-oidc
     kubie
     k9s
-    tilt
     lazydocker
   ];
 }

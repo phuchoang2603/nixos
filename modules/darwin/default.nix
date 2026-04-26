@@ -2,7 +2,6 @@
   imports = [
     ./system.nix
     ./homebrew.nix
-    ./launchd.nix
     ./custom-user-preferences.nix
     ./dock.nix
     ./trackpad.nix

@@ -33,7 +33,7 @@
         {
           key = "C";
           command = ''
-            git diff --staged | /etc/profiles/per-user/felix/bin/opencode run --attach http://localhost:4096 --model github-copilot/gpt-5.4-mini \
+            git diff --staged | pi --model github-copilot/gpt-5.4-mini -p \
             'Generate a git commit message for these staged changes using Conventional Commits. 
             Include a concise summary line, a blank line, and short bullet points description of the changes. 
             Output ONLY the raw text with no markdown, no code blocks, and no explanations.' \

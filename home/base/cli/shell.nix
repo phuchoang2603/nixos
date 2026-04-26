@@ -69,6 +69,7 @@
         lzg = "lazygit";
         lzd = "lazydocker";
         oc = "opencode";
+        q = "pi --model github-copilot/gpt-5.4-mini -p";
 
         # Kubernetes
         k = "kubectl";

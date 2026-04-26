@@ -31,5 +31,6 @@
     kubie
     k9s
     lazydocker
+    devenv
   ];
 }

@@ -4,7 +4,6 @@ end
 
 -- LSP
 local servers = {
-	"sqruff",
 	"bashls",
 	"clangd",
 	"gopls",

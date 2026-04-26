@@ -22,8 +22,35 @@
       blink-cmp
       friendly-snippets
       conform-nvim
-      nvim-treesitter.withAllGrammars
+      (nvim-treesitter.withPlugins (p: [
+        p.comment
+        p.regex
+        p.vim
+        p.ini
+        p.sql
+        p.bash
+        p.c
+        p.cpp
+        p.python
+        p.go
+        p.lua
+        p.html
+        p.css
+        p.javascript
+        p.json
+        p.nix
+        p.latex
+        p.markdown
+        p.markdown_inline
+        p.dockerfile
+        p.yaml
+        p.toml
+        p.starlark
+        p.hcl
+        p.helm
+      ]))
       nvim-treesitter-textobjects
+      nvim-lspconfig
 
       # Language-support
       helm-ls-nvim
@@ -73,7 +100,6 @@
       tree-sitter
       lsof
       copilot-language-server
-      sqruff
 
       # BASH / SHELL
       bash-language-server
@@ -87,10 +113,6 @@
       gotools
       gofumpt
       protols
-
-      # Rust
-      rust-analyzer
-      rustfmt
 
       # JSON / HTML / CSS / JavaScript
       vscode-langservers-extracted

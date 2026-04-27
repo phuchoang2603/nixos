@@ -24,7 +24,6 @@ local servers = {
 	"ruff",
 	"ansiblels",
 	"terraformls",
-	"tflint",
 	"taplo",
 	"yamlls",
 	"docker_language_server",

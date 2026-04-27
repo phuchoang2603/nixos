@@ -7,6 +7,17 @@
   programs.git = {
     enable = true;
     lfs.enable = true;
+
+    ignores = [
+      ".DS_Store"
+      "Thumbs.db"
+      "*.swp"
+      ".direnv/"
+      ".devenv/"
+      "node_modules/"
+      ".vscode/"
+    ];
+
     settings = {
       user = {
         name = "felix";

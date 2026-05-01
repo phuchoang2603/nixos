@@ -142,6 +142,14 @@ local keymaps = {
 		end,
 		desc = "Stop Debugging",
 	},
+	{
+		"<leader>dw",
+		function()
+			init_dap()
+			require("dap-view").add_expr()
+		end,
+		desc = "Watch variable",
+	},
 
 	-- Neotest keymaps
 	{

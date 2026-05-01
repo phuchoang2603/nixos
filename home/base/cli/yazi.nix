@@ -1,8 +1,14 @@
+{ pkgs, ... }:
+
 {
   programs.yazi = {
     enable = true;
     enableZshIntegration = true;
     shellWrapperName = "y";
+
+    plugins = {
+      clipboard = pkgs.yaziPlugins.clipboard;
+    };
 
     keymap = {
       mgr.prepend_keymap = [
@@ -13,6 +19,25 @@
           ];
           run = ''shell -- ya emit cd "$(git rev-parse --show-toplevel)"'';
           desc = "Go to git repository root";
+        }
+        {
+          on = [
+            "<C-c>"
+          ];
+          run = [
+            "yank"
+            "plugin clipboard -- --action=copy"
+          ];
+          desc = "Copy yanked files to the system clipboard";
+        }
+        {
+          on = [
+            "<C-v>"
+          ];
+          run = [
+            "plugin clipboard -- --action=paste"
+          ];
+          desc = "Paste files from the system clipboard into the current directory";
         }
       ];
     };

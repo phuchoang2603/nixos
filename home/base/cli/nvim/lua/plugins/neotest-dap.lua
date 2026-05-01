@@ -88,6 +88,14 @@ local keymaps = {
 		"<leader>dB",
 		function()
 			init_dap()
+			require("dap").set_breakpoint(vim.fn.input("Breakpoint condition: "))
+		end,
+		desc = "Toggle Breakpoint",
+	},
+	{
+		"<leader>dl",
+		function()
+			init_dap()
 			require("dap").list_breakpoints()
 			vim.cmd("copen")
 		end,

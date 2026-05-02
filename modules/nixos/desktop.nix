@@ -2,19 +2,6 @@
 
 {
   services = {
-    # Audio - PipeWire
-    pipewire = {
-      enable = true;
-      alsa.enable = true;
-      alsa.support32Bit = true;
-      pulse.enable = true;
-      jack.enable = true;
-      wireplumber.enable = true;
-    };
-
-    # Bluetooth
-    blueman.enable = true;
-
     # Login manager (TTY) for Hyprland
     greetd = {
       enable = true;
@@ -32,24 +19,6 @@
 
     # Thumbnail service
     tumbler.enable = true;
-
-    # Game streaming server
-    sunshine = {
-      enable = true;
-      autoStart = true;
-      openFirewall = true;
-    };
-
-    # USB automounting
-    udisks2.enable = true;
-
-    # Set up udev rules for uinput
-    udev.extraRules = ''
-      KERNEL=="uinput", GROUP="input", MODE="0660"
-    '';
-
-    # Firmware updates
-    fwupd.enable = true;
   };
 
   programs = {
@@ -65,7 +34,6 @@
 
   # Security/Authentication
   security = {
-    rtkit.enable = true;
     polkit.enable = true;
     pam.services.login.enableGnomeKeyring = true;
     pam.services.greetd.enableGnomeKeyring = true;
@@ -80,18 +48,6 @@
       Type = "simple";
       ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
       Restart = "on-failure";
-    };
-  };
-
-  # Bluetooth
-  hardware.bluetooth = {
-    enable = true;
-    powerOnBoot = true;
-    settings = {
-      General = {
-        Enable = "Source,Sink,Media,Socket";
-        Experimental = true;
-      };
     };
   };
 }

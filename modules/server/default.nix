@@ -1,9 +1,10 @@
 {
   imports = [
     ./base.nix
-    ./audio.nix
-    ./desktop.nix
-    ./hardware.nix
+    ./nvidia.nix
+    ./docker.nix
+    ./nfs.nix
+    ./ssh.nix
   ];
 
   # Enable flakes

@@ -1,14 +1,10 @@
 {
   pkgs,
-  lib,
   config,
   ...
 }:
 
 {
-  # NVIDIA driver configuration
-  # Note: This module should be imported only on hosts with NVIDIA GPUs
-
   # Enable OpenGL
   hardware.graphics = {
     enable = true;

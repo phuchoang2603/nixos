@@ -122,9 +122,9 @@
 
       # Formatter
       shfmt
-      prettierd
       stylua
       nixfmt
+      oxfmt
     ];
   };
 }

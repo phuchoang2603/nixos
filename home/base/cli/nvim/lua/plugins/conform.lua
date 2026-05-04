@@ -5,28 +5,25 @@ require("conform").setup({
 		sh = { "shfmt" },
 		nix = { "nixfmt" },
 		lua = { "stylua" },
-		go = { "gofumpt", "goimports", stop_after_first = true },
+		go = { "gofumpt", "goimports" },
 		python = { "ruff_format" },
 		rust = { "rustfmt" },
-		json = { "prettierd" },
-		markdown = { "prettierd" },
-		javascript = { "prettierd" },
-		typescript = { "prettierd" },
-		css = { "prettierd" },
-		html = { "prettierd" },
-		toml = { "taplo" },
-		yaml = { "prettierd", "ansible-lint", stop_after_first = true },
+		json = { "oxfmt" },
+		markdown = { "oxfmt" },
+		javascript = { "oxfmt" },
+		typescript = { "oxfmt" },
+		css = { "oxfmt" },
+		html = { "oxfmt" },
+		toml = { "oxfmt" },
+		yaml = { "oxfmt", "ansible-lint", stop_after_first = true },
 		terraform = { "terraform_fmt" },
 		hcl = { "terraform_fmt" },
+		["_"] = { "treefmt" },
 	},
 	default_format_opts = {
 		lsp_format = "fallback",
 	},
 	format_on_save = function(bufnr)
-		local ignore_filetypes = { "sql" }
-		if vim.tbl_contains(ignore_filetypes, vim.bo[bufnr].filetype) then
-			return
-		end
 		if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
 			return
 		end

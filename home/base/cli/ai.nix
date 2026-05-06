@@ -27,14 +27,6 @@
       };
     };
 
-    codex = {
-      enable = true;
-      enableMcpIntegration = true;
-      skills = {
-        find-skills = ./skills/find-skills;
-      };
-    };
-
     mcp = {
       enable = true;
       servers = {

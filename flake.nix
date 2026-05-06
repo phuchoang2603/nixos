@@ -2,23 +2,19 @@
   description = "NixOS and macOS configuration for felix";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
     nix-darwin = {
       url = "github:nix-darwin/nix-darwin/master";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
     stylix = {
       url = "github:danth/stylix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
   };
 
@@ -28,135 +24,86 @@
       nixpkgs,
       home-manager,
       nix-darwin,
-      stylix,
       ...
     }@inputs:
     let
-      # User configuration
       user = "felix";
 
-      # System configurations
-      linuxSystem = "x86_64-linux";
-      darwinSystem = "aarch64-darwin";
+      mkPkgs =
+        system:
+        import nixpkgs {
+          inherit system;
+          config.allowUnfree = true;
+          overlays = [ inputs.neovim-nightly-overlay.overlays.default ];
+        };
 
-      # Shared specialArgs for all configurations
-      mkSpecialArgs = system: {
-        inherit inputs user;
+      mkHomeConfig = extraModules: {
+        home-manager = {
+          useGlobalPkgs = true;
+          useUserPackages = true;
+          backupFileExtension = "backup";
+          extraSpecialArgs = { inherit inputs user; };
+          sharedModules = [ inputs.stylix.homeModules.stylix ];
+          users.${user} = {
+            imports = extraModules;
+          };
+        };
       };
     in
     {
-      # NixOS configurations
       nixosConfigurations = {
-        nixos-desktop = nixpkgs.lib.nixosSystem {
-          system = linuxSystem;
-          specialArgs = mkSpecialArgs linuxSystem;
-          modules = [
-            ./hosts/nixos-desktop
-            home-manager.nixosModules.home-manager
-            inputs.stylix.nixosModules.stylix
-            {
-              nixpkgs.config.allowUnfree = true;
+        nixos-desktop =
+          let
+            system = "x86_64-linux";
+          in
+          nixpkgs.lib.nixosSystem {
+            inherit system;
+            specialArgs = { inherit inputs user; };
+            modules = [
+              { nixpkgs.pkgs = mkPkgs system; }
+              ./hosts/nixos-desktop
+              home-manager.nixosModules.home-manager
+              inputs.stylix.nixosModules.stylix
+              (mkHomeConfig [
+                ./home/linux
+                ./hosts/nixos-desktop/home.nix
+              ])
+            ];
+          };
 
-              home-manager = {
-                useGlobalPkgs = true;
-                useUserPackages = true;
-                extraSpecialArgs = mkSpecialArgs linuxSystem;
-                users.${user} = {
-                  imports = [
-                    ./home/linux
-                    ./hosts/nixos-desktop/home.nix
-                  ];
-                };
-                sharedModules = [
-                  inputs.stylix.homeModules.stylix
-                ];
-                backupFileExtension = "backup";
-              };
-            }
-          ];
-        };
-
-        nixos-laptop = nixpkgs.lib.nixosSystem {
-          system = linuxSystem;
-          specialArgs = mkSpecialArgs linuxSystem;
-          modules = [
-            ./hosts/nixos-laptop
-            home-manager.nixosModules.home-manager
-            inputs.stylix.nixosModules.stylix
-            {
-              nixpkgs.config.allowUnfree = true;
-
-              home-manager = {
-                useGlobalPkgs = true;
-                useUserPackages = true;
-                extraSpecialArgs = mkSpecialArgs linuxSystem;
-                users.${user} = {
-                  imports = [
-                    ./home/linux
-                    ./hosts/nixos-laptop/home.nix
-                  ];
-                };
-                sharedModules = [
-                  inputs.stylix.homeModules.stylix
-                ];
-                backupFileExtension = "backup";
-              };
-            }
-          ];
-        };
-
-        nixos-server = nixpkgs.lib.nixosSystem {
-          system = linuxSystem;
-          specialArgs = mkSpecialArgs linuxSystem;
-          modules = [
-            ./hosts/nixos-server
-            home-manager.nixosModules.home-manager
-            {
-              nixpkgs.config.allowUnfree = true;
-
-              home-manager = {
-                useGlobalPkgs = true;
-                useUserPackages = true;
-                extraSpecialArgs = mkSpecialArgs linuxSystem;
-                users.${user} = {
-                  imports = [
-                    ./home/base/cli.nix
-                  ];
-                };
-                backupFileExtension = "backup";
-              };
-            }
-          ];
-        };
+        nixos-laptop =
+          let
+            system = "x86_64-linux";
+          in
+          nixpkgs.lib.nixosSystem {
+            inherit system;
+            specialArgs = { inherit inputs user; };
+            modules = [
+              { nixpkgs.pkgs = mkPkgs system; }
+              ./hosts/nixos-laptop
+              home-manager.nixosModules.home-manager
+              inputs.stylix.nixosModules.stylix
+              (mkHomeConfig [
+                ./home/linux
+                ./hosts/nixos-laptop/home.nix
+              ])
+            ];
+          };
       };
 
-      # macOS configurations (nix-darwin)
-      darwinConfigurations = {
-        macbook = nix-darwin.lib.darwinSystem {
-          system = darwinSystem;
-          specialArgs = mkSpecialArgs darwinSystem;
+      darwinConfigurations.macbook =
+        let
+          system = "aarch64-darwin";
+        in
+        nix-darwin.lib.darwinSystem {
+          inherit system;
+          specialArgs = { inherit inputs user; };
           modules = [
+            { nixpkgs.pkgs = mkPkgs system; }
             ./hosts/macbook
             home-manager.darwinModules.home-manager
-            {
-              # Allow unfree packages
-              nixpkgs.config.allowUnfree = true;
-
-              home-manager = {
-                useGlobalPkgs = true;
-                useUserPackages = true;
-                extraSpecialArgs = mkSpecialArgs darwinSystem;
-                users.${user} = {
-                  imports = [
-                    ./home/darwin
-                  ];
-                };
-                sharedModules = [ inputs.stylix.homeModules.stylix ];
-                backupFileExtension = "backup";
-              };
-            }
+            (mkHomeConfig [ ./home/darwin ])
           ];
         };
-      };
     };
 }

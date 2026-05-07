@@ -38,7 +38,6 @@
       "microsoft-powerpoint"
       "raycast"
       "visual-studio-code"
-      "cursor"
       "datagrip"
       "obsidian"
       "zalo"

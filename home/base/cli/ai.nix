@@ -3,6 +3,7 @@
 {
   home.packages = with pkgs; [
     pi-coding-agent
+    openspec
   ];
 
   programs = {

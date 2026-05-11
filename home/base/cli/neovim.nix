@@ -31,6 +31,7 @@
         p.cpp
         p.python
         p.go
+        p.templ
         p.lua
         p.html
         p.css

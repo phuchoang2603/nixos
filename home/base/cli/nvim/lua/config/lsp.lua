@@ -10,6 +10,7 @@ local servers = {
 	"clangd",
 	"gopls",
 	"protols",
+	"templ",
 	"rust_analyzer",
 	"html",
 	"cssls",

@@ -5,7 +5,7 @@ require("conform").setup({
 		sh = { "shfmt" },
 		nix = { "nixfmt" },
 		lua = { "stylua" },
-		go = { "gofumpt", "goimports" },
+		go = { "goimports", "gofumpt", stop_after_first = true },
 		python = { "ruff_format" },
 		rust = { "rustfmt" },
 		json = { "oxfmt" },

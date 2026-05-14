@@ -46,6 +46,7 @@
       "yaak"
       "jdownloader"
       "vlc"
+      "stremio"
     ];
   };
 }

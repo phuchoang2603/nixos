@@ -31,8 +31,12 @@
     mcp = {
       enable = true;
       servers = {
-        "context7" = {
+        context7 = {
           url = "https://mcp.context7.com/mcp";
+        };
+
+        playwright = {
+          command = "playwright-mcp";
         };
       };
     };

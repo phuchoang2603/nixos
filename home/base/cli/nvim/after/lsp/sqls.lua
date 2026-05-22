@@ -12,8 +12,8 @@
 
 ---@type vim.lsp.Config
 return {
-	cmd = { "sqls", "-config", "config.yml" },
+	cmd = { "sqls", "-config", "sqls.yml" },
 	filetypes = { "sql", "mysql" },
-	root_markers = { "config.yml" },
+	root_markers = { "sqls.yml" },
 	settings = {},
 }

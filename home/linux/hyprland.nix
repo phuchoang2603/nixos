@@ -212,7 +212,7 @@
         "match:class ^(microsoft-edge)$, workspace 1"
         "match:class ^(kitty)$, workspace 2"
         "match:class ^(code|jetbrains-datagrip|libreoffice.*)$, workspace 3"
-        "match:class ^(obsidian)$, workspace 4"
+        "match:class ^(obsidian)$, workspace 5"
         "match:class ^(org.gnome.Nautilus)$, workspace 6"
         "match:class ^(com.obsproject.Studio)$, workspace 7"
         "match:class ^(microsoft-edge|kitty|code|libreoffice.*|obsidian|org.gnome.Nautilus|com.obsproject.Studio)$, tile on"

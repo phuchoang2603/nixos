@@ -48,11 +48,11 @@
         alt-3 = "workspace 3";
         alt-4 = [
           "workspace 4"
-          "exec-and-forget open -a 'Obsidian'"
+          "exec-and-forget open -a 'YouTube Music'"
         ];
         alt-5 = [
           "workspace 5"
-          "exec-and-forget open -a 'YouTube Music'"
+          "exec-and-forget open -a 'Obsidian'"
         ];
         alt-6 = [
           "workspace 6"
@@ -141,13 +141,13 @@
           ];
         }
         {
-          "if".app-id = "md.obsidian";
+          "if".app-id = "com.microsoft.edgemac.app.cinhimbnkkaeohfgghhklpknlkffjgod";
           run = [
             "move-node-to-workspace 4"
           ];
         }
         {
-          "if".app-id = "com.microsoft.edgemac.app.cinhimbnkkaeohfgghhklpknlkffjgod";
+          "if".app-id = "md.obsidian";
           run = [
             "move-node-to-workspace 5"
           ];

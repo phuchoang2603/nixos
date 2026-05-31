@@ -4,4 +4,5 @@ require("config.autocmds")
 require("config.filetypes")
 require("config.diagnostics")
 require("config.lsp")
-require("config.ui2")
+
+require("vim._core.ui2").enable()

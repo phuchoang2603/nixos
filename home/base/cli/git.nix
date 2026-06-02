@@ -12,6 +12,7 @@
       ".DS_Store"
       "Thumbs.db"
       "*.swp"
+      ".envrc"
       ".direnv/"
       ".devenv/"
       "node_modules/"
@@ -30,6 +31,18 @@
       commit.gpgSign = false;
       format.signOff = true;
     };
+
+    includes = [
+      {
+        condition = "gitdir:~/repos/work/";
+        contents = {
+          user = {
+            name = "Felix Hoang";
+            email = "felixhoang@magnitudeminds.com";
+          };
+        };
+      }
+    ];
   };
 
   programs.lazygit = {

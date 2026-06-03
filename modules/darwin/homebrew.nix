@@ -12,6 +12,7 @@
     # Automatically update Homebrew
     onActivation = {
       cleanup = "zap";
+      extraFlags = [ "--force-cleanup" ];
       autoUpdate = true;
       upgrade = true;
     };
@@ -38,6 +39,7 @@
       "microsoft-powerpoint"
       "raycast"
       "visual-studio-code"
+      "cursor"
       "datagrip"
       "obsidian"
       "zalo"

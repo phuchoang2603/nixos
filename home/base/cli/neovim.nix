@@ -110,6 +110,8 @@
       lsof
 
       # LSP
+      ty
+      gopls
       bash-language-server
       copilot-language-server
       vscode-langservers-extracted

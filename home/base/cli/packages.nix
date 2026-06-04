@@ -23,6 +23,10 @@
     btop
     htop
 
+    # Languages
+    uv
+    nodejs
+
     # Infrastructure & DevOps
     kubernetes-helm
     kubectl

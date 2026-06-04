@@ -34,10 +34,10 @@
 
     includes = [
       {
-        condition = "gitdir:~/repos/work/";
+        condition = "gitdir:~/repos/work/magnitude-minds/";
         contents = {
           user = {
-            name = "Felix Hoang";
+            name = "felixhoang-mag";
             email = "felixhoang@magnitudeminds.com";
           };
         };

@@ -1,12 +1,12 @@
 -- Register the custom filetypes Neovim doesn't know by default
 vim.filetype.add({
 	extension = {
-		env = "dotenv",
+		env = "sh",
 		sarif = "sarif",
 	},
 	filename = {
-		[".env"] = "dotenv",
-		["env"] = "dotenv",
+		[".env"] = "sh",
+		["env"] = "sh",
 		["go.work"] = "gowork",
 		["docker-compose.yaml"] = "yaml.docker-compose",
 		["docker-compose.yml"] = "yaml.docker-compose",
@@ -20,7 +20,7 @@ vim.filetype.add({
 		[".*%.tfvars"] = "terraform-vars",
 		-- Web stuff
 		["[jt]sconfig.*.json"] = "jsonc",
-		["%.env%.[%w_.-]+"] = "dotenv",
+		["%.env%.[%w_.-]+"] = "sh",
 		-- Ansible
 		[".*/host_vars/.*%.ya?ml"] = "yaml.ansible",
 		[".*/group_vars/.*%.ya?ml"] = "yaml.ansible",

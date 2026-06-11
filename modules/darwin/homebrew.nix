@@ -49,6 +49,7 @@
       "jdownloader"
       "vlc"
       "stremio"
+      "tailscale-app"
     ];
   };
 }

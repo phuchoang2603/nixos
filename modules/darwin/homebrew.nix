@@ -50,6 +50,8 @@
       "vlc"
       "stremio"
       "tailscale-app"
+      "utm"
+      "localsend"
     ];
   };
 }

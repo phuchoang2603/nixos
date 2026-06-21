@@ -22,10 +22,6 @@
         preset = "qwerty";
       };
 
-      "workspace-to-monitor-force-assignment" = {
-        "10" = "DELL P2317H";
-      };
-
       gaps = {
         inner.horizontal = 2;
         inner.vertical = 4;

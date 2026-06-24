@@ -52,51 +52,40 @@
     in
     {
       nixosConfigurations = {
-        nixos-desktop =
-          let
-            system = "x86_64-linux";
-          in
-          nixpkgs.lib.nixosSystem {
-            inherit system;
-            specialArgs = { inherit inputs user; };
-            modules = [
-              { nixpkgs.pkgs = mkPkgs system; }
-              ./hosts/nixos-desktop
-              home-manager.nixosModules.home-manager
-              inputs.stylix.nixosModules.stylix
-              (mkHomeConfig [
-                ./home/linux
-                ./hosts/nixos-desktop/home.nix
-              ])
-            ];
-          };
+        nixos-desktop = nixpkgs.lib.nixosSystem rec {
+          system = "x86_64-linux";
+          specialArgs = { inherit inputs user; };
+          modules = [
+            { nixpkgs.pkgs = mkPkgs system; }
+            ./hosts/nixos-desktop
+            home-manager.nixosModules.home-manager
+            inputs.stylix.nixosModules.stylix
+            (mkHomeConfig [
+              ./home/linux
+              ./hosts/nixos-desktop/home.nix
+            ])
+          ];
+        };
 
-        nixos-laptop =
-          let
-            system = "x86_64-linux";
-          in
-          nixpkgs.lib.nixosSystem {
-            inherit system;
-            specialArgs = { inherit inputs user; };
-            modules = [
-              { nixpkgs.pkgs = mkPkgs system; }
-              ./hosts/nixos-laptop
-              home-manager.nixosModules.home-manager
-              inputs.stylix.nixosModules.stylix
-              (mkHomeConfig [
-                ./home/linux
-                ./hosts/nixos-laptop/home.nix
-              ])
-            ];
-          };
+        nixos-laptop = nixpkgs.lib.nixosSystem rec {
+          system = "x86_64-linux";
+          specialArgs = { inherit inputs user; };
+          modules = [
+            { nixpkgs.pkgs = mkPkgs system; }
+            ./hosts/nixos-laptop
+            home-manager.nixosModules.home-manager
+            inputs.stylix.nixosModules.stylix
+            (mkHomeConfig [
+              ./home/linux
+              ./hosts/nixos-laptop/home.nix
+            ])
+          ];
+        };
       };
 
-      darwinConfigurations.macbook =
-        let
+      darwinConfigurations = {
+        macbook = nix-darwin.lib.darwinSystem rec {
           system = "aarch64-darwin";
-        in
-        nix-darwin.lib.darwinSystem {
-          inherit system;
           specialArgs = { inherit inputs user; };
           modules = [
             { nixpkgs.pkgs = mkPkgs system; }
@@ -105,5 +94,21 @@
             (mkHomeConfig [ ./home/darwin ])
           ];
         };
+      };
+
+      homeConfigurations = {
+        debian =
+          let
+            system = "x86_64-linux";
+          in
+          home-manager.lib.homeManagerConfiguration {
+            pkgs = mkPkgs system;
+            extraSpecialArgs = { inherit inputs user; };
+            modules = [
+              inputs.stylix.homeModules.stylix
+              ./hosts/debian/home.nix
+            ];
+          };
+      };
     };
 }

@@ -2,12 +2,14 @@
 
 let
   isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
-  wallpaperPath = ../../../current.png;
 in
 {
   stylix = {
     enable = true;
-    image = wallpaperPath;
+    image = pkgs.fetchurl {
+      url = "https://media.githubusercontent.com/media/phuchoang2603/nixos/refs/heads/main/wallpapers/orange-girl-nature.png";
+      hash = "sha256-upZ9zonKq02fcvznWhUD+5Nn3WTgUuNMg9lUI9FV0DI=";
+    };
     polarity = "dark";
 
     # Cursor: Only enable on Linux

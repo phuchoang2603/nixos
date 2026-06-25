@@ -2,7 +2,7 @@
 
 {
   imports = [
-    ./kitty.nix
+    ./terminal.nix
     ./theming.nix
   ];
 }

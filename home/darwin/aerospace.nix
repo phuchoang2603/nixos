@@ -39,7 +39,7 @@
         ];
         alt-2 = [
           "workspace 2"
-          "exec-and-forget open -a 'Ghostty'"
+          "exec-and-forget open -a kitty"
         ];
         alt-3 = "workspace 3";
         alt-4 = [
@@ -131,7 +131,7 @@
           ];
         }
         {
-          "if".app-id = "com.mitchellh.ghostty";
+          "if".app-id = "net.kovidgoyal.kitty";
           run = [
             "move-node-to-workspace 2"
           ];

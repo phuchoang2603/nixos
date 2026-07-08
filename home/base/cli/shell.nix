@@ -69,7 +69,7 @@
         lzg = "lazygit";
         lzd = "lazydocker";
         oc = "opencode";
-        q = "pi --model github-copilot/gpt-5.4-mini -p";
+        q = "pi --model opencode/deepseek-v4-flash-free -p";
 
         # Kubernetes
         k = "kubectl";

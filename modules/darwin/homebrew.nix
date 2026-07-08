@@ -53,6 +53,7 @@
       "utm"
       "localsend"
       "transmission"
+      "transmit"
     ];
   };
 }

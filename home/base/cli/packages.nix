@@ -4,6 +4,7 @@
   home.packages = with pkgs; [
     # System
     coreutils-prefixed
+    inetutils
     vim
     wget
     curl

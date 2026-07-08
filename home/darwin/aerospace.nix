@@ -4,6 +4,7 @@
     launchd.enable = true;
 
     settings = {
+      "config-version" = 2;
       "start-at-login" = true;
       "after-startup-command" = [ ];
 
@@ -155,7 +156,11 @@
           ];
         }
         {
-          run = "move-node-to-workspace 3";
+          "if" = "true";
+          run = [
+            "move-node-to-workspace 6"
+          ];
+          check-further-callbacks = true;
         }
       ];
     };

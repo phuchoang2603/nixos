@@ -52,6 +52,7 @@
       "tailscale-app"
       "utm"
       "localsend"
+      "transmission"
     ];
   };
 }

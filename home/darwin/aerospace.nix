@@ -7,7 +7,15 @@
       "config-version" = 2;
       "start-at-login" = true;
       "after-startup-command" = [ ];
-
+      "persistent-workspaces" = [
+        "1"
+        "2"
+        "3"
+        "4"
+        "5"
+        "6"
+        "7"
+      ];
       "enable-normalization-flatten-containers" = true;
       "enable-normalization-opposite-orientation-for-nested-containers" = true;
 
@@ -158,7 +166,7 @@
         {
           "if" = "true";
           run = [
-            "move-node-to-workspace 6"
+            "move-node-to-workspace 3"
           ];
           check-further-callbacks = true;
         }

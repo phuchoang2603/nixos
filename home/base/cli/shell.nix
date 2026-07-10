@@ -132,15 +132,21 @@
         "--border"
       ];
 
-      fileWidgetCommand = "fd --type f --hidden --strip-cwd-prefix --exclude .git";
-      fileWidgetOptions = [
-        "--preview 'bat --color=always --style=numbers --line-range=:500 {}'"
-      ];
+      fileWidget = {
+        command = "fd --type f --hidden --strip-cwd-prefix --exclude .git";
+        options = [
+          "--preview 'bat --color=always --style=numbers --line-range=:500 {}'"
+        ];
+      };
 
-      changeDirWidgetCommand = "fd --type directory --hidden";
-      changeDirWidgetOptions = [
-        "--preview 'eza -1 --color=always {} || ls --color=always {}'"
-      ];
+      changeDirWidget = {
+        command = "fd --type directory --hidden";
+        options = [
+          "--preview 'eza -1 --color=always {} || ls --color=always {}'"
+        ];
+      };
+
+      historyWidget.command = "";
     };
 
     # Zoxide - smart cd

@@ -24,9 +24,11 @@
     btop
     htop
 
-    # Languages
+    # Dev tools
     uv
     nodejs
+    devenv
+    marp-cli
 
     # Infrastructure & DevOps
     kubernetes-helm
@@ -36,6 +38,5 @@
     kubie
     k9s
     lazydocker
-    devenv
   ];
 }

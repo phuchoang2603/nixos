@@ -23,5 +23,14 @@
         "184".enabled = false; # Default Screenshot
       };
     };
+    "com.apple.spotlight" = {
+      "SiriSuggestionsEnabled" = false;
+      "orderedItems" = {
+        "SiriSuggestions" = 0;
+      };
+    };
+    "com.apple.suggestions" = {
+      "SiriSuggestionsEnabled" = false;
+    };
   };
 }

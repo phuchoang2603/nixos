@@ -5,6 +5,7 @@
     pi-coding-agent
     cursor-cli
     openspec
+    livekit-cli
   ];
 
   programs = {

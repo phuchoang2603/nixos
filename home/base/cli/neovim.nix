@@ -63,6 +63,16 @@
         };
         doCheck = false;
       })
+      (pkgs.vimUtils.buildVimPlugin {
+        name = "sqls-nvim";
+        src = pkgs.fetchFromGitHub {
+          owner = "nanotee";
+          repo = "sqls.nvim";
+          rev = "main";
+          hash = "sha256-GA+pqHjAHbkjNfWgOtzD7OPDXEAVOwKpFwQeKJv8FPk=";
+        };
+        doCheck = false;
+      })
 
       # Test
       neotest

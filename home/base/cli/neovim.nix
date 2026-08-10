@@ -53,16 +53,7 @@
 
       # Language-support
       helm-ls-nvim
-      (pkgs.vimUtils.buildVimPlugin {
-        name = "live-preview-nvim";
-        src = pkgs.fetchFromGitHub {
-          owner = "brianhuster";
-          repo = "live-preview.nvim";
-          rev = "main";
-          hash = "sha256-Pp5UZzqFrjH54skNElOfFBsdA3PmApKjZNql3xYBGv4=";
-        };
-        doCheck = false;
-      })
+      live-preview-nvim
       (pkgs.vimUtils.buildVimPlugin {
         name = "sqls-nvim";
         src = pkgs.fetchFromGitHub {

@@ -28,7 +28,6 @@
     uv
     nodejs
     devenv
-    marp-cli
 
     # Infrastructure & DevOps
     kubernetes-helm

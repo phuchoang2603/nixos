@@ -40,20 +40,17 @@
       "raycast"
       "visual-studio-code"
       "cursor"
-      "datagrip"
       "obsidian"
       "zalo"
       "karabiner-elements"
       "bettertouchtool"
       "yaak"
-      "jdownloader"
       "vlc"
       "stremio"
       "tailscale-app"
       "utm"
       "localsend"
       "transmission"
-      "transmit"
     ];
   };
 }

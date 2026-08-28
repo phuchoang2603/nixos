@@ -81,6 +81,15 @@
             ])
           ];
         };
+
+        nixos-server = nixpkgs.lib.nixosSystem rec {
+          system = "x86_64-linux";
+          specialArgs = { inherit inputs user; };
+          modules = [
+            { nixpkgs.pkgs = mkPkgs system; }
+            ./hosts/nixos-server
+          ];
+        };
       };
 
       darwinConfigurations = {

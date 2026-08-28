@@ -1,35 +1,37 @@
-# NixOS Configuration
+# Nix Config (NixOS + macOS)
 
-Flake-based NixOS setup for a desktop and a headless server, with Home Manager for user-level packages and dotfiles.
+Flake-based configuration for three hosts:
 
-## Hosts
-
-| Host | Purpose | Home Manager |
-| --- | --- | --- |
-| `nixos-desktop` | Hyprland desktop | CLI + GUI (Stylix, Hyprland stack) |
-| `nixos-server` | Docker/NFS/NVIDIA server | CLI only |
+| Host | Platform | Purpose | Home Manager |
+| --- | --- | --- | --- |
+| `nixos-desktop` | NixOS | Hyprland desktop | CLI + GUI (Stylix, Hyprland stack) |
+| `nixos-server` | NixOS | Docker/NFS/NVIDIA server | CLI only |
+| `macbook` | macOS | nix-darwin laptop | CLI + GUI (Stylix, AeroSpace) |
 
 ## Layout
 
 ```
-flake.nix                 # inputs + nixosConfigurations
+flake.nix                 # inputs + nixosConfigurations + darwinConfigurations
 hosts/
   nixos-desktop/          # desktop system + monitor overrides
   nixos-server/           # server system + hardware config
+  macbook/                # macOS system entrypoint
 home/
   base/cli/               # shared CLI tools, shell, neovim, git, tmux
   base/gui/               # shared GUI (kitty, stylix theming)
   linux/                  # desktop Wayland stack (Hyprland, rofi, waybar, ...)
+  darwin/                 # macOS home (AeroSpace, Karabiner)
   server/                 # server home profile (CLI only)
 modules/
-  common/                 # shared boot, locale, nix settings
+  common/                 # shared boot, locale, nix settings (NixOS)
   nixos/                  # desktop system modules
   server/                 # server system modules (docker, nfs, nvidia, ssh)
+  darwin/                 # nix-darwin system modules
 ```
 
 ## Usage
 
-### Desktop
+### NixOS desktop
 
 ```bash
 nh os switch .#nixos-desktop
@@ -37,7 +39,7 @@ nh os switch .#nixos-desktop
 sudo nixos-rebuild switch --flake .#nixos-desktop
 ```
 
-### Server
+### NixOS server
 
 ```bash
 nh os switch .#nixos-server
@@ -47,7 +49,13 @@ sudo nixos-rebuild switch --flake .#nixos-server
 
 `nh os switch .` picks the configuration matching the current hostname.
 
-### Fresh install (desktop)
+### macOS
+
+```bash
+darwin-rebuild switch --flake .#macbook
+```
+
+## Fresh install (NixOS desktop)
 
 1. Partition the disk with cfdisk (GPT, 512M EFI + ext4 root).
 2. Format and mount:
@@ -65,12 +73,11 @@ sudo mount /dev/disk/by-label/boot /mnt/boot
 ```bash
 sudo git clone https://github.com/phuchoang2603/nixos.git /mnt/etc/nixos
 cd /mnt/etc/nixos
-sudo cp hosts/nixos-desktop/hardware-configuration.nix /tmp/hw.nix
 sudo nixos-generate-config --root /mnt --show-hardware-config | sudo tee hosts/nixos-desktop/hardware-configuration.nix
 sudo nixos-install --flake .#nixos-desktop
 ```
 
-Replace `nixos-desktop` with `nixos-server` for a server install, and use `hosts/nixos-server/hardware-configuration.nix` for hardware config.
+For a server install, use `nixos-server` and `hosts/nixos-server/hardware-configuration.nix`.
 
 ## Server notes
 

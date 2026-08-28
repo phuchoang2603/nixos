@@ -1,7 +1,10 @@
 local hostname = vim.fn.hostname()
+local is_darwin = vim.fn.has("mac") == 1 or vim.fn.has("macunix") == 1
 
 local flake_base = "(builtins.getFlake (builtins.toString ./.))."
-local options_expr = flake_base .. "nixosConfigurations." .. hostname .. ".options"
+local config_type = is_darwin and "darwinConfigurations" or "nixosConfigurations"
+
+local options_expr = flake_base .. config_type .. "." .. hostname .. ".options"
 
 ---@type vim.lsp.Config
 return {
@@ -17,7 +20,7 @@ return {
 				command = { "nixfmt" },
 			},
 			options = {
-				nixos = {
+				[is_darwin and "darwin" or "nixos"] = {
 					expr = options_expr,
 				},
 				["home-manager"] = {

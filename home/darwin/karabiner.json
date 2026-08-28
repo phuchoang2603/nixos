@@ -1,0 +1,96 @@
+{
+  "global": { "show_in_menu_bar": false },
+  "profiles": [
+    {
+      "devices": [
+        {
+          "identifiers": { "is_keyboard": true },
+          "simple_modifications": [
+            {
+              "from": { "apple_vendor_top_case_key_code": "keyboard_fn" },
+              "to": [{ "key_code": "left_control" }]
+            },
+            {
+              "from": { "key_code": "left_control" },
+              "to": [{ "apple_vendor_top_case_key_code": "keyboard_fn" }]
+            }
+          ]
+        },
+        {
+          "identifiers": {
+            "is_keyboard": true,
+            "is_pointing_device": true,
+            "product_id": 64007,
+            "vendor_id": 13652
+          },
+          "ignore": false,
+          "ignore_vendor_events": true,
+          "simple_modifications": [
+            {
+              "from": { "key_code": "left_command" },
+              "to": [{ "key_code": "left_option" }]
+            },
+            {
+              "from": { "key_code": "left_option" },
+              "to": [{ "key_code": "left_command" }]
+            }
+          ]
+        },
+        {
+          "identifiers": {
+            "is_keyboard": true,
+            "product_id": 62862,
+            "vendor_id": 13652
+          },
+          "ignore": true,
+          "ignore_vendor_events": true
+        },
+        {
+          "identifiers": {
+            "is_pointing_device": true,
+            "product_id": 62862,
+            "vendor_id": 13652
+          },
+          "ignore": false,
+          "ignore_vendor_events": true,
+          "mouse_flip_vertical_wheel": true
+        },
+        {
+          "identifiers": {
+            "is_keyboard": true,
+            "product_id": 64112,
+            "vendor_id": 9639
+          },
+          "simple_modifications": [
+            {
+              "from": { "key_code": "escape" },
+              "to": [{ "key_code": "grave_accent_and_tilde" }]
+            }
+          ]
+        },
+        {
+          "identifiers": {
+            "is_pointing_device": true,
+            "product_id": 67,
+            "vendor_id": 11145
+          },
+          "ignore": false,
+          "mouse_flip_vertical_wheel": true
+        }
+      ],
+      "name": "Default profile",
+      "selected": true,
+      "simple_modifications": [
+        {
+          "from": { "key_code": "caps_lock" },
+          "to": [{ "key_code": "escape" }]
+        },
+        {
+          "from": { "key_code": "escape" },
+          "to": [{ "key_code": "caps_lock" }]
+        }
+      ],
+      "virtual_hid_keyboard": { "keyboard_type_v2": "ansi" }
+    }
+  ]
+}

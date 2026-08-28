@@ -1,8 +1,5 @@
-{ pkgs, lib, ... }:
+{ pkgs, ... }:
 
-let
-  isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
-in
 {
   stylix = {
     enable = true;
@@ -12,8 +9,7 @@ in
     };
     polarity = "dark";
 
-    # Cursor: Only enable on Linux
-    cursor = lib.mkIf (!isDarwin) {
+    cursor = {
       package = pkgs.bibata-cursors;
       name = "Bibata-Modern-Classic";
       size = 16;
@@ -44,8 +40,7 @@ in
       };
     };
 
-    # Icons: Only enable on Linux
-    icons = lib.mkIf (!isDarwin) {
+    icons = {
       enable = true;
       package = pkgs.papirus-icon-theme;
       dark = "Papirus-Dark";

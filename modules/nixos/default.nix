@@ -1,25 +1,9 @@
 {
   imports = [
+    ../common
     ./base.nix
     ./audio.nix
     ./desktop.nix
     ./hardware.nix
   ];
-
-  # Enable flakes
-  nix.settings = {
-    experimental-features = [
-      "nix-command"
-      "flakes"
-    ];
-    # Auto-optimize store
-    auto-optimise-store = true;
-  };
-
-  # Garbage collection
-  nix.gc = {
-    automatic = true;
-    dates = "weekly";
-    options = "--delete-older-than 7d";
-  };
 }

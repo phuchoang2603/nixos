@@ -108,7 +108,7 @@ For a server install, use `nixos-server` and `hosts/nixos-server/hardware-config
 
 Compose files in `stacks/` are deployed on `nixos-server` via `docker-stack-*` systemd services:
 
-`traefik` → `vault`, `karakeep`, `n8n`, `immich`, `suwayomi`
+`traefik` → `vault`, `karakeep`, `n8n`, `suwayomi`
 
 Shared compose env (`APPDATA`, `MEDIA`, `TZ`, `SECRETS_DIR`) is set in `modules/server/stacks.nix`. Secrets live on NFS at `/mnt/storage/appdata/secrets/` — copy from each stack's `*.example` file. Traefik static config lives at `/mnt/storage/appdata/traefik/config/` (the copy in git is reference only).
 

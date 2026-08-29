@@ -1,6 +1,9 @@
+name: karakeep
+
 services:
   web:
     image: ghcr.io/karakeep-app/karakeep:0.31.0
+    container_name: karakeep
     restart: unless-stopped
     volumes:
       - ${APPDATA}/hoarderr/data:/data
@@ -27,6 +30,7 @@ services:
 
   chrome:
     image: gcr.io/zenika-hub/alpine-chrome:123
+    container_name: karakeep-chrome
     restart: unless-stopped
     networks:
       - proxy
@@ -44,6 +48,7 @@ services:
 
   meilisearch:
     image: getmeili/meilisearch:v1.11.1
+    container_name: karakeep-meilisearch
     restart: unless-stopped
     volumes:
       - ${APPDATA}/hoarderr/meilisearch:/meili_data

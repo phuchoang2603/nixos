@@ -1,6 +1,9 @@
+name: n8n
+
 services:
   n8n:
     image: docker.n8n.io/n8nio/n8n
+    container_name: n8n
     hostname: n8n
     environment:
       N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS: "true"

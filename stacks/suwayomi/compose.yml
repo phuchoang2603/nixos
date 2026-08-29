@@ -3,6 +3,7 @@ name: suwayomi
 services:
   suwayomi:
     image: ghcr.io/suwayomi/suwayomi-server:preview
+    container_name: suwayomi
     hostname: suwayomi
     restart: always
     environment:
@@ -25,6 +26,7 @@ services:
 
   flaresolverr:
     image: ghcr.io/flaresolverr/flaresolverr:latest
+    container_name: flaresolverr
     hostname: flaresolverr
     restart: unless-stopped
     environment:
@@ -34,6 +36,7 @@ services:
 
   koharu:
     image: ghcr.io/phuchoang2603/koharu:latest
+    container_name: koharu
     hostname: koharu
     restart: unless-stopped
     environment:
@@ -60,6 +63,7 @@ services:
 
   manga-watch:
     image: ghcr.io/phuchoang2603/koharu-watch-manga:latest
+    container_name: manga-watch
     restart: unless-stopped
     environment:
       TZ: ${TZ}

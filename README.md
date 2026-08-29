@@ -113,7 +113,7 @@ sudo systemctl status 'docker-stack-*'
 
 Pushes to `main` that touch server-related paths trigger `.github/workflows/deploy-server.yml`, which runs on a self-hosted runner on `nixos-server` and applies the flake with `nh os switch`.
 
-The runner service runs as `root` so deploy jobs can call `nh os switch` directly (no `sudo`).
+The runner uses the `github-runner` user with passwordless `sudo nh` (nh refuses to run as root).
 
 **One-time setup:**
 

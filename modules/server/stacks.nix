@@ -67,7 +67,9 @@ let
         "nfs-storage-mount.service"
       ];
       path = [ pkgs.docker ];
-      environment = stackEnv;
+      environment = stackEnv // {
+        COMPOSE_PROJECT_NAME = name;
+      };
       serviceConfig = {
         Type = "oneshot";
         RemainAfterExit = true;

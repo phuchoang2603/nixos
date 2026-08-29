@@ -1,3 +1,5 @@
+name: vault
+
 services:
   vault:
     image: hashicorp/vault:1.19.0

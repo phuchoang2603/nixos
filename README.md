@@ -28,8 +28,8 @@ modules/
   common/                 # shared boot, locale, nix settings (NixOS)
   nixos/                  # desktop system modules
   server/                 # server system modules (docker, nfs, nvidia, ssh, stacks)
-stacks/                   # docker compose files for nixos-server
   darwin/                 # nix-darwin system modules
+stacks/                   # docker compose files for nixos-server
 ```
 
 
@@ -96,17 +96,13 @@ For a server install, use `nixos-server` and `hosts/nixos-server/hardware-config
 - After a NVIDIA driver update, **reboot the server** before GPU containers will work.
 - NFS mounts wait for DHCP before mounting (boot race fix).
 
+### Docker stacks
 
-
-### Docker stacks (Nix-managed)
-
-Compose files live in `stacks/` and are deployed by systemd on `nixos-server`:
+Compose files in `stacks/` are deployed on `nixos-server` via `docker-stack-*` systemd services:
 
 `traefik` → `vault`, `karakeep`, `n8n`, `immich`, `suwayomi`
 
-Shared env (`APPDATA`, `MEDIA`, `TZ`, `SECRETS_DIR`) is set in `modules/server/stacks.nix`. Secrets go on NFS at `/mnt/storage/appdata/secrets/`.
-
-See `stacks/README.md` for details.
+Shared compose env (`APPDATA`, `MEDIA`, `TZ`, `SECRETS_DIR`) is set in `modules/server/stacks.nix`. Secrets live on NFS at `/mnt/storage/appdata/secrets/` — copy from each stack's `*.example` file. Traefik static config lives at `/mnt/storage/appdata/traefik/config/` (the copy in git is reference only).
 
 ```bash
 sudo systemctl restart docker-stack-traefik

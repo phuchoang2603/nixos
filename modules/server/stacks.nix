@@ -16,11 +16,6 @@ let
     traefik = {
       composeFile = "compose.yml";
       after = [ ];
-      envFile = "${stackEnv.SECRETS_DIR}/traefik.env";
-      preStart = workDir: ''
-        mkdir -p "${stackEnv.APPDATA}/traefik/config" "${stackEnv.APPDATA}/traefik/certs"
-        cp -a ${workDir}/config/. "${stackEnv.APPDATA}/traefik/config/"
-      '';
     };
     vault = {
       composeFile = "compose.yaml";
@@ -56,7 +51,6 @@ let
     name: cfg:
     let
       stackDir = getStackDir name;
-      preStart = cfg.preStart or (_: "");
     in
     {
       description = "Docker stack: ${name}";
@@ -80,7 +74,6 @@ let
         WorkingDirectory = stackDir;
         ExecStart = pkgs.writeShellScript "docker-stack-${name}-up" ''
           set -euo pipefail
-          ${preStart stackDir}
           ${pkgs.docker}/bin/docker compose -f ${cfg.composeFile} up -d --remove-orphans
         '';
         ExecStop = pkgs.writeShellScript "docker-stack-${name}-down" ''

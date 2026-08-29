@@ -2,11 +2,13 @@
 
 Flake-based configuration for three hosts:
 
-| Host | Platform | Purpose | Home Manager |
-| --- | --- | --- | --- |
-| `nixos-desktop` | NixOS | Hyprland desktop | CLI + GUI (Stylix, Hyprland stack) |
-| `nixos-server` | NixOS | Docker/NFS/NVIDIA server | CLI only |
-| `macbook` | macOS | nix-darwin laptop | CLI + GUI (Stylix, AeroSpace) |
+
+| Host            | Platform | Purpose                  | Home Manager                       |
+| --------------- | -------- | ------------------------ | ---------------------------------- |
+| `nixos-desktop` | NixOS    | Hyprland desktop         | CLI + GUI (Stylix, Hyprland stack) |
+| `nixos-server`  | NixOS    | Docker/NFS/NVIDIA server | CLI only                           |
+| `macbook`       | macOS    | nix-darwin laptop        | CLI + GUI (Stylix, AeroSpace)      |
+
 
 ## Layout
 
@@ -25,11 +27,16 @@ home/
 modules/
   common/                 # shared boot, locale, nix settings (NixOS)
   nixos/                  # desktop system modules
-  server/                 # server system modules (docker, nfs, nvidia, ssh)
+  server/                 # server system modules (docker, nfs, nvidia, ssh, stacks)
+stacks/                   # docker compose files for nixos-server
   darwin/                 # nix-darwin system modules
 ```
 
+
+
 ## Usage
+
+
 
 ### NixOS desktop
 
@@ -38,6 +45,8 @@ nh os switch .#nixos-desktop
 # or
 sudo nixos-rebuild switch --flake .#nixos-desktop
 ```
+
+
 
 ### NixOS server
 
@@ -55,6 +64,8 @@ sudo nixos-rebuild switch --flake .#nixos-server
 darwin-rebuild switch --flake .#macbook
 ```
 
+
+
 ## Fresh install (NixOS desktop)
 
 1. Partition the disk with cfdisk (GPT, 512M EFI + ext4 root).
@@ -68,7 +79,7 @@ sudo mkdir -p /mnt/boot
 sudo mount /dev/disk/by-label/boot /mnt/boot
 ```
 
-3. Clone and install:
+1. Clone and install:
 
 ```bash
 sudo git clone https://github.com/phuchoang2603/nixos.git /mnt/etc/nixos
@@ -84,3 +95,21 @@ For a server install, use `nixos-server` and `hosts/nixos-server/hardware-config
 - NVIDIA is configured headlessly for Docker GPU workloads (no desktop/display stack).
 - After a NVIDIA driver update, **reboot the server** before GPU containers will work.
 - NFS mounts wait for DHCP before mounting (boot race fix).
+
+
+
+### Docker stacks (Nix-managed)
+
+Compose files live in `stacks/` and are deployed by systemd on `nixos-server`:
+
+`traefik` → `vault`, `karakeep`, `n8n`, `immich`, `suwayomi`
+
+Shared env (`APPDATA`, `MEDIA`, `TZ`, `SECRETS_DIR`) is set in `modules/server/stacks.nix`. Secrets go on NFS at `/mnt/storage/appdata/secrets/`.
+
+See `stacks/README.md` for details.
+
+```bash
+sudo systemctl restart docker-stack-traefik
+sudo systemctl status 'docker-stack-*'
+```
+

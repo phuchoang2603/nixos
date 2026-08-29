@@ -1,0 +1,46 @@
+http:
+  routers:
+    proxmox:
+      rule: "Host(`proxmox.home.phuchoang.sbs`)"
+      entryPoints:
+        - websecure
+      service: proxmox
+      tls:
+        certResolver: letsencrypt
+
+    minio:
+      rule: "Host(`minio.home.phuchoang.sbs`)"
+      entryPoints:
+        - websecure
+      service: minio
+      tls:
+        certResolver: letsencrypt
+
+    aria:
+      rule: "Host(`aria.home.phuchoang.sbs`)"
+      entryPoints:
+        - websecure
+      service: aria
+      tls:
+        certResolver: letsencrypt
+
+  services:
+    proxmox:
+      loadBalancer:
+        servers:
+          - url: "https://10.69.1.1:8006"
+        serversTransport: insecureTransport
+
+    minio:
+      loadBalancer:
+        servers:
+          - url: "http://10.69.1.102:30212"
+
+    aria:
+      loadBalancer:
+        servers:
+          - url: "http://10.69.1.102:8000"
+
+  serversTransports:
+    insecureTransport:
+      insecureSkipVerify: true # For self-signed SSL certificates

@@ -14,8 +14,6 @@ let
     SECRETS_DIR = "/mnt/storage/appdata/secrets";
   };
 
-  stackEnvironment = lib.mapAttrsToList (name: value: "${name}=${value}") stackEnv;
-
   stacks = {
     traefik = {
       composeFile = "compose.yml";
@@ -70,7 +68,7 @@ let
         "nfs-storage-mount.service"
       ];
       path = [ pkgs.docker ];
-      environment = stackEnvironment;
+      environment = stackEnv;
       serviceConfig = {
         Type = "oneshot";
         RemainAfterExit = true;

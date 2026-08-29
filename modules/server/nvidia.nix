@@ -5,6 +5,10 @@
 }:
 
 {
+  # Register the NVIDIA driver without running a display server.
+  # nixpkgs uses this to enable hardware.nvidia; required by nvidia-container-toolkit.
+  services.xserver.videoDrivers = [ "nvidia" ];
+
   hardware.nvidia = {
     open = true;
     nvidiaSettings = false;
@@ -13,15 +17,6 @@
   };
 
   hardware.nvidia-container-toolkit.enable = true;
-
-  boot.kernelParams = [ "nvidia-drm.modeset=1" ];
-
-  boot.initrd.kernelModules = [
-    "nvidia"
-    "nvidia_modeset"
-    "nvidia_uvm"
-    "nvidia_drm"
-  ];
 
   environment.systemPackages = with pkgs; [
     nvtopPackages.nvidia

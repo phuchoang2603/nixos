@@ -59,8 +59,8 @@
         src = pkgs.fetchFromGitHub {
           owner = "nanotee";
           repo = "sqls.nvim";
-          rev = "main";
-          hash = "sha256-GA+pqHjAHbkjNfWgOtzD7OPDXEAVOwKpFwQeKJv8FPk=";
+          rev = "332caa9ab86af1a00259feb01051ea825e8fc461";
+          hash = "sha256-wCU6wqFykkUv0dpO9MY8VNjPeyUqV4x0LngSZ2D967s=";
         };
         doCheck = false;
       })

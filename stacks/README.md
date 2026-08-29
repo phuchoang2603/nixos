@@ -44,6 +44,12 @@ Static config under `traefik/config/` is synced to `${APPDATA}/traefik/config/` 
 | immich    | `${APPDATA}/immich/{upload,database,model-cache}`       |
 | suwayomi  | `${MEDIA}/manga`, `${APPDATA}/suwayomi/{data,koharu}`   |
 
+## Deploy behavior
+
+Each stack is copied to the Nix store independently (`stacks/<name>/` only). Changing one stack only updates that stack's systemd unit, so `nixos-rebuild switch` should only restart the affected containers.
+
+Changing `stackEnv` in `modules/server/stacks.nix` (e.g. `TZ`, `APPDATA`) updates all stack units.
+
 ## Commands
 
 ```bash

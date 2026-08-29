@@ -5,8 +5,6 @@
 }:
 
 let
-  stacksSrc = ../../stacks;
-
   stackEnv = {
     APPDATA = "/mnt/storage/appdata";
     MEDIA = "/mnt/storage/media";
@@ -50,7 +48,7 @@ let
   mkStackService =
     name: cfg:
     let
-      workDir = "${stacksSrc}/${name}";
+      stackDir = ../../stacks + "/${name}";
       preStart = cfg.preStart or (_: "");
     in
     {
@@ -72,10 +70,10 @@ let
       serviceConfig = {
         Type = "oneshot";
         RemainAfterExit = true;
-        WorkingDirectory = workDir;
+        WorkingDirectory = stackDir;
         ExecStart = pkgs.writeShellScript "docker-stack-${name}-up" ''
           set -euo pipefail
-          ${preStart workDir}
+          ${preStart stackDir}
           ${pkgs.docker}/bin/docker compose -f ${cfg.composeFile} up -d --remove-orphans
         '';
         ExecStop = pkgs.writeShellScript "docker-stack-${name}-down" ''

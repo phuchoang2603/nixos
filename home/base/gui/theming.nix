@@ -12,7 +12,6 @@ in
     };
     polarity = "dark";
 
-    # Cursor: Only enable on Linux
     cursor = lib.mkIf (!isDarwin) {
       package = pkgs.bibata-cursors;
       name = "Bibata-Modern-Classic";
@@ -44,7 +43,6 @@ in
       };
     };
 
-    # Icons: Only enable on Linux
     icons = lib.mkIf (!isDarwin) {
       enable = true;
       package = pkgs.papirus-icon-theme;

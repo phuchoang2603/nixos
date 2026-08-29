@@ -1,7 +1,6 @@
 local hostname = vim.fn.hostname()
 local is_darwin = vim.fn.has("mac") == 1 or vim.fn.has("macunix") == 1
 
--- Build the strings for nixd evaluation
 local flake_base = "(builtins.getFlake (builtins.toString ./.))."
 local config_type = is_darwin and "darwinConfigurations" or "nixosConfigurations"
 

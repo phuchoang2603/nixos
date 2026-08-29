@@ -37,87 +37,94 @@
           overlays = [ inputs.neovim-nightly-overlay.overlays.default ];
         };
 
-      mkHomeConfig = extraModules: {
-        home-manager = {
-          useGlobalPkgs = true;
-          useUserPackages = true;
-          backupFileExtension = "backup";
-          extraSpecialArgs = { inherit inputs user; };
-          sharedModules = [ inputs.stylix.homeModules.stylix ];
-          users.${user} = {
-            imports = extraModules;
+      mkHomeConfig =
+        {
+          modules,
+          stylix ? false,
+        }:
+        {
+          home-manager = {
+            useGlobalPkgs = true;
+            useUserPackages = true;
+            backupFileExtension = "backup";
+            extraSpecialArgs = { inherit inputs user; };
+            sharedModules = nixpkgs.lib.optionals stylix [ inputs.stylix.homeModules.stylix ];
+            users.${user}.imports = modules;
           };
         };
-      };
+
+      mkNixos =
+        {
+          system,
+          host,
+          homeModules ? [ ],
+          stylix ? false,
+        }:
+        nixpkgs.lib.nixosSystem {
+          inherit system;
+          specialArgs = { inherit inputs user; };
+          modules = [
+            { nixpkgs.pkgs = mkPkgs system; }
+            host
+            home-manager.nixosModules.home-manager
+          ]
+          ++ nixpkgs.lib.optionals stylix [ inputs.stylix.nixosModules.stylix ]
+          ++ [
+            (mkHomeConfig {
+              modules = homeModules;
+              inherit stylix;
+            })
+          ];
+        };
+
+      mkDarwin =
+        {
+          system,
+          host,
+          homeModules ? [ ],
+          stylix ? true,
+        }:
+        nix-darwin.lib.darwinSystem {
+          inherit system;
+          specialArgs = { inherit inputs user; };
+          modules = [
+            { nixpkgs.pkgs = mkPkgs system; }
+            host
+            home-manager.darwinModules.home-manager
+            (mkHomeConfig {
+              modules = homeModules;
+              inherit stylix;
+            })
+          ];
+        };
     in
     {
       nixosConfigurations = {
-        nixos-desktop = nixpkgs.lib.nixosSystem rec {
+        nixos-desktop = mkNixos {
           system = "x86_64-linux";
-          specialArgs = { inherit inputs user; };
-          modules = [
-            { nixpkgs.pkgs = mkPkgs system; }
-            ./hosts/nixos-desktop
-            home-manager.nixosModules.home-manager
-            inputs.stylix.nixosModules.stylix
-            (mkHomeConfig [
-              ./home/linux
-              ./hosts/nixos-desktop/home.nix
-            ])
+          host = ./hosts/nixos-desktop;
+          homeModules = [
+            ./home/linux
+            ./hosts/nixos-desktop/home.nix
           ];
+          stylix = true;
         };
 
-        nixos-laptop = nixpkgs.lib.nixosSystem rec {
+        nixos-server = mkNixos {
           system = "x86_64-linux";
-          specialArgs = { inherit inputs user; };
-          modules = [
-            { nixpkgs.pkgs = mkPkgs system; }
-            ./hosts/nixos-laptop
-            home-manager.nixosModules.home-manager
-            inputs.stylix.nixosModules.stylix
-            (mkHomeConfig [
-              ./home/linux
-              ./hosts/nixos-laptop/home.nix
-            ])
-          ];
-        };
-
-        nixos-server = nixpkgs.lib.nixosSystem rec {
-          system = "x86_64-linux";
-          specialArgs = { inherit inputs user; };
-          modules = [
-            { nixpkgs.pkgs = mkPkgs system; }
-            ./hosts/nixos-server
-          ];
+          host = ./hosts/nixos-server;
+          homeModules = [ ./home/server ];
+          stylix = false;
         };
       };
 
       darwinConfigurations = {
-        macbook = nix-darwin.lib.darwinSystem rec {
+        macbook = mkDarwin {
           system = "aarch64-darwin";
-          specialArgs = { inherit inputs user; };
-          modules = [
-            { nixpkgs.pkgs = mkPkgs system; }
-            ./hosts/macbook
-            home-manager.darwinModules.home-manager
-            (mkHomeConfig [ ./home/darwin ])
-          ];
+          host = ./hosts/macbook;
+          homeModules = [ ./home/darwin ];
+          stylix = true;
         };
-      };
-
-      homeConfigurations = {
-        debian =
-          let
-            system = "x86_64-linux";
-          in
-          home-manager.lib.homeManagerConfiguration {
-            pkgs = mkPkgs system;
-            extraSpecialArgs = { inherit inputs user; };
-            modules = [
-              inputs.stylix.homeModules.stylix
-              ./hosts/debian/home.nix
-            ];
-          };
       };
     };
 }

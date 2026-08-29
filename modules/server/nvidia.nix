@@ -5,56 +5,17 @@
 }:
 
 {
-  # Enable OpenGL
-  hardware.graphics = {
-    enable = true;
-    enable32Bit = true;
-  };
-
-  # NVIDIA driver
-  services.xserver.videoDrivers = [ "nvidia" ];
-
   hardware.nvidia = {
-    # Modesetting is required for Wayland
-    modesetting.enable = true;
-
-    # Power management (experimental)
-    powerManagement.enable = false;
-    powerManagement.finegrained = false;
-
-    # Use the open source kernel module (for Turing and newer GPUs)
-    # Set to false if you have an older GPU
     open = true;
-
-    # Enable nvidia-settings GUI
     nvidiaSettings = false;
-
-    # Use the latest stable driver
     package = config.boot.kernelPackages.nvidiaPackages.stable;
+    modesetting.enable = true;
   };
 
   hardware.nvidia-container-toolkit.enable = true;
 
-  # NVIDIA-specific environment variables for Wayland/Hyprland
-  environment.sessionVariables = {
-    # Force GBM backend
-    GBM_BACKEND = "nvidia-drm";
-    __GLX_VENDOR_LIBRARY_NAME = "nvidia";
+  boot.kernelParams = [ "nvidia-drm.modeset=1" ];
 
-    # Cursor fix for NVIDIA
-    WLR_NO_HARDWARE_CURSORS = "1";
-
-    # Enable DRM kernel mode setting
-    LIBVA_DRIVER_NAME = "nvidia";
-  };
-
-  # Kernel parameters for NVIDIA
-  boot.kernelParams = [
-    "nvidia-drm.modeset=1"
-    "nvidia-drm.fbdev=1"
-  ];
-
-  # Load NVIDIA modules early
   boot.initrd.kernelModules = [
     "nvidia"
     "nvidia_modeset"
@@ -62,9 +23,7 @@
     "nvidia_drm"
   ];
 
-  # Install nvtop for monitoring NVIDIA GPU usage
   environment.systemPackages = with pkgs; [
     nvtopPackages.nvidia
   ];
-
 }

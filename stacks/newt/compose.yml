@@ -1,0 +1,11 @@
+name: newt
+
+services:
+  newt:
+    image: fosrl/newt
+    container_name: newt
+    restart: unless-stopped
+    env_file:
+      - ${SECRETS_DIR}/newt.env
+    environment:
+      TZ: ${TZ}

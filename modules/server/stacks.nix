@@ -34,6 +34,10 @@ let
       after = [ "traefik" ];
       envFile = "${stackEnv.SECRETS_DIR}/n8n.env";
     };
+    newt = {
+      composeFile = "compose.yml";
+      after = [ "traefik" ];
+    };
     suwayomi = {
       composeFile = "compose.yml";
       after = [ "traefik" ];

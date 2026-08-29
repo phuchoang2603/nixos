@@ -2,7 +2,7 @@ name: vaultwarden
 
 services:
   vaultwarden:
-    image: vaultwarden/server:testing
+    image: vaultwarden/server:latest
     container_name: vaultwarden
     restart: unless-stopped
     networks:
@@ -11,7 +11,6 @@ services:
       - ${SECRETS_DIR}/vaultwarden.env
     environment:
       TZ: ${TZ}
-      EXPERIMENTAL_CLIENT_FEATURE_FLAGS: autofill-overlay,autofill-v2,browser-fileless-import,fido2-vault-credentials
       IP_HEADER: X-Forwarded-For
       PUSH_ENABLED: "true"
       SIGNUPS_ALLOWED: "false"
@@ -20,7 +19,7 @@ services:
       - ${APPDATA}/vaultwarden/data:/data
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.vaultwarden.rule=Host(`vault.vps.phuchoang.sbs`)"
+      - "traefik.http.routers.vaultwarden.rule=Host(`vaultwarden.home.phuchoang.sbs`)"
       - "traefik.http.routers.vaultwarden.entrypoints=websecure"
       - "traefik.http.routers.vaultwarden.tls=true"
       - "traefik.http.routers.vaultwarden.tls.certresolver=letsencrypt"

@@ -5,7 +5,13 @@ services:
     image: fosrl/newt
     container_name: newt
     restart: unless-stopped
+    networks:
+      - proxy
     env_file:
       - ${SECRETS_DIR}/newt.env
     environment:
       TZ: ${TZ}
+
+networks:
+  proxy:
+    external: true

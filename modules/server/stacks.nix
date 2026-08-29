@@ -21,6 +21,10 @@ let
       composeFile = "compose.yaml";
       after = [ "traefik" ];
     };
+    vaultwarden = {
+      composeFile = "compose.yml";
+      after = [ "traefik" ];
+    };
     karakeep = {
       composeFile = "docker-compose.yml";
       after = [ "traefik" ];

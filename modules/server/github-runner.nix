@@ -48,6 +48,7 @@ in
       sudo
     ];
     serviceOverrides = {
+      NoNewPrivileges = lib.mkForce false;
       After = [
         "network-online.target"
         "nfs-storage-mount.service"

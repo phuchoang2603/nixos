@@ -117,6 +117,8 @@ sudo systemctl status 'docker-stack-*'
 
 Pushes to `main` that touch server-related paths trigger `.github/workflows/deploy-server.yml`, which runs on a self-hosted runner on `nixos-server` and applies the flake with `nh os switch`.
 
+The runner service runs as `root` so deploy jobs can call `nh os switch` directly (no `sudo`).
+
 **One-time setup:**
 
 1. Create a fine-grained GitHub PAT for `phuchoang2603/nixos` with **Administration → Read and write** (covers self-hosted runners). A classic PAT with `repo` scope also works.
@@ -139,6 +141,8 @@ nh os switch .#nixos-server \
 4. Confirm the runner appears under **GitHub → repo → Settings → Actions → Runners** as `nixos-server`.
 
 After that, server changes pushed to `main` deploy automatically. Trigger manually from the **Actions** tab via **workflow_dispatch** if needed.
+
+If CI deploy fails before the runner config is updated, apply once manually from your laptop (step 3), then re-run the workflow.
 
 ```bash
 sudo systemctl status github-runner-nixos-server

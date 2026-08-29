@@ -113,3 +113,34 @@ sudo systemctl restart docker-stack-traefik
 sudo systemctl status 'docker-stack-*'
 ```
 
+### Auto-deploy (GitHub Actions)
+
+Pushes to `main` that touch server-related paths trigger `.github/workflows/deploy-server.yml`, which runs on a self-hosted runner on `nixos-server` and applies the flake with `nh os switch`.
+
+**One-time setup:**
+
+1. Create a fine-grained GitHub PAT for `phuchoang2603/nixos` with **Administration → Read and write** (covers self-hosted runners). A classic PAT with `repo` scope also works.
+
+2. Store the token on NFS (must exist before the runner service can register):
+
+```bash
+echo -n 'ghp_…' | sudo tee /mnt/storage/appdata/secrets/github-runner.token
+sudo chmod 600 /mnt/storage/appdata/secrets/github-runner.token
+```
+
+3. Apply the config once manually (installs the runner service):
+
+```bash
+nh os switch .#nixos-server \
+  --build-host felix@nixos-server \
+  --target-host felix@nixos-server
+```
+
+4. Confirm the runner appears under **GitHub → repo → Settings → Actions → Runners** as `nixos-server`.
+
+After that, server changes pushed to `main` deploy automatically. Trigger manually from the **Actions** tab via **workflow_dispatch** if needed.
+
+```bash
+sudo systemctl status github-runner-nixos-server
+```
+

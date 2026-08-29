@@ -1,0 +1,28 @@
+name: Deploy nixos-server
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/deploy-server.yml"
+      - "flake.nix"
+      - "flake.lock"
+      - "hosts/nixos-server/**"
+      - "modules/server/**"
+      - "modules/common/**"
+      - "stacks/**"
+      - "home/server/**"
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-nixos-server
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: [self-hosted, nixos-server]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Apply NixOS configuration
+        run: sudo nh os switch .#nixos-server --flake .

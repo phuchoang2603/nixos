@@ -6,6 +6,7 @@
     ./docker.nix
     ./nfs.nix
     ./stacks.nix
+    ./github-runner.nix
     ./ssh.nix
   ];
 }

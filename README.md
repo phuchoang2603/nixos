@@ -82,5 +82,6 @@ For a server install, use `nixos-server` and `hosts/nixos-server/hardware-config
 ## Server notes
 
 - NVIDIA is configured headlessly for Docker GPU workloads (no X11/Wayland display stack).
+- After the first NVIDIA driver install or a driver version change, **reboot the server** before expecting GPU containers to work. Until then, `nvidia-container-toolkit-cdi-generator` may fail with a driver/NVML error during switch.
 - NFS mounts to `10.69.1.102` use `nofail` — switch may warn if the NFS host is unreachable.
 - `nvidia-container-toolkit-cdi-generator` fails on hosts without an NVIDIA GPU (e.g. QEMU VMs).

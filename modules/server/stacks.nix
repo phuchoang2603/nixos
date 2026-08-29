@@ -97,7 +97,7 @@ in
       wantedBy = [ "multi-user.target" ];
       after = [ "docker.service" ];
       requires = [ "docker.service" ];
-      before = lib.attrNames (lib.mapAttrs' (n: _: lib.nameValuePair "docker-stack-${n}" { }) stacks);
+      before = map (name: "docker-stack-${name}.service") (lib.attrNames stacks);
       path = [ pkgs.docker ];
       serviceConfig = {
         Type = "oneshot";

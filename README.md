@@ -83,4 +83,4 @@ For a server install, use `nixos-server` and `hosts/nixos-server/hardware-config
 
 - NVIDIA is configured headlessly for Docker GPU workloads (no desktop/display stack).
 - After a NVIDIA driver update, **reboot the server** before GPU containers will work.
-- NFS mounts to `10.69.1.102` use `nofail` — switch may warn if the NFS host is unreachable.
+- NFS mounts wait for DHCP before mounting (boot race fix).

@@ -1,28 +1,64 @@
 {
-  boot = {
-    supportedFilesystems = [ "nfs" ];
-  };
+  pkgs,
+  lib,
+  ...
+}:
+
+let
+  nfsServer = "10.69.1.102";
+
+  nfsMountOptions = [
+    "defaults"
+    "_netdev"
+    "nofail"
+    # Mount on first access instead of racing dhcpcd at boot.
+    "x-systemd.automount"
+    "x-systemd.after=dhcpcd.service"
+    "x-systemd.after=network-online.target"
+  ];
+in
+{
+  boot.supportedFilesystems = [ "nfs" ];
 
   services.rpcbind.enable = true;
 
   fileSystems = {
     "/mnt/storage/appdata" = {
-      device = "10.69.1.102:/mnt/storage/appdata";
+      device = "${nfsServer}:/mnt/storage/appdata";
       fsType = "nfs";
-      options = [
-        "defaults"
-        "_netdev"
-        "nofail"
-      ];
+      options = nfsMountOptions;
     };
     "/mnt/storage/media" = {
-      device = "10.69.1.102:/mnt/storage/media";
+      device = "${nfsServer}:/mnt/storage/media";
       fsType = "nfs";
-      options = [
-        "defaults"
-        "_netdev"
-        "nofail"
-      ];
+      options = nfsMountOptions;
+    };
+  };
+
+  # Pre-mount before Docker starts so bind mounts don't hit an unmounted path.
+  systemd.services.nfs-storage-mount = {
+    description = "Mount NFS storage after network is ready";
+    wantedBy = [ "multi-user.target" ];
+    after = [
+      "dhcpcd.service"
+      "rpcbind.service"
+      "network-online.target"
+    ];
+    before = [ "docker.service" ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      ExecStart = pkgs.writeShellScript "mount-nfs-storage" ''
+        for _ in $(seq 1 30); do
+          if ${pkgs.iputils}/bin/ping -c 1 -W 1 ${nfsServer} >/dev/null 2>&1; then
+            ${pkgs.systemd}/bin/systemctl start mnt-storage-appdata.mount mnt-storage-media.mount
+            exit 0
+          fi
+          sleep 1
+        done
+        echo "NFS server ${nfsServer} not reachable; skipping pre-mount"
+        exit 0
+      '';
     };
   };
 }

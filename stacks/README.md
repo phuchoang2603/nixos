@@ -46,7 +46,7 @@ Static config under `traefik/config/` is synced to `${APPDATA}/traefik/config/` 
 
 ## Deploy behavior
 
-Each stack is copied to the Nix store independently (`stacks/<name>/` only). Changing one stack only updates that stack's systemd unit, so `nixos-rebuild switch` should only restart the affected containers.
+Each stack is copied to the Nix store independently via `builtins.path` (`stack-<name>`). Changing one stack only updates that stack's systemd unit.
 
 Changing `stackEnv` in `modules/server/stacks.nix` (e.g. `TZ`, `APPDATA`) updates all stack units.
 

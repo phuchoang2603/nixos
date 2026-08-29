@@ -45,10 +45,17 @@ let
     };
   };
 
+  getStackDir =
+    name:
+    builtins.path {
+      path = ../../stacks + "/${name}";
+      name = "stack-${name}";
+    };
+
   mkStackService =
     name: cfg:
     let
-      stackDir = ../../stacks + "/${name}";
+      stackDir = getStackDir name;
       preStart = cfg.preStart or (_: "");
     in
     {

@@ -25,4 +25,4 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Apply NixOS configuration
-        run: nh os switch .#nixos-server --flake .
+        run: nh os switch .#nixos-server

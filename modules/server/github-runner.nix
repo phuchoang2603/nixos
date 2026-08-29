@@ -45,6 +45,7 @@ in
       nh
       git
       nix
+      sudo
     ];
     serviceOverrides = {
       After = [

@@ -4,7 +4,7 @@
 }:
 
 let
-  nfsServer = "10.69.1.102";
+  inherit (import ./lib.nix) nfsServer appdata media;
 
   nfsMountOptions = [
     "defaults"
@@ -22,19 +22,18 @@ in
   services.rpcbind.enable = true;
 
   fileSystems = {
-    "/mnt/storage/appdata" = {
-      device = "${nfsServer}:/mnt/storage/appdata";
+    ${appdata} = {
+      device = "${nfsServer}:${appdata}";
       fsType = "nfs";
       options = nfsMountOptions;
     };
-    "/mnt/storage/media" = {
-      device = "${nfsServer}:/mnt/storage/media";
+    ${media} = {
+      device = "${nfsServer}:${media}";
       fsType = "nfs";
       options = nfsMountOptions;
     };
   };
 
-  # Pre-mount NFS before app services bind data dirs.
   systemd.services.nfs-storage-mount = {
     description = "Mount NFS storage after network is ready";
     wantedBy = [ "multi-user.target" ];
@@ -44,6 +43,7 @@ in
       "network-online.target"
     ];
     wants = [ "network-online.target" ];
+    before = [ "docker.service" ];
     serviceConfig = {
       Type = "oneshot";
       RemainAfterExit = true;

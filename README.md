@@ -27,7 +27,7 @@ home/
 modules/
   common/                 # shared boot, locale, nix settings (NixOS)
   nixos/                  # desktop system modules
-  server/                 # server system modules (nfs, nvidia, ssh, services)
+  server/                 # docker, nfs, nvidia, ssh, containers/
   darwin/                 # nix-darwin system modules
 ```
 
@@ -99,29 +99,20 @@ For a server install, use `nixos-server` and `hosts/nixos-server/hardware-config
 
 ## Server notes
 
-- NVIDIA is configured headlessly (no desktop/display stack).
+- NVIDIA is configured headlessly for Docker GPU workloads (no desktop/display stack).
+- After a NVIDIA driver update, **reboot the server** before GPU containers will work.
 - NFS mounts wait for DHCP before mounting (boot race fix).
 
-### Services
+### Docker containers
 
-Native NixOS modules in `modules/server/services.nix`, reverse-proxied by Traefik:
+Containers are declared in Nix (`modules/server/containers/`) via `virtualisation.oci-containers` (no Compose). Traefik only publishes 80/443; apps are reached over the Docker `proxy` network.
 
-`traefik` `vault` `vaultwarden` `karakeep` `n8n` `suwayomi` `flaresolverr` `newt`
+`traefik` `vault` `vaultwarden` `karakeep` `n8n` `newt` `suwayomi` `flaresolverr`
 
-Secrets live on NFS at `/mnt/storage/appdata/secrets/`. Copy from `modules/server/secrets-examples/`. Traefik ACME certs: `/mnt/storage/appdata/traefik/certs/`.
-
-After switch, chown NFS data dirs to the service users if they were previously owned by Docker's uid 1000:
+Secrets live on NFS at `/mnt/storage/appdata/secrets/`. Copy from `modules/server/secrets-examples/` (`n8n.env` is optional extras; host/webhook are set in Nix). Traefik ACME certs: `/mnt/storage/appdata/traefik/certs/`.
 
 ```bash
-sudo chown -R traefik:traefik /mnt/storage/appdata/traefik
-sudo chown -R vault:vault /mnt/storage/appdata/vault
-sudo chown -R vaultwarden:vaultwarden /mnt/storage/appdata/vaultwarden
-sudo chown -R suwayomi:suwayomi /mnt/storage/appdata/suwayomi
-```
-
-n8n and karakeep/meilisearch use `/var/lib/...` (copy from NFS if you want to keep old Docker data).
-
-```bash
-sudo systemctl status traefik vaultwarden n8n karakeep-web suwayomi-server newt
+sudo systemctl restart docker-traefik
+sudo systemctl status 'docker-*'
 ```
 

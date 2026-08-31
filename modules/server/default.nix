@@ -3,9 +3,8 @@
     ../common
     ./base.nix
     ./nvidia.nix
-    ./docker.nix
     ./nfs.nix
-    ./stacks.nix
+    ./services.nix
     ./ssh.nix
   ];
 }

@@ -8,10 +8,7 @@
   users.users.${user} = {
     isNormalUser = true;
     description = user;
-    extraGroups = [
-      "wheel"
-      "docker"
-    ];
+    extraGroups = [ "wheel" ];
     shell = pkgs.zsh;
   };
 }

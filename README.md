@@ -27,9 +27,8 @@ home/
 modules/
   common/                 # shared boot, locale, nix settings (NixOS)
   nixos/                  # desktop system modules
-  server/                 # server system modules (docker, nfs, nvidia, ssh, stacks)
+  server/                 # server system modules (nfs, nvidia, ssh, services)
   darwin/                 # nix-darwin system modules
-stacks/                   # docker compose files for nixos-server
 ```
 
 
@@ -100,20 +99,29 @@ For a server install, use `nixos-server` and `hosts/nixos-server/hardware-config
 
 ## Server notes
 
-- NVIDIA is configured headlessly for Docker GPU workloads (no desktop/display stack).
-- After a NVIDIA driver update, **reboot the server** before GPU containers will work.
+- NVIDIA is configured headlessly (no desktop/display stack).
 - NFS mounts wait for DHCP before mounting (boot race fix).
 
-### Docker stacks
+### Services
 
-Compose files in `stacks/` are deployed on `nixos-server` via `docker-stack-*` systemd services:
+Native NixOS modules in `modules/server/services.nix`, reverse-proxied by Traefik:
 
-`traefik` → `vault`, `vaultwarden`, `karakeep`, `n8n`, `newt`, `suwayomi`
+`traefik` `vault` `vaultwarden` `karakeep` `n8n` `suwayomi` `flaresolverr` `newt`
 
-Shared compose env (`APPDATA`, `MEDIA`, `TZ`, `SECRETS_DIR`) is set in `modules/server/stacks.nix`. Secrets live on NFS at `/mnt/storage/appdata/secrets/` — copy from each stack's `*.example` file. Traefik static config lives at `/mnt/storage/appdata/traefik/config/` (the copy in git is reference only).
+Secrets live on NFS at `/mnt/storage/appdata/secrets/`. Copy from `modules/server/secrets-examples/`. Traefik ACME certs: `/mnt/storage/appdata/traefik/certs/`.
+
+After switch, chown NFS data dirs to the service users if they were previously owned by Docker's uid 1000:
 
 ```bash
-sudo systemctl restart docker-stack-traefik
-sudo systemctl status 'docker-stack-*'
+sudo chown -R traefik:traefik /mnt/storage/appdata/traefik
+sudo chown -R vault:vault /mnt/storage/appdata/vault
+sudo chown -R vaultwarden:vaultwarden /mnt/storage/appdata/vaultwarden
+sudo chown -R suwayomi:suwayomi /mnt/storage/appdata/suwayomi
+```
+
+n8n and karakeep/meilisearch use `/var/lib/...` (copy from NFS if you want to keep old Docker data).
+
+```bash
+sudo systemctl status traefik vaultwarden n8n karakeep-web suwayomi-server newt
 ```
 

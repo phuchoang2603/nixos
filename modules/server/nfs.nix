@@ -1,6 +1,5 @@
 {
   pkgs,
-  lib,
   ...
 }:
 
@@ -35,7 +34,7 @@ in
     };
   };
 
-  # Pre-mount before Docker starts so bind mounts don't hit an unmounted path.
+  # Pre-mount NFS before app services bind data dirs.
   systemd.services.nfs-storage-mount = {
     description = "Mount NFS storage after network is ready";
     wantedBy = [ "multi-user.target" ];
@@ -44,7 +43,7 @@ in
       "rpcbind.service"
       "network-online.target"
     ];
-    before = [ "docker.service" ];
+    wants = [ "network-online.target" ];
     serviceConfig = {
       Type = "oneshot";
       RemainAfterExit = true;

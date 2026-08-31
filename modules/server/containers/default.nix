@@ -1,7 +1,6 @@
 {
   imports = [
     ./traefik.nix
-    ./vault.nix
     ./vaultwarden.nix
     ./karakeep.nix
     ./n8n.nix

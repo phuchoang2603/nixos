@@ -2,13 +2,11 @@
 
 Flake-based configuration for three hosts:
 
-
 | Host            | Platform | Purpose                  | Home Manager                       |
 | --------------- | -------- | ------------------------ | ---------------------------------- |
 | `nixos-desktop` | NixOS    | Hyprland desktop         | CLI + GUI (Stylix, Hyprland stack) |
 | `nixos-server`  | NixOS    | Docker/NFS/NVIDIA server | CLI only                           |
 | `macbook`       | macOS    | nix-darwin laptop        | CLI + GUI (Stylix, AeroSpace)      |
-
 
 ## Layout
 
@@ -31,11 +29,7 @@ modules/
   darwin/                 # nix-darwin system modules
 ```
 
-
-
 ## Usage
-
-
 
 ### NixOS desktop
 
@@ -44,8 +38,6 @@ nh os switch .#nixos-desktop
 # or
 sudo nixos-rebuild switch --flake .#nixos-desktop
 ```
-
-
 
 ### NixOS server
 
@@ -70,8 +62,6 @@ nh os switch .#nixos-server \
 ```bash
 darwin-rebuild switch --flake .#macbook
 ```
-
-
 
 ## Fresh install (NixOS desktop)
 
@@ -107,7 +97,7 @@ For a server install, use `nixos-server` and `hosts/nixos-server/hardware-config
 
 Containers are declared in Nix (`modules/server/containers/`) via `virtualisation.oci-containers` (no Compose). Traefik only publishes 80/443; apps are reached over the Docker `proxy` network.
 
-`traefik` `vault` `vaultwarden` `karakeep` `n8n` `newt` `suwayomi` `flaresolverr`
+`traefik` `vaultwarden` `karakeep` `n8n` `newt` `suwayomi` `flaresolverr`
 
 Secrets live on NFS at `/mnt/storage/appdata/secrets/`. Copy from `modules/server/secrets-examples/` (`n8n.env` is optional extras; host/webhook are set in Nix). Traefik ACME certs: `/mnt/storage/appdata/traefik/certs/`.
 
@@ -115,4 +105,3 @@ Secrets live on NFS at `/mnt/storage/appdata/secrets/`. Copy from `modules/serve
 sudo systemctl restart docker-traefik
 sudo systemctl status 'docker-*'
 ```
-

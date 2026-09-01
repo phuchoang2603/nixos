@@ -4,7 +4,6 @@
   home.packages = with pkgs; [
     pi-coding-agent
     cursor-cli
-    openspec
   ];
 
   programs = {

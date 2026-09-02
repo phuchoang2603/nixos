@@ -28,6 +28,8 @@
     uv
     nodejs
     devenv
+    drawio
+    graphviz
 
     # Infrastructure & DevOps
     kubernetes-helm

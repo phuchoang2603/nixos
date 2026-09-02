@@ -26,6 +26,7 @@
 
     # Dev tools
     uv
+    python3
     nodejs
     devenv
     drawio

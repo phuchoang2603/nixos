@@ -56,7 +56,7 @@
         {
           key = "C";
           command = ''
-            git diff --staged | pi --model opencode/muse-spark-1.3-contributor-free -p \
+            git diff --staged | pi --model opencode/nemotron-3.5-lightning-free -p \
             'Generate a git commit message for these staged changes using Conventional Commits. 
             Include a concise summary line, a blank line, and short bullet points description of the changes. 
             Output ONLY the raw text with no markdown, no code blocks, and no explanations.' \

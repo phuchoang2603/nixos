@@ -7,37 +7,6 @@
   ];
 
   programs = {
-    opencode = {
-      enable = true;
-      package = pkgs.opencode;
-      enableMcpIntegration = true;
-      skills = {
-        find-skills = ./skills/find-skills;
-      };
-      # web = {
-      #   enable = true;
-      #   extraArgs = [
-      #     "--hostname"
-      #     "0.0.0.0"
-      #     "--port"
-      #     "4096"
-      #     "--mdns"
-      #   ];
-      # };
-      tui = {
-        keybinds = {
-          messages_half_page_up = "{";
-          messages_half_page_down = "}";
-        };
-      };
-      settings = {
-        permission = {
-          edit = "ask";
-          bash = "ask";
-        };
-      };
-    };
-
     mcp = {
       enable = true;
       servers = {

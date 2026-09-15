@@ -191,5 +191,11 @@
         };
       };
     };
+
+    # Devenv - developer environment
+    devenv = {
+      enable = true;
+      enableZshIntegration = true;
+    };
   };
 }

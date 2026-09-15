@@ -13,7 +13,6 @@
       "Thumbs.db"
       "*.swp"
       ".envrc"
-      ".direnv/"
       ".devenv/"
       "node_modules/"
       ".vscode/"

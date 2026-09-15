@@ -69,7 +69,6 @@ Snacks.setup({
 					".venv",
 					".DS_Store",
 					"**/.node-gyp/**",
-					"**/.direnv/**",
 					"**/.devenv/**",
 				},
 				layout = { layout = { position = "right" } },

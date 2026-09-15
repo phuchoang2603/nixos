@@ -28,9 +28,6 @@
     uv
     python3
     nodejs
-    devenv
-    drawio
-    graphviz
 
     # Infrastructure & DevOps
     kubernetes-helm

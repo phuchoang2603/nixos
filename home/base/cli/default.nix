@@ -9,6 +9,5 @@
     ./yazi.nix
     ./ai.nix
     ./neovim.nix
-    ./direnv.nix
   ];
 }

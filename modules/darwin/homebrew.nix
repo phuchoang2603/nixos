@@ -30,7 +30,6 @@
 
     # GUI applications
     casks = [
-      "onedrive"
       "microsoft-edge"
       "microsoft-teams"
       "microsoft-onenote"
@@ -40,7 +39,6 @@
       "google-drive"
       "raycast"
       "cursor"
-      "chatgpt"
       "obsidian"
       "zalo"
       "karabiner-elements"

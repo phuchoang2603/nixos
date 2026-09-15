@@ -16,6 +16,13 @@
 
   hardware.nvidia-container-toolkit.enable = true;
 
-  # Don't block docker if CDI generation fails during switch (reboot after driver updates).
-  systemd.services.nvidia-container-toolkit-cdi-generator.requiredBy = lib.mkForce [ ];
+  # CDI generation talks to the loaded nvidia.ko. After a kernel/driver
+  # bump that module is still the old one until reboot, so nvidia-ctk fails
+  # and nixos-rebuild switch treats the failed unit as activation failure.
+  # Leave the previous CDI spec in place; the udev rule regenerates it on boot.
+  systemd.services.nvidia-container-toolkit-cdi-generator = {
+    requiredBy = lib.mkForce [ ];
+    restartIfChanged = false;
+    stopIfChanged = false;
+  };
 }

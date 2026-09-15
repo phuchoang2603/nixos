@@ -7,6 +7,10 @@
   ];
 
   programs = {
+    t3code = {
+      enable = true;
+    };
+
     mcp = {
       enable = true;
       servers = {

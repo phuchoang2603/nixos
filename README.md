@@ -97,7 +97,7 @@ For a server install, use `nixos-server` and `hosts/nixos-server/hardware-config
 
 Containers are declared in Nix (`modules/server/containers/`) via `virtualisation.oci-containers` (no Compose). Traefik only publishes 80/443; apps are reached over the Docker `proxy` network.
 
-`traefik` `vaultwarden` `karakeep` `n8n` `newt` `suwayomi` `flaresolverr`
+`traefik` `vaultwarden` `karakeep` `n8n` `newt`
 
 Secrets live on NFS at `/mnt/storage/appdata/secrets/`. Copy from `modules/server/secrets-examples/` (`n8n.env` is optional extras; host/webhook are set in Nix). Traefik ACME certs: `/mnt/storage/appdata/traefik/certs/`.
 

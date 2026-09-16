@@ -12,6 +12,12 @@ http:
       service: minio
       tls:
         certResolver: letsencrypt
+    t3code:
+      rule: Host(`t3code.home.phuchoang.sbs`)
+      entryPoints: [websecure]
+      service: t3code
+      tls:
+        certResolver: letsencrypt
   services:
     proxmox:
       loadBalancer:
@@ -22,6 +28,10 @@ http:
       loadBalancer:
         servers:
           - url: http://10.69.1.102:30212
+    t3code:
+      loadBalancer:
+        servers:
+          - url: http://host.docker.internal:3773
   serversTransports:
     insecureTransport:
       insecureSkipVerify: true

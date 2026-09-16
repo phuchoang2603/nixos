@@ -4,10 +4,12 @@
   networking.firewall.allowedTCPPorts = [
     80
     443
+    3773
   ];
 
   virtualisation.oci-containers.containers.traefik = lab.mkContainer {
     image = "traefik:v3.6.1";
+    extraOptions = [ "--add-host=host.docker.internal:host-gateway" ];
     ports = [
       "80:80"
       "443:443"

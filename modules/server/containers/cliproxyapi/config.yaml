@@ -1,0 +1,19 @@
+host: ""
+port: 8317
+auth-dir: /root/.cli-proxy-api
+debug: false
+logging-to-file: true
+ws-auth: false
+
+remote-management:
+  # Traefik and T3 on the host are not localhost inside the container.
+  allow-remote: true
+  # Do not set secret-key here: this file is in git and mounted read-only.
+  # Set MANAGEMENT_PASSWORD in ${lab.secrets}/cliproxyapi.env instead.
+  secret-key: ""
+  disable-control-panel: false
+
+quota-exceeded:
+  switch-project: true
+  switch-preview-model: true
+  antigravity-credits: true

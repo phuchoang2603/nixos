@@ -2,11 +2,11 @@
 
 Flake-based configuration for three hosts:
 
-| Host            | Platform | Purpose                  | Home Manager                       |
-| --------------- | -------- | ------------------------ | ---------------------------------- |
-| `nixos-desktop` | NixOS    | Hyprland desktop         | CLI + GUI (Stylix, Hyprland stack) |
-| `nixos-server`  | NixOS    | Docker/NFS/NVIDIA server | CLI only                           |
-| `macbook`       | macOS    | nix-darwin laptop        | CLI + GUI (Stylix, AeroSpace)      |
+| Host            | Platform | Purpose           | Home Manager                       |
+| --------------- | -------- | ----------------- | ---------------------------------- |
+| `nixos-desktop` | NixOS    | Hyprland desktop  | CLI + GUI (Stylix, Hyprland stack) |
+| `nixos-server`  | NixOS    | Docker/NFS server | CLI only                           |
+| `macbook`       | macOS    | nix-darwin laptop | CLI + GUI (Stylix, AeroSpace)      |
 
 ## Layout
 
@@ -25,7 +25,7 @@ home/
 modules/
   common/                 # shared boot, locale, nix settings (NixOS)
   nixos/                  # desktop system modules
-  server/                 # docker, nfs, nvidia, ssh, containers/
+  server/                 # docker, nfs, ssh, containers/
   darwin/                 # nix-darwin system modules
 ```
 
@@ -86,12 +86,6 @@ sudo nixos-install --flake .#nixos-desktop
 ```
 
 For a server install, use `nixos-server` and `hosts/nixos-server/hardware-configuration.nix`.
-
-## Server notes
-
-- NVIDIA is configured headlessly for Docker GPU workloads (no desktop/display stack).
-- After a NVIDIA driver update, **reboot the server** before GPU containers will work.
-- NFS mounts wait for DHCP before mounting (boot race fix).
 
 ### Docker containers
 

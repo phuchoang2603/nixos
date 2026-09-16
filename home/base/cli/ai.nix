@@ -21,16 +21,23 @@ in
       enable = true;
     };
 
-    antigravity-cli = {
-      enable = true;
-      enableMcpIntegration = true;
-      skills = agentSkills;
-    };
-
     codex = {
       enable = true;
       enableMcpIntegration = true;
       skills = agentSkills;
+      settings = {
+        model_provider = "cliproxyapi";
+        model_providers.cliproxyapi = {
+          name = "CLIProxyAPI";
+          base_url = "https://cliproxyapi.home.phuchoang.sbs/v1";
+          wire_api = "responses";
+          requires_openai_auth = false;
+        };
+      };
+      context = ''
+        - Prefer entering a repo's Nix devenv before work (`devenv allow`, `devenv shell`, or the project’s documented equivalent) whenever a devenv/flake/direnv setup exists.
+        - If devenv cannot be used, say so briefly and continue with the closest available tools.
+      '';
     };
 
     mcp = {

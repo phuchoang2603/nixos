@@ -14,6 +14,7 @@ in
   home.packages = with pkgs; [
     pi-coding-agent
     cursor-cli
+    openspec
   ];
 
   programs = {
@@ -37,6 +38,7 @@ in
       context = ''
         - Prefer entering a repo's Nix devenv before work (`devenv allow`, `devenv shell`, or the project’s documented equivalent) whenever a devenv/flake/direnv setup exists.
         - If devenv cannot be used, say so briefly and continue with the closest available tools.
+        - Use the Context7 MCP for current library/framework docs and best practices instead of relying on training data, whenever the task involves a public API, SDK, or framework.
       '';
     };
 

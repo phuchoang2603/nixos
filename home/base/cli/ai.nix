@@ -8,17 +8,29 @@
 let
   t3codePort = 3773;
   t3codePkg = config.programs.t3code.package;
+  agentSkills = ./skills;
 in
 {
   home.packages = with pkgs; [
     pi-coding-agent
     cursor-cli
-    codex
   ];
 
   programs = {
     t3code = {
       enable = true;
+    };
+
+    antigravity-cli = {
+      enable = true;
+      enableMcpIntegration = true;
+      skills = agentSkills;
+    };
+
+    codex = {
+      enable = true;
+      enableMcpIntegration = true;
+      skills = agentSkills;
     };
 
     mcp = {

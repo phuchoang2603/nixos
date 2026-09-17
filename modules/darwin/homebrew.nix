@@ -38,7 +38,6 @@
       "microsoft-powerpoint"
       "google-drive"
       "raycast"
-      "cursor"
       "obsidian"
       "zalo"
       "karabiner-elements"

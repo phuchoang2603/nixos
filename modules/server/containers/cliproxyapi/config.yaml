@@ -18,10 +18,30 @@ quota-exceeded:
   switch-preview-model: true
   antigravity-credits: true
 
-# Google returns 429 RESOURCE_EXHAUSTED for Codex identity text even when
-# Antigravity 5h/weekly quota is 100%. CPA obfuscates these with ZWSP.
+# Google returns 429 RESOURCE_EXHAUSTED for agent identity text even when
+# Antigravity quota is available. CPA obfuscates these with zero-width spaces (ZWSP).
 antigravity:
   sensitive-words:
     - "You are Codex"
     - "a coding agent based on GPT-5"
+    - "Codex"
+    - "GPT-5"
+    - "Claude Agent SDK"
+    - "Hermes Agent"
+    - "Nous Research"
     - "codex_exec"
+
+# Filter generationConfig.responseJsonSchema for Antigravity requests:
+# Upstream Google Gemini rejects requests containing both tools (function declarations)
+# and responseJsonSchema with HTTP 400 INVALID_ARGUMENT (e.g. Codex title generation).
+# responseMimeType: application/json remains intact.
+payload:
+  filter:
+    - models:
+        - name: "*"
+          protocol: "antigravity"
+      params:
+        - "generationConfig.responseJsonSchema"
+
+codex:
+  model-level-cooling: true

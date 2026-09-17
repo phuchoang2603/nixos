@@ -17,3 +17,11 @@ quota-exceeded:
   switch-project: true
   switch-preview-model: true
   antigravity-credits: true
+
+# Google returns 429 RESOURCE_EXHAUSTED for Codex identity text even when
+# Antigravity 5h/weekly quota is 100%. CPA obfuscates these with ZWSP.
+antigravity:
+  sensitive-words:
+    - "You are Codex"
+    - "a coding agent based on GPT-5"
+    - "codex_exec"

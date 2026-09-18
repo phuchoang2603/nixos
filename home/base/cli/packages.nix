@@ -30,6 +30,7 @@
     nodejs
 
     # Infrastructure & DevOps
+    doppler
     kubernetes-helm
     kubectl
     krew

@@ -18,6 +18,9 @@ in
     };
   };
 
+  # Explicit CLI plugin (also bundled via pkgs.docker's buildxSupport)
+  environment.systemPackages = [ pkgs.docker-buildx ];
+
   virtualisation.oci-containers.backend = "docker";
 
   systemd.services =

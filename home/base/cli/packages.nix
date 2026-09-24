@@ -30,6 +30,8 @@
     nodejs
 
     # Infrastructure & DevOps
+    awscli2
+    google-cloud-sdk
     doppler
     kubernetes-helm
     kubectl

@@ -1,0 +1,13 @@
+http:
+  routers:
+    t3code:
+      rule: Host(`t3code.home.phuchoang.sbs`)
+      entryPoints: [websecure]
+      service: t3code
+      tls:
+        certResolver: letsencrypt
+  services:
+    t3code:
+      loadBalancer:
+        servers:
+          - url: http://host.docker.internal:3773

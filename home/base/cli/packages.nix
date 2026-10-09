@@ -23,6 +23,7 @@
     fastfetch
     btop
     htop
+    bitwarden-cli
 
     # Dev tools
     uv

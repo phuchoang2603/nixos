@@ -3,13 +3,13 @@
 ## Defaults
 
 - Canvas base URL: `EXPRESS_SERVER_URL` (set to the shared `https://excalidraw.home.phuchoang.sbs`); CLI also accepts `--url <canvasUrl>`
-- Canvas health: `GET /health` or `npx -y mcp-excalidraw-server@2.0.0 status`
+- Canvas health: `GET /health` or `npx -y mcp-excalidraw-server@2.1.2 status`
 - Auto-start: never happens for the shared (non-loopback) URL; don't `start`/`stop` it
 - MCP tools come through Executor: find them with `search` and call them with `invoke` (or `execute`); MCP file I/O paths resolve inside the Executor container, so use the CLI for local files
 
 ## CLI Reference
 
-`npx -y mcp-excalidraw-server@2.0.0 <command>` (or `excalidraw-canvas <command>` after `npm i -g`).
+`npx -y mcp-excalidraw-server@2.1.2 <command>` (or `excalidraw-canvas <command>` after `npm i -g`).
 JSON results on stdout — except `describe` (plain text) and raw-content output when `--out` is omitted (`export` scene JSON, `screenshot --format svg`). Diagnostics on stderr. Exit codes: 0 ok, 1 error, 2 usage, 3 canvas unreachable, 4 browser tab required. Explicit `start` overrides `EXCALIDRAW_NO_AUTOSTART=1`.
 
 ### Server

@@ -2,7 +2,7 @@
 
 {
   virtualisation.oci-containers.containers.obscura = lab.mkContainer {
-    image = "h4ckf0r0day/obscura";
+    image = "h4ckf0r0day/obscura:latest";
     environmentFiles = [ "${lab.secrets}/obscura.env" ];
     cmd = [
       "mcp"

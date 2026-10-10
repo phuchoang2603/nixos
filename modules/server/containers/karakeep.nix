@@ -3,7 +3,7 @@
 {
   virtualisation.oci-containers.containers = {
     karakeep = lab.mkContainer {
-      image = "ghcr.io/karakeep-app/karakeep:0.31.0";
+      image = "ghcr.io/karakeep-app/karakeep:release";
       dependsOn = [
         "karakeep-chrome"
         "karakeep-meilisearch"
@@ -24,23 +24,30 @@
       };
     };
 
+    # The entrypoint already passes --no-sandbox and serves CDP on 9222;
+    # overriding the remote-debugging flags breaks its port forwarding.
     karakeep-chrome = lab.mkContainer {
-      image = "gcr.io/zenika-hub/alpine-chrome:123";
+      image = "ghcr.io/karakeep-app/karakeep-chrome:latest";
+      extraOptions = [ "--init" ];
       cmd = [
-        "--no-sandbox"
         "--disable-gpu"
         "--disable-dev-shm-usage"
-        "--remote-debugging-address=0.0.0.0"
-        "--remote-debugging-port=9222"
         "--hide-scrollbars"
+        "--disable-blink-features=AutomationControlled"
+        "--window-size=1440,900"
       ];
     };
 
+    # meili_data replaced the 1.11 `meilisearch` dir, which is too old to upgrade
+    # in place; the index is rebuilt from Karakeep (Admin > Reindex all bookmarks).
     karakeep-meilisearch = lab.mkContainer {
-      image = "getmeili/meilisearch:v1.11.1";
-      volumes = [ "${lab.appdata}/hoarderr/meilisearch:/meili_data:rw" ];
+      image = "getmeili/meilisearch:latest";
+      volumes = [ "${lab.appdata}/hoarderr/meili_data:/meili_data:rw" ];
       environmentFiles = [ "${lab.secrets}/karakeep.env" ];
-      environment.MEILI_NO_ANALYTICS = "true";
+      environment = {
+        MEILI_NO_ANALYTICS = "true";
+        MEILI_UPGRADE_DB = "true";
+      };
     };
   };
 }

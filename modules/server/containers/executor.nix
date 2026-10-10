@@ -1,7 +1,7 @@
 { lab, pkgs, ... }:
 
 let
-  image = "ghcr.io/rhyssullivan/executor-selfhost:1.6.10";
+  image = "ghcr.io/rhyssullivan/executor-selfhost:latest";
   data = "/var/lib/executor";
   # The image runs as distroless `nonroot`.
   uid = "65532";
@@ -14,7 +14,7 @@ let
     builtins.toJSON {
       private = true;
       dependencies = {
-        "mcp-excalidraw-server" = "2.0.0";
+        "mcp-excalidraw-server" = "2.1.2";
       };
     }
   );

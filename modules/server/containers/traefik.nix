@@ -10,7 +10,7 @@
   networking.firewall.interfaces."br-+".allowedTCPPorts = [ 3773 ];
 
   virtualisation.oci-containers.containers.traefik = lab.mkContainer {
-    image = "traefik:v3.6.1";
+    image = "traefik:latest";
     ports = [
       "80:80"
       "443:443"

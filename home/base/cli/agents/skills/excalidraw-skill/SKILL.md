@@ -1,6 +1,6 @@
 ---
 name: excalidraw-skill
-description: Excalidraw canvas toolkit for creating, editing, and refining diagrams on a live canvas, including brand logos and icons from svgl/Iconify. Use when an agent needs to (1) draw or lay out diagrams, (2) iteratively refine them by describing the scene and screenshotting its own work, (3) export/import .excalidraw files or PNG/SVG images, (4) save/restore canvas snapshots, (5) convert Mermaid to Excalidraw, or (6) perform element-level CRUD, alignment, distribution, grouping, duplication, and locking. Drives the shared canvas at $EXPRESS_SERVER_URL via the Executor MCP server's excalidraw tools or the CLI (npx -y mcp-excalidraw-server@2.0.0 <command>); the REST API is an equivalent fallback.
+description: Excalidraw canvas toolkit for creating, editing, and refining diagrams on a live canvas, including brand logos and icons from svgl/Iconify. Use when an agent needs to (1) draw or lay out diagrams, (2) iteratively refine them by describing the scene and screenshotting its own work, (3) export/import .excalidraw files or PNG/SVG images, (4) save/restore canvas snapshots, (5) convert Mermaid to Excalidraw, or (6) perform element-level CRUD, alignment, distribution, grouping, duplication, and locking. Drives the shared canvas at $EXPRESS_SERVER_URL via the Executor MCP server's excalidraw tools or the CLI (npx -y mcp-excalidraw-server@2.1.2 <command>); the REST API is an equivalent fallback.
 ---
 
 # Excalidraw Skill
@@ -14,7 +14,7 @@ Pick the first interface that applies:
 1. **MCP tools via Executor** — if the `executor` MCP server is in your tool list, find the excalidraw tools with its `search` tool (e.g. "excalidraw describe scene") and call them with `invoke`, or batch several calls in one `execute` script. Prefer them for drawing, inspecting, and screenshots: results land directly in your context. Tool names in this skill and the cheatsheet are the bare excalidraw tool names (e.g. `batch_create_elements`); use the exact IDs `search` returns. **Do not use MCP file I/O tools (`export_scene`, `import_scene`, `export_to_image`) to write or read files** — they run inside the Executor container, not on this machine. Use the CLI for anything touching local files.
 2. **CLI** — for file I/O (export/import into the repo, PNG/SVG to disk), or when no MCP tools are present:
    ```bash
-   npx -y mcp-excalidraw-server@2.0.0 <command>
+   npx -y mcp-excalidraw-server@2.1.2 <command>
    ```
    The CLI reads `EXPRESS_SERVER_URL` from the environment; if it's unset, pass `--url https://excalidraw.home.phuchoang.sbs`. Because the URL is non-loopback, the CLI never auto-starts a local server. MCP and CLI operate on the same canvas, so you can draw via MCP and `export` via CLI.
 3. **REST API** (last resort, e.g. from application code): HTTP endpoints on `$EXPRESS_SERVER_URL` — see `references/cheatsheet.md` for payloads.
@@ -383,7 +383,7 @@ add elements
 ```bash
 echo 'graph TD
   A[Client] --> B[API]
-  B --> C[(DB)]' | npx -y mcp-excalidraw-server@2.0.0 mermaid
+  B --> C[(DB)]' | npx -y mcp-excalidraw-server@2.1.2 mermaid
 ```
 Requires an open browser tab (conversion runs in the frontend; exit code 4 tells you to open the canvas URL). Afterwards `screenshot` to verify layout. If the auto-layout is poor (nodes crowded, edges crossing), find problem elements with `describe` and reposition them with `update`.
 
@@ -401,8 +401,8 @@ This is how diagrams live in a repo: commit the `.excalidraw` file, and re-`impo
 Check the destination before writing: if any ancestor directory contains `.obsidian/`, it is an Obsidian vault. A raw `.excalidraw` file there opens in the Excalidraw plugin only in **compatibility mode** ("Convert to new format" warning), gets no block references or vault-wide search, and default Obsidian Sync skips non-`.md` files. Give the export a `.excalidraw.md` extension and the CLI writes the plugin's native format automatically:
 
 ```bash
-npx -y mcp-excalidraw-server@2.0.0 export --out "$VAULT/diagrams/system-map.excalidraw.md"   # .md → Obsidian format (or force with --format obsidian)
-npx -y mcp-excalidraw-server@2.0.0 import "$VAULT/diagrams/system-map.excalidraw.md" --replace  # reads both plain and compressed Drawing blocks
+npx -y mcp-excalidraw-server@2.1.2 export --out "$VAULT/diagrams/system-map.excalidraw.md"   # .md → Obsidian format (or force with --format obsidian)
+npx -y mcp-excalidraw-server@2.1.2 import "$VAULT/diagrams/system-map.excalidraw.md" --replace  # reads both plain and compressed Drawing blocks
 ```
 
 Round-trips are safe: text-element block references follow the plugin's own id rules, so re-importing, editing, and re-exporting the same file keeps links from other notes intact.

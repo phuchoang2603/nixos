@@ -13,6 +13,12 @@ let
 
   # SQLite state (state.db, sessions) must stay off NFS.
   state = "/var/lib/hermes";
+
+  discordChannels = {
+    main = "1558532054889660416";
+    tasks = "1558532205507125299";
+    reports = "1558532114423484507";
+  };
   # Agent-evolved files: its own skills, memories, cron jobs, persona.
   shared = "${lab.appdata}/hermes";
   sharedDirs = [
@@ -30,6 +36,14 @@ let
       default = "gemini-3.8-flash-high";
     };
     mcp_servers.executor.url = "https://${lab.fqdn "mcp"}/mcp?mode=passthrough";
+    discord = {
+      free_response_channels = with discordChannels; [
+        main
+        tasks
+      ];
+      free_response_auto_thread = true;
+      missed_message_backfill.enabled = true;
+    };
     dashboard = {
       public_url = "https://${lab.fqdn "hermes"}";
       trusted_proxies = [ "172.18.0.0/16" ];
@@ -77,6 +91,7 @@ in
       PUID = uid;
       PGID = gid;
       HERMES_DASHBOARD = "1";
+      DISCORD_HOME_CHANNEL = discordChannels.reports;
     };
     extraOptions = [
       "--shm-size=1g"

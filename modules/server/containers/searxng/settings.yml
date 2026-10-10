@@ -1,6 +1,0 @@
-use_default_settings: true
-search:
-  # n8n's web search needs the JSON API, which the stock image disables.
-  formats:
-    - html
-    - json

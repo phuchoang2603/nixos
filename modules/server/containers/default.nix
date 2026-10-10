@@ -4,11 +4,11 @@
     ./vaultwarden.nix
     ./karakeep.nix
     ./newt.nix
-    ./socat.nix
     ./cliproxyapi.nix
     ./executor.nix
     ./obscura.nix
     ./excalidraw.nix
+    ./hermes.nix
   ];
 
   _module.args.lab = import ./lab.nix;

@@ -13,8 +13,13 @@ in
 
   virtualisation.oci-containers.containers.cli-proxy-api = lab.mkContainer {
     image = "eceasy/cli-proxy-api:latest";
+    cmd = [
+      "./CLIProxyAPI"
+      "-config"
+      "/config/config.yaml"
+    ];
     volumes = [
-      "${./cliproxyapi/config.yaml}:/CLIProxyAPI/config.yaml:ro"
+      "${lab.secrets}/cliproxyapi:/config:rw"
       "${data}/auths:/root/.cli-proxy-api:rw"
       "${data}/logs:/CLIProxyAPI/logs:rw"
       "${data}/plugins:/CLIProxyAPI/plugins:rw"

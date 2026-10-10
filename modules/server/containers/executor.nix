@@ -15,6 +15,7 @@ let
       private = true;
       dependencies = {
         "mcp-excalidraw-server" = "2.1.2";
+        "@karakeep/mcp" = "0.33.1";
       };
     }
   );

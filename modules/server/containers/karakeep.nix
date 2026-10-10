@@ -17,6 +17,22 @@
         MEILI_ADDR = "http://karakeep-meilisearch:7700";
         BROWSER_WEB_URL = "http://karakeep-chrome:9222";
         NEXTAUTH_URL = "https://${lab.fqdn "karakeep"}";
+
+        OPENAI_BASE_URL = "http://cli-proxy-api:8317/v1";
+        OPENAI_API_KEY = "cliproxyapi";
+        INFERENCE_TEXT_MODEL = "gpt-6-luna";
+        INFERENCE_IMAGE_MODEL = "gemini-3-flash";
+        INFERENCE_USE_MAX_COMPLETION_TOKENS = "true";
+        INFERENCE_CONTEXT_LENGTH = "8192";
+        INFERENCE_JOB_TIMEOUT_SEC = "120";
+        INFERENCE_ENABLE_AUTO_SUMMARIZATION = "true";
+
+        EMBEDDING_ENABLE_AUTO_INDEXING = "true";
+        EMBEDDING_OPENAI_BASE_URL = "https://openrouter.ai/api/v1";
+        EMBEDDING_TEXT_MODEL = "openai/text-embedding-3-small";
+        EMBEDDING_DIMENSIONS = "1536";
+        SEMANTIC_SEARCH_ENABLED = "true";
+        RATE_LIMITING_ENABLED = "true";
       };
       traefik = {
         name = "karakeep";
@@ -24,8 +40,6 @@
       };
     };
 
-    # The entrypoint already passes --no-sandbox and serves CDP on 9222;
-    # overriding the remote-debugging flags breaks its port forwarding.
     karakeep-chrome = lab.mkContainer {
       image = "ghcr.io/karakeep-app/karakeep-chrome:latest";
       extraOptions = [ "--init" ];
@@ -38,8 +52,6 @@
       ];
     };
 
-    # meili_data replaced the 1.11 `meilisearch` dir, which is too old to upgrade
-    # in place; the index is rebuilt from Karakeep (Admin > Reindex all bookmarks).
     karakeep-meilisearch = lab.mkContainer {
       image = "getmeili/meilisearch:latest";
       volumes = [ "${lab.appdata}/hoarderr/meili_data:/meili_data:rw" ];

@@ -53,6 +53,7 @@ let
 
   # Local plugins under ./hermes/plugins, mounted read-only and enabled on start.
   plugins = [
+    "model-autocomplete"
     "realtime-voice"
     "vault-autounlock"
   ];

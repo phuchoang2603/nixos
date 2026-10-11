@@ -54,7 +54,7 @@ in
     environment = {
       EXECUTOR_WEB_BASE_URL = "https://${lab.fqdn "mcp"}";
       EXECUTOR_ALLOW_STDIO_MCP = "true";
-      # Upstreams like obscura resolve to private addresses on the proxy network.
+      # Upstreams on the proxy network resolve to private addresses.
       EXECUTOR_ALLOW_LOCAL_NETWORK = "true";
     };
     traefik = {

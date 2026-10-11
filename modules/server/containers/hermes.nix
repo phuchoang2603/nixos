@@ -6,7 +6,16 @@
 }:
 
 let
-  image = "nousresearch/hermes-agent:latest";
+  upstreamImage = "nousresearch/hermes-agent:latest";
+  image = "hermes-agent-voice:latest";
+  # The upstream image lacks libopus, which Discord voice playback needs.
+  dockerfile = pkgs.writeText "hermes-agent-voice.Dockerfile" ''
+    FROM ${upstreamImage}
+    RUN apt-get update \
+      && apt-get install -y --no-install-recommends libopus0 \
+      && rm -rf /var/lib/apt/lists/*
+  '';
+
   # Hermes runs as this user so the NFS-backed files stay editable from the desktop.
   uid = "1000";
   gid = "100";
@@ -36,6 +45,17 @@ let
       default = "gemini-3.8-flash-high";
     };
     mcp_servers.executor.url = "https://${lab.fqdn "mcp"}/mcp?mode=passthrough";
+    # Terminal, browser and computer_use run in the hermes-desktop sandbox.
+    terminal = {
+      backend = "ssh";
+      ssh_host = "hermes-desktop";
+      ssh_user = "pn";
+      ssh_port = 2222;
+      ssh_key = "/opt/data/.ssh/desktop_ed25519";
+    };
+    # Voice runs through the realtime-voice plugin, not Hermes' chained STT/TTS.
+    stt.enabled = false;
+    agent.disabled_toolsets = [ "tts" ];
     discord = {
       free_response_channels = with discordChannels; [
         main
@@ -57,9 +77,16 @@ in
   ]
   ++ map (dir: "d ${shared}/${dir} 0755 ${uid} ${gid} -") sharedDirs;
 
+  # hermes-desktop's preStart creates the SSH key Hermes logs in with.
+  systemd.services.docker-hermes.after = [ "docker-hermes-desktop.service" ];
+  systemd.services.docker-hermes.wants = [ "docker-hermes-desktop.service" ];
+
   # Hermes rewrites config.yaml itself (migrations, /model, "always allow"),
   # so the Nix-owned keys are merged in on each start instead of mounted read-only.
   systemd.services.docker-hermes.preStart = lib.mkBefore ''
+    ${pkgs.docker}/bin/docker build --pull -t ${image} - < ${dockerfile} \
+      || ${pkgs.docker}/bin/docker image inspect ${image} > /dev/null
+
     cfg=${state}/config.yaml
     if [ -f "$cfg" ]; then
       ${lib.getExe pkgs.yq-go} ea '. as $i ireduce ({}; . * $i)' "$cfg" ${managedConfig} > "$cfg.tmp"
@@ -67,6 +94,7 @@ in
     else
       install -m 0600 ${managedConfig} "$cfg"
     fi
+    ${lib.getExe pkgs.yq-go} -i '.plugins.enabled = ((.plugins.enabled // []) + ["realtime-voice"] | unique)' "$cfg"
     chown ${uid}:${gid} "$cfg"
 
     if [ ! -e ${shared}/soul/SOUL.md ]; then
@@ -78,12 +106,14 @@ in
 
   virtualisation.oci-containers.containers.hermes = lab.mkContainer {
     inherit image;
+    pull = "never";
     cmd = [
       "gateway"
       "run"
     ];
     volumes = [
       "${state}:/opt/data:rw"
+      "${./hermes/plugins/realtime-voice}:/opt/data/plugins/realtime-voice:ro"
     ]
     ++ map (dir: "${shared}/${dir}:/opt/data/${dir}:rw") sharedDirs;
     environmentFiles = [ "${lab.secrets}/hermes.env" ];
@@ -92,6 +122,7 @@ in
       PGID = gid;
       HERMES_DASHBOARD = "1";
       DISCORD_HOME_CHANNEL = discordChannels.reports;
+      REALTIME_VOICE_LOG_CHANNEL = discordChannels.main;
     };
     extraOptions = [
       "--shm-size=1g"

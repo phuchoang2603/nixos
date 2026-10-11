@@ -6,9 +6,9 @@
     ./newt.nix
     ./cliproxyapi.nix
     ./executor.nix
-    ./obscura.nix
     ./excalidraw.nix
     ./hermes.nix
+    ./hermes-desktop.nix
   ];
 
   _module.args.lab = import ./lab.nix;

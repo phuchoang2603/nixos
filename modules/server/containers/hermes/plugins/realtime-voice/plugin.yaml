@@ -1,0 +1,5 @@
+name: realtime-voice
+version: 0.1.0
+description: "Full-duplex Discord voice through an OpenAI Realtime model, with the Hermes agent as its backend."
+author: felix
+kind: standalone

@@ -7,13 +7,27 @@
 
 let
   upstreamImage = "nousresearch/hermes-agent:latest";
-  image = "hermes-agent-voice:latest";
-  # The upstream image lacks libopus, which Discord voice playback needs.
-  dockerfile = pkgs.writeText "hermes-agent-voice.Dockerfile" ''
+  image = "hermes-agent-local:latest";
+  # The upstream image lacks libopus (Discord voice playback) and the bw CLI (Vaultwarden logins).
+  # Vault autofill, and browser_exec on a configured cdp_url, can't reach a CDP endpoint inside the
+  # sandbox without the exec-stream forward; the cdp_url path also has to bring the screen up.
+  # The greps fail the build, keeping the previous image, once upstream moves the patched code.
+  dockerfile = pkgs.writeText "hermes-agent-local.Dockerfile" ''
     FROM ${upstreamImage}
     RUN apt-get update \
       && apt-get install -y --no-install-recommends libopus0 \
       && rm -rf /var/lib/apt/lists/*
+    RUN npm install -g --prefix /usr/local @bitwarden/cli \
+      && npm cache clean --force
+    RUN sed -i \
+        -e 's/cdp_url=_resolve_cdp_override(cdp_url),/cdp_url=_resolve_cdp_override(_reach_sandbox_cdp(cdp_url)),/' \
+        -e '/from tools.browser_tool_cdp import _get_dialog_policy_config, _resolve_cdp_override/a\    from tools.browser_use_cli import _reach_sandbox_cdp' \
+        /opt/hermes/tools/browser_vault_tool.py \
+      && grep -q '_resolve_cdp_override(_reach_sandbox_cdp(cdp_url))' /opt/hermes/tools/browser_vault_tool.py
+    RUN sed -i \
+        -e 's/^        _set_cdp_env(env, override)$/        from tools.bot_desktop import runtime as _bd_runtime\n        _bd_runtime.ensure_started_for_tool()\n        _set_cdp_env(env, _reach_sandbox_cdp(override))/' \
+        /opt/hermes/tools/browser_use_cli.py \
+      && grep -q '_set_cdp_env(env, _reach_sandbox_cdp(override))' /opt/hermes/tools/browser_use_cli.py
   '';
 
   # Hermes runs as this user so the NFS-backed files stay editable from the desktop.
@@ -37,6 +51,13 @@ let
     "soul"
   ];
 
+  # Local plugins under ./hermes/plugins, mounted read-only and enabled on start.
+  plugins = [
+    "realtime-voice"
+    "vault-autounlock"
+  ];
+  pluginList = builtins.toJSON plugins;
+
   managedConfig = (pkgs.formats.yaml { }).generate "hermes-config.yaml" {
     model = {
       provider = "custom";
@@ -53,6 +74,12 @@ let
       ssh_port = 2222;
       ssh_key = "/opt/data/.ssh/desktop_ed25519";
     };
+    browser = {
+      # Stock Chrome inside the sandbox (hermes-desktop's chrome-keeper), reached over the SSH session.
+      cdp_url = "http://127.0.0.1:9222";
+      # Keeps a page open while Felix answers a verification challenge from Discord.
+      inactivity_timeout = 1800;
+    };
     # Voice runs through the realtime-voice plugin, not Hermes' chained STT/TTS.
     stt.enabled = false;
     agent.disabled_toolsets = [ "tts" ];
@@ -63,6 +90,7 @@ let
       ];
       free_response_auto_thread = true;
       missed_message_backfill.enabled = true;
+      gateway_restart_notification = false;
     };
     dashboard = {
       public_url = "https://${lab.fqdn "hermes"}";
@@ -94,7 +122,7 @@ in
     else
       install -m 0600 ${managedConfig} "$cfg"
     fi
-    ${lib.getExe pkgs.yq-go} -i '.plugins.enabled = ((.plugins.enabled // []) + ["realtime-voice"] | unique)' "$cfg"
+    ${lib.getExe pkgs.yq-go} -i '.plugins.enabled = ((.plugins.enabled // []) + ${pluginList} | unique)' "$cfg"
     chown ${uid}:${gid} "$cfg"
 
     if [ ! -e ${shared}/soul/SOUL.md ]; then
@@ -113,8 +141,8 @@ in
     ];
     volumes = [
       "${state}:/opt/data:rw"
-      "${./hermes/plugins/realtime-voice}:/opt/data/plugins/realtime-voice:ro"
     ]
+    ++ map (name: "${./hermes/plugins/${name}}:/opt/data/plugins/${name}:ro") plugins
     ++ map (dir: "${shared}/${dir}:/opt/data/${dir}:rw") sharedDirs;
     environmentFiles = [ "${lab.secrets}/hermes.env" ];
     environment = {
@@ -123,6 +151,7 @@ in
       HERMES_DASHBOARD = "1";
       DISCORD_HOME_CHANNEL = discordChannels.reports;
       REALTIME_VOICE_LOG_CHANNEL = discordChannels.main;
+      BITWARDENCLI_APPDATA_DIR = "/opt/data/bitwarden";
     };
     extraOptions = [
       "--shm-size=1g"

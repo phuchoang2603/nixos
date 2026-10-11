@@ -17,6 +17,7 @@ import base64
 import json
 import logging
 import os
+import re
 import sys
 import threading
 import time
@@ -62,6 +63,9 @@ TURN_NOTE = (
     "model. Answer in a few plain conversational sentences: no markdown, lists, code or URLs. Do "
     "the work with your tools as usual and do not claim an action succeeded before it did.]"
 )
+
+# The API server inlines MEDIA: images as base64 data URLs, which must not reach the voice model.
+_INLINE_IMAGE = re.compile(r"!\[[^\]]*\]\(data:image/[^)]+\)")
 
 PROGRESS_INSTRUCTIONS = (
     "The Hermes agent is still working on a task for Felix. Tell him in one short spoken sentence "
@@ -404,7 +408,7 @@ class _Call:
                             actions.append(f"{data.get('tool')}: {data.get('label')}")
                         elif not event:
                             parts.append((data.get("choices") or [{}])[0].get("delta", {}).get("content") or "")
-                    output = "".join(parts).strip()
+                    output = _INLINE_IMAGE.sub("[image omitted]", "".join(parts)).strip()
                     if not output:
                         raise RuntimeError("the agent returned no answer")
         except Exception as e:

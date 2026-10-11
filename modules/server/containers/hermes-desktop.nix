@@ -10,11 +10,42 @@
 let
   upstreamImage = "nousresearch/hermes-sandbox:desktop";
   image = "hermes-desktop:latest";
+  # Stock Chrome is re-downloaded on every build, so a restart picks up its updates.
   dockerfile = pkgs.writeText "hermes-desktop.Dockerfile" ''
     FROM ${upstreamImage}
+    ADD https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb /tmp/chrome.deb
     RUN apt-get update \
-      && apt-get install -y --no-install-recommends openssh-server \
-      && rm -rf /var/lib/apt/lists/*
+      && apt-get install -y --no-install-recommends openssh-server novnc python3-websockify /tmp/chrome.deb \
+      && rm -rf /var/lib/apt/lists/* /tmp/chrome.deb
+  '';
+
+  # Sites like Walmart block a Chrome that agent-browser launches (it reports navigator.webdriver),
+  # so the browser tool attaches over CDP to stock Chrome started here instead. Docker's seccomp
+  # profile denies the user namespaces Chrome's own sandbox needs; the container stands in for it.
+  screenEnv = "/tmp/hermes-bot-desktop/default/env";
+  cdpPort = 9222;
+  chrome = pkgs.writeScript "chrome" ''
+    #!/bin/sh
+    if [ ! -f ${screenEnv} ]; then
+      echo "Hermes' screen isn't running; take a computer_use capture to start it." >&2
+      exit 1
+    fi
+    set -a
+    . ${screenEnv}
+    set +a
+    setsid google-chrome-stable --no-sandbox --no-first-run --no-default-browser-check \
+      --hide-crash-restore-bubble --password-store=basic --user-data-dir="$HOME/.chrome" \
+      --remote-debugging-port=${toString cdpPort} "$@" > /dev/null 2>&1 &
+  '';
+  # Hermes starts and idles out the screen on its own; Chrome follows it.
+  chromeKeeper = pkgs.writeScript "chrome-keeper" ''
+    #!/bin/sh
+    while sleep 2; do
+      [ -f ${screenEnv} ] || continue
+      DISPLAY=$(sed -n 's/^DISPLAY=//p' ${screenEnv}) XAUTHORITY=$(sed -n 's/^XAUTHORITY=//p' ${screenEnv}) \
+        xdpyinfo > /dev/null 2>&1 || continue
+      pgrep -f "user-data-dir=$HOME/.chrome" > /dev/null || chrome
+    done
   '';
 
   # The image's desktop user; Hermes logs in as it and runs Xvnc/Chromium as it.
@@ -24,6 +55,11 @@ let
   hermesState = "/var/lib/hermes";
   hermesOwner = "1000:100";
   hermesKey = "${hermesState}/.ssh/desktop_ed25519";
+
+  # Hermes' screen state (Xvnc's RFB socket included), shared with the noVNC viewer.
+  screen = "/run/hermes-desktop";
+  screenMount = "${screen}:/tmp/hermes-bot-desktop:rw";
+  rfbSocket = "/tmp/hermes-bot-desktop/default/rfb.sock";
 
   # sshd runs unprivileged as the desktop user, so the container keeps no capabilities.
   sshdConfig = pkgs.writeText "hermes-desktop-sshd_config" ''
@@ -51,6 +87,7 @@ in
     "d ${state} 0700 ${uid} ${uid} -"
     "d ${state}/home 0700 ${uid} ${uid} -"
     "d ${state}/ssh 0700 ${uid} ${uid} -"
+    "d ${screen} 0700 ${uid} ${uid} -"
   ];
 
   systemd.services.docker-hermes-desktop.preStart = lib.mkBefore ''
@@ -75,20 +112,27 @@ in
     fi
     ln -sfn ../.bot-desktop $home/.hermes/bot-desktop
     chown -h ${uid}:${uid} $home/.hermes/bot-desktop
+
+    # A previous container's screen is dead; its pid files could match new processes.
+    install -d -o ${uid} -g ${uid} -m 0700 ${screen}
+    find ${screen} -mindepth 1 -delete
   '';
 
   virtualisation.oci-containers.containers.hermes-desktop = lab.mkContainer {
     inherit image user;
     pull = "never";
-    entrypoint = "/usr/sbin/sshd";
+    entrypoint = "/bin/sh";
     cmd = [
-      "-D"
-      "-e"
+      "-c"
+      "chrome-keeper & exec /usr/sbin/sshd -D -e"
     ];
     volumes = [
       "${state}/home:/home/${user}:rw"
       "${state}/ssh:/etc/hermes-desktop:ro"
       "${sshdConfig}:/etc/ssh/sshd_config:ro"
+      "${chrome}:/usr/local/bin/chrome:ro"
+      "${chromeKeeper}:/usr/local/bin/chrome-keeper:ro"
+      screenMount
     ];
     extraOptions = [
       "--cap-drop=ALL"
@@ -99,5 +143,41 @@ in
       "--memory=3g"
       "--cpus=2"
     ];
+  };
+
+  # Browser view of the desktop for solving challenges by hand, open to anyone on the LAN. It
+  # bypasses Hermes' take-control lease, so the agent has to wait while Felix is on it.
+  systemd.services.docker-hermes-desktop-vnc = {
+    after = [ "docker-hermes-desktop.service" ];
+    requires = [ "docker-hermes-desktop.service" ];
+  };
+
+  virtualisation.oci-containers.containers.hermes-desktop-vnc = lab.mkContainer {
+    inherit image user;
+    pull = "never";
+    entrypoint = "websockify";
+    cmd = [
+      "--web=/usr/share/novnc"
+      "--file-only"
+      "--unix-target=${rfbSocket}"
+      "6080"
+    ];
+    volumes = [ screenMount ];
+    extraOptions = [
+      "--cap-drop=ALL"
+      "--security-opt=no-new-privileges"
+      "--read-only"
+      "--memory=256m"
+    ];
+    traefik = {
+      name = "desktop";
+      port = 6080;
+    };
+    labels = {
+      "traefik.http.routers.desktop.middlewares" = "desktop-viewer";
+      "traefik.http.middlewares.desktop-viewer.redirectregex.regex" = "^https://([^/]+)/$";
+      "traefik.http.middlewares.desktop-viewer.redirectregex.replacement" =
+        "https://\${1}/vnc.html?autoconnect=true&resize=scale&reconnect=true";
+    };
   };
 }

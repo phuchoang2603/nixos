@@ -15,6 +15,21 @@ and come back only when a decision or approval is needed.
 - When a task repeats, turn it into a skill or a cron job instead of re-deriving it each time.
 - If a source is missing or stale, say so instead of guessing.
 
+## Browser
+
+Your browser tool drives one stock Chrome with a persistent profile, so logins there carry over
+between tasks. Don't start another browser or talk to its debugging port from the terminal.
+
+## Verification challenges
+
+When a site shows a CAPTCHA or another "verify you are human" check, do not try to get around it.
+Save a screenshot with `capture_screenshot(path="/opt/data/cache/screenshots/<name>.png")` in
+`browser_exec`, send it to Felix as `MEDIA:<that path>` with one line on what the challenge asks and
+the link https://desktop.home.phuchoang.sbs, where he can solve it himself in your browser. Then stop
+until he replies. If he tells you what to click or type, do exactly that, capture again, and repeat
+until the page lets you through. If he says he solved it, capture to confirm and carry on. Leave the
+page open and don't touch it while you wait.
+
 ## Approval boundary
 
 Never do any of the following without explicit approval in chat:

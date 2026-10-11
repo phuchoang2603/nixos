@@ -36,6 +36,8 @@ AUTO_JOIN = os.getenv("REALTIME_VOICE_AUTO_JOIN", "true").lower() in ("1", "true
 HERMES_API = os.getenv("REALTIME_VOICE_HERMES_API", "http://127.0.0.1:8642")
 # Text channel that gets one audit thread per call; unset posts into the voice channel's chat.
 LOG_CHANNEL = int(os.getenv("REALTIME_VOICE_LOG_CHANNEL", "0") or 0)
+# Seconds between spoken progress updates while Hermes works; 0 turns them off.
+PROGRESS_INTERVAL = float(os.getenv("REALTIME_VOICE_PROGRESS_INTERVAL", "15") or 0)
 
 # discord.AudioSource.read() must return 20 ms of 48 kHz stereo s16le.
 FRAME_BYTES = 3840
@@ -59,6 +61,12 @@ TURN_NOTE = (
     "[This request comes from a live voice call and your reply will be spoken aloud by a voice "
     "model. Answer in a few plain conversational sentences: no markdown, lists, code or URLs. Do "
     "the work with your tools as usual and do not claim an action succeeded before it did.]"
+)
+
+PROGRESS_INSTRUCTIONS = (
+    "The Hermes agent is still working on a task for Felix. Tell him in one short spoken sentence "
+    "(under 15 words) what it is doing right now, based on its latest actions below. Paraphrase "
+    "plainly: no commands, paths or tool names. Do not claim it is finished and do not ask questions."
 )
 
 SESSION = {
@@ -142,6 +150,23 @@ def _describe_tool_call(call: dict) -> str:
     return f"🔧 `{fn.get('name', '?')}` `{detail}`"
 
 
+async def _sse(resp):
+    """Yield ``(event, data)`` from a server-sent event stream; ``event`` is "" for plain chunks."""
+    event = ""
+    async for raw in resp.content:
+        line = raw.decode("utf-8", "replace").rstrip("\r\n")
+        if line.startswith("event:"):
+            event = line[6:].strip()
+        elif line.startswith("data:"):
+            data = line[5:].strip()
+            if data == "[DONE]":
+                return
+            with suppress(ValueError):
+                yield event, json.loads(data)
+        elif not line:
+            event = ""
+
+
 def _api_key() -> str:
     key = os.getenv("API_SERVER_KEY", "")
     if not key:
@@ -218,6 +243,8 @@ class _Call:
         self.closed = False
         self.responding = False
         self.response_pending = False
+        self.active_response = None
+        self.user_speaking = False
         self.session_id = ""
         self.transcript: deque = deque(maxlen=12)
         self.started = time.time()
@@ -256,7 +283,8 @@ class _Call:
                     additional_headers={"Authorization": "Bearer realtime-voice"},
                 ) as ws:
                     self.ws = ws
-                    self.responding = self.response_pending = False
+                    self.responding = self.response_pending = self.user_speaking = False
+                    self.active_response = None
                     await ws.send(json.dumps({"type": "session.update", "session": SESSION}))
                     logger.info("Realtime voice connected (%s)", MODEL)
                     backoff = 1
@@ -292,14 +320,19 @@ class _Call:
             if self.vc.is_connected() and not self.vc.is_playing():
                 self.vc.play(self.playback)
         elif kind == "input_audio_buffer.speech_started":
+            self.user_speaking = True
             self.playback.clear()
+        elif kind == "input_audio_buffer.speech_stopped":
+            self.user_speaking = False
         elif kind == "response.created":
             self.responding = True
+            self.active_response = event.get("response", {}).get("id")
         elif kind == "response.done":
             self.responding = False
+            self.active_response = None
             if self.response_pending:
                 self.response_pending = False
-                await self._send({"type": "response.create"})
+                await self._create_response()
         elif kind == "conversation.item.input_audio_transcription.completed":
             self.transcript.append(f"Felix: {event.get('transcript', '').strip()}")
         elif kind in ("response.output_audio_transcript.done", "response.audio_transcript.done"):
@@ -308,7 +341,39 @@ class _Call:
             self.tasks = [t for t in self.tasks if not t.done()]
             self.tasks.append(asyncio.create_task(self._ask_hermes(event["call_id"], event.get("arguments") or "{}")))
         elif kind == "error":
+            # A rejected response.create never gets a response.created to clear it.
+            if self.active_response is None:
+                self.responding = False
             logger.warning("Realtime voice error: %s", event.get("error"))
+
+    async def _create_response(self, response: dict | None = None) -> bool:
+        """Start a response unless one is running; a deferred conversation reply runs after it."""
+        if self.responding:
+            if response is None:
+                self.response_pending = True
+            return False
+        self.responding = True
+        await self._send({"type": "response.create", **({"response": response} if response else {})})
+        return True
+
+    async def _narrate(self, request: str, actions: list) -> None:
+        """Speak a short out-of-band update whenever Hermes has taken new actions."""
+        told = 0
+        while True:
+            await asyncio.sleep(PROGRESS_INTERVAL)
+            if len(actions) == told or self.user_speaking:
+                continue
+            latest = "\n".join(f"- {a}" for a in actions[told:][-4:])
+            if await self._create_response({
+                "conversation": "none",
+                "output_modalities": ["audio"],
+                "tools": [],
+                "tool_choice": "none",
+                "instructions": PROGRESS_INSTRUCTIONS,
+                "input": [{"type": "message", "role": "user", "content": [
+                    {"type": "input_text", "text": f"Task: {request}\nLatest actions:\n{latest}"}]}],
+            }):
+                told = len(actions)
 
     async def _ask_hermes(self, call_id: str, arguments: str) -> None:
         try:
@@ -321,26 +386,36 @@ class _Call:
         if self.session_id:
             headers["X-Hermes-Session-Id"] = self.session_id
         started, ok = time.time(), True
+        actions: list = []
+        narrator = asyncio.create_task(self._narrate(request, actions)) if PROGRESS_INTERVAL > 0 else None
         try:
             async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=900)) as http:
                 async with http.post(
                     f"{HERMES_API}/v1/chat/completions", headers=headers,
-                    json={"model": "hermes-agent", "messages": [{"role": "user", "content": content}]},
+                    json={"model": "hermes-agent", "stream": True,
+                          "messages": [{"role": "user", "content": content}]},
                 ) as resp:
-                    body = await resp.json(content_type=None)
                     if resp.status != 200:
-                        raise RuntimeError(f"HTTP {resp.status}: {body}")
+                        raise RuntimeError(f"HTTP {resp.status}: {await resp.text()}")
                     self.session_id = resp.headers.get("X-Hermes-Session-Id", self.session_id)
-                    output = body["choices"][0]["message"]["content"]
+                    parts = []
+                    async for event, data in _sse(resp):
+                        if event == "hermes.tool.progress" and data.get("status") == "running":
+                            actions.append(f"{data.get('tool')}: {data.get('label')}")
+                        elif not event:
+                            parts.append((data.get("choices") or [{}])[0].get("delta", {}).get("content") or "")
+                    output = "".join(parts).strip()
+                    if not output:
+                        raise RuntimeError("the agent returned no answer")
         except Exception as e:
             logger.warning("ask_hermes failed: %s", e)
             ok, output = False, f"The Hermes agent could not complete this: {e}"
+        finally:
+            if narrator is not None:
+                narrator.cancel()
         await self._send({"type": "conversation.item.create",
                           "item": {"type": "function_call_output", "call_id": call_id, "output": output}})
-        if self.responding:
-            self.response_pending = True
-        else:
-            await self._send({"type": "response.create"})
+        await self._create_response()
 
         tools = await self._tool_calls_since(started) if ok else []
         lines = [f"🎙️ **Request** ({time.time() - started:.0f}s)", *(f"> {l}" for l in request.splitlines()), *tools,

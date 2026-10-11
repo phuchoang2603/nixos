@@ -9,6 +9,8 @@
     ./excalidraw.nix
     ./hermes.nix
     ./hermes-desktop.nix
+    ./speaker.nix
+    ./jellyfin.nix
   ];
 
   _module.args.lab = import ./lab.nix;

@@ -16,6 +16,7 @@ let
       dependencies = {
         "mcp-excalidraw-server" = "2.1.2";
         "@karakeep/mcp" = "0.33.1";
+        "@bldg-7/proxmox-mcp" = "1.3.0";
       };
     }
   );

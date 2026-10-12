@@ -1,5 +1,0 @@
-name: vault-autounlock
-version: 0.1.0
-description: "Unlocks the Bitwarden vault backend from a stored master password where no chat surface can prompt for it."
-author: felix
-kind: standalone

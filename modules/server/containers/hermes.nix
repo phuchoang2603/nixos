@@ -8,22 +8,15 @@
 let
   upstreamImage = "nousresearch/hermes-agent:latest";
   image = "hermes-agent-local:latest";
-  # The upstream image lacks libopus (Discord voice playback) and the bw CLI (Vaultwarden logins).
-  # Vault autofill, and browser_exec on a configured cdp_url, can't reach a CDP endpoint inside the
-  # sandbox without the exec-stream forward; the cdp_url path also has to bring the screen up.
-  # The greps fail the build, keeping the previous image, once upstream moves the patched code.
+  # The upstream image lacks libopus (Discord voice playback).
+  # browser_exec on a configured cdp_url can't reach a CDP endpoint inside the sandbox without the
+  # exec-stream forward, and has to bring the screen up first.
+  # The grep fails the build, keeping the previous image, once upstream moves the patched code.
   dockerfile = pkgs.writeText "hermes-agent-local.Dockerfile" ''
     FROM ${upstreamImage}
     RUN apt-get update \
       && apt-get install -y --no-install-recommends libopus0 \
       && rm -rf /var/lib/apt/lists/*
-    RUN npm install -g --prefix /usr/local @bitwarden/cli \
-      && npm cache clean --force
-    RUN sed -i \
-        -e 's/cdp_url=_resolve_cdp_override(cdp_url),/cdp_url=_resolve_cdp_override(_reach_sandbox_cdp(cdp_url)),/' \
-        -e '/from tools.browser_tool_cdp import _get_dialog_policy_config, _resolve_cdp_override/a\    from tools.browser_use_cli import _reach_sandbox_cdp' \
-        /opt/hermes/tools/browser_vault_tool.py \
-      && grep -q '_resolve_cdp_override(_reach_sandbox_cdp(cdp_url))' /opt/hermes/tools/browser_vault_tool.py
     RUN sed -i \
         -e 's/^        _set_cdp_env(env, override)$/        from tools.bot_desktop import runtime as _bd_runtime\n        _bd_runtime.ensure_started_for_tool()\n        _set_cdp_env(env, _reach_sandbox_cdp(override))/' \
         /opt/hermes/tools/browser_use_cli.py \
@@ -55,7 +48,6 @@ let
   plugins = [
     "model-autocomplete"
     "realtime-voice"
-    "vault-autounlock"
   ];
   pluginList = builtins.toJSON plugins;
 
@@ -152,7 +144,6 @@ in
       HERMES_DASHBOARD = "1";
       DISCORD_HOME_CHANNEL = discordChannels.reports;
       REALTIME_VOICE_LOG_CHANNEL = discordChannels.main;
-      BITWARDENCLI_APPDATA_DIR = "/opt/data/bitwarden";
     };
     extraOptions = [
       "--shm-size=1g"

@@ -87,6 +87,10 @@ let
       # The default injects the previous message's recall; sync matches the current one.
       recall_sync = true;
       recall_max_tokens = 2048;
+      # By default recall first waits up to 10s for the previous turn's retain to finish
+      # extraction, which alone overruns Hermes' 8s prefetch timeout. That turn is still in
+      # the conversation context, so recall doesn't need it.
+      prefetch_waits_for_retain = false;
       retain_context = "Discord conversation between Felix and Hermes, his personal agent";
       retain_source = "hermes";
       retain_user_prefix = "Felix";

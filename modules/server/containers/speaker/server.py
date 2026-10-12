@@ -59,12 +59,16 @@ def session() -> dict:
     return max(found, key=lambda s: s.get("LastActivityDate") or "")
 
 
-def items(**params) -> list[dict]:
+def user_id() -> str:
     global _user_id
     if not _user_id:
         admins = [u for u in call("GET", "/Users") if u.get("Policy", {}).get("IsAdministrator")]
         _user_id = admins[0]["Id"]
-    return call("GET", "/Items", params={"userId": _user_id, "recursive": True, **params})["Items"]
+    return _user_id
+
+
+def items(**params) -> list[dict]:
+    return call("GET", "/Items", params={"userId": user_id(), "recursive": True, **params})["Items"]
 
 
 def find(query: str) -> list[dict]:
@@ -132,6 +136,11 @@ def play_music(what: str, ids: list[str], mode: str, shuffle: bool) -> str:
         return "There are no songs in that."
     if shuffle:
         random.shuffle(songs)
+    if mode == "now" and len(songs) == 1:
+        # A lone song leaves nothing to skip to; similar songs follow it.
+        similar = call("GET", f"/Items/{songs[0]}/InstantMix", params={"userId": user_id(), "limit": 50})["Items"]
+        send(sid, COMMANDS[mode], songs + [s["Id"] for s in similar if s["Id"] != songs[0]])
+        return f"Playing {label or 'that song'}, then similar songs."
     send(sid, COMMANDS[mode], songs)
     what_played = label if len(songs) == 1 and label else f"{len(songs)} songs" + (f" from {label}" if label else "")
     return {"now": "Playing", "next": "Up next:", "last": "Queued"}[mode] + f" {what_played}."
@@ -201,8 +210,9 @@ async def play(what: str = "everything", ids: list[str] | None = None, mode: str
 
     what: an artist, album, song or playlist name, or "everything" for the whole library.
     ids: song ids from search(), played in this order, instead of what.
-    mode: "now" replaces the queue, "next" plays after the current song, "last" adds to the
-      end of the queue, "mix" plays a mix of songs similar to what (or the first id).
+    mode: "now" replaces the queue (a single song is followed by similar songs), "next" plays
+      after the current song, "last" adds to the end of the queue, "mix" plays a mix of songs
+      similar to what (or the first id).
     shuffle: shuffle the songs first.
     """
     if mode not in COMMANDS:

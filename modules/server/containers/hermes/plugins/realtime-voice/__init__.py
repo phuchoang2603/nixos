@@ -1,8 +1,10 @@
 """Full-duplex Discord voice through an OpenAI Realtime model, with Hermes as the backend.
 
-The realtime model owns the conversation (turn-taking, barge-in, speech). Anything that needs
-facts or actions goes to the Hermes agent through its OpenAI-compatible API server, so the agent
-keeps its tools, memory and MCP servers.
+The realtime model owns the conversation (turn-taking, barge-in, speech). It speaks as Hermes
+(SOUL.md, USER.md and the skills index make up its instructions) and calls Hermes' own tools in
+process, MCP gateway included, with the same toolsets and approval rules as an API server turn.
+Long or multi-step work goes to the full Hermes agent through ask_hermes and its OpenAI-compatible
+API server, which also owns memory and session search.
 
 Audio receive reuses the Discord adapter's ``VoiceReceiver`` (transport + DAVE decryption, Opus
 decode); this plugin only drains its per-speaker PCM buffers. Everything else touching Hermes
@@ -46,7 +48,31 @@ FRAME_BYTES = 3840
 TICK = 0.04
 SILENCE = base64.b64encode(bytes(int(24000 * TICK) * 2)).decode()
 
-INSTRUCTIONS = (
+VOICE_NOTE = """## Live voice call
+
+You are talking with Felix in a Discord voice channel. Speak naturally and briefly, like a person
+on a call, and stop talking when interrupted. Everything you say is heard, not read: no markdown,
+lists, code, or URLs.
+
+Handle anything that takes one to a few tool calls yourself; don't hand it off. The speaker_*,
+gmail_*, calendar_* and tasks_* functions call those integrations directly, so playing or
+controlling music, reading his email, calendar or tasks, and adding a task are all yours. For any
+other integration listed below, call mcp__executor__search with its integration, owner and
+connection plus a few words for the action, then mcp__executor__invoke with the returned id and
+arguments. Never guess a result; wait for the tool. Before a call that may take more than a moment,
+say in a few words what you're doing.
+
+Use ask_hermes, which hands the request to the full Hermes agent, only when:
+- the task takes many steps, research across several sources, or more than a minute;
+- it needs the terminal, the browser, files, or skill edits;
+- a skill you loaded needs a tool you don't have;
+- something should be remembered, or he refers to past conversations (only the agent has memory
+  and session search);
+- a tool says it needs approval or was blocked.
+The agent cannot hear the call, so put everything it needs into the request."""
+
+# Used when the Hermes context can't be built; ask_hermes still reaches everything.
+FALLBACK_INSTRUCTIONS = (
     "You are Hermes, Felix's personal assistant, talking with him in a Discord voice channel. "
     "Speak naturally and briefly, like a person on a call, and stop talking when interrupted.\n\n"
     "Your one tool, ask_hermes, reaches the Hermes agent. It can run commands on the homelab, "
@@ -58,6 +84,39 @@ INSTRUCTIONS = (
     "request."
 )
 
+# Direct tool calls run as an API server turn under this key: same toolsets, and approvals resolve
+# on their own (smart or deny) instead of waiting for a click nobody can give mid-call.
+TOOL_SESSION = "realtime-voice"
+# The quick-turn subset of Hermes' tools. Everything else goes through ask_hermes, which keeps
+# those schemas out of the voice session.
+VOICE_TOOLS = {"web_search", "skill_view", "mcp__executor__search", "mcp__executor__invoke"}
+
+# MCP gateway tools the voice model gets as plain functions: (tool id, parameters to keep).
+# None keeps them all; "a.b" keeps field b of object parameter a. Google's APIs list a dozen
+# transport parameters on every call, which would otherwise dominate the session.
+EXECUTOR_TOOLS = {
+    "speaker_search": ("tools.speaker.user.personalSpeaker.search", None),
+    "speaker_play": ("tools.speaker.user.personalSpeaker.play", None),
+    "speaker_control": ("tools.speaker.user.personalSpeaker.control", None),
+    "speaker_volume": ("tools.speaker.user.personalSpeaker.volume", None),
+    "speaker_status": ("tools.speaker.user.personalSpeaker.status", None),
+    "speaker_say": ("tools.speaker.user.personalSpeaker.say", None),
+    "gmail_list_messages": ("tools.google_gmail.user.xuanphucA1gv.gmail.users.messages.list",
+                            ["userId", "q", "maxResults", "labelIds"]),
+    "gmail_get_message": ("tools.google_gmail.user.xuanphucA1gv.gmail.users.messages.get",
+                          ["userId", "id", "format", "metadataHeaders"]),
+    "calendar_list_calendars": ("tools.google_calendar.user.personalGoogleCalendarApi.calendar.calendarList.list", []),
+    "calendar_list_events": ("tools.google_calendar.user.personalGoogleCalendarApi.calendar.events.list",
+                             ["calendarId", "timeMin", "timeMax", "q", "singleEvents", "orderBy", "maxResults"]),
+    "tasks_list_tasklists": ("tools.google_tasks.user.personalGoogleTasksApi.tasks.tasklists.list", []),
+    "tasks_list_tasks": ("tools.google_tasks.user.personalGoogleTasksApi.tasks.tasks.list",
+                         ["tasklist", "showCompleted", "dueMin", "dueMax", "maxResults"]),
+    "tasks_insert_task": ("tools.google_tasks.user.personalGoogleTasksApi.tasks.tasks.insert",
+                          ["tasklist", "body.title", "body.notes", "body.due"]),
+}
+EXECUTOR_CACHE_SECONDS = 3600
+MAX_TOOL_OUTPUT = 16000
+
 TURN_NOTE = (
     "[This request comes from a live voice call and your reply will be spoken aloud by a voice "
     "model. Answer in a few plain conversational sentences: no markdown, lists, code or URLs. Do "
@@ -66,6 +125,7 @@ TURN_NOTE = (
 
 # The API server inlines MEDIA: images as base64 data URLs, which must not reach the voice model.
 _INLINE_IMAGE = re.compile(r"!\[[^\]]*\]\(data:image/[^)]+\)")
+_DATA_URL = re.compile(r"data:[\w/+.-]+;base64,[A-Za-z0-9+/=]+")
 
 PROGRESS_INSTRUCTIONS = (
     "The Hermes agent is still working on a task for Felix. Tell him in one short spoken sentence "
@@ -75,7 +135,6 @@ PROGRESS_INSTRUCTIONS = (
 
 SESSION = {
     "type": "realtime",
-    "instructions": INSTRUCTIONS,
     "output_modalities": ["audio"],
     "audio": {
         "input": {
@@ -85,18 +144,190 @@ SESSION = {
         },
         "output": {"format": {"type": "audio/pcm", "rate": 24000}, "voice": VOICE},
     },
-    "tools": [{
-        "type": "function",
-        "name": "ask_hermes",
-        "description": "Delegate a request to the Hermes agent and get its answer.",
-        "parameters": {
-            "type": "object",
-            "properties": {"request": {"type": "string", "description": "What Hermes should do or answer, with all needed context."}},
-            "required": ["request"],
-        },
-    }],
     "tool_choice": "auto",
 }
+
+ASK_HERMES = {
+    "type": "function",
+    "name": "ask_hermes",
+    "description": "Delegate a request to the full Hermes agent and get its answer.",
+    "parameters": {
+        "type": "object",
+        "properties": {"request": {"type": "string", "description": "What Hermes should do or answer, with all needed context."}},
+        "required": ["request"],
+    },
+}
+
+
+def _sentence(text: str, limit: int = 160) -> str:
+    text = " ".join(text.split())
+    end = text.find(". ")
+    if 0 < end < limit:
+        return text[:end + 1]
+    return text if len(text) <= limit else text[:limit] + "…"
+
+
+def _shorten(node, in_properties: bool = False):
+    """Drop schema titles and keep property descriptions to a sentence."""
+    if isinstance(node, list):
+        return [_shorten(n) for n in node]
+    if not isinstance(node, dict):
+        return node
+    out = {}
+    for key, value in node.items():
+        if in_properties:
+            out[key] = _shorten(value)
+        elif key not in ("title", "$schema", "additionalProperties"):
+            out[key] = _sentence(value) if key == "description" and isinstance(value, str) else _shorten(value, key == "properties")
+    return out
+
+
+def _prune(schema: dict, keep, defs: dict | None = None) -> dict:
+    schema = _shorten(schema)
+    if keep is None:
+        return schema
+    defs = schema.get("$defs", {}) if defs is None else defs
+    props, wanted = schema.get("properties") or {}, {}
+    for path in keep:
+        name, _, field = path.partition(".")
+        if name in props:
+            wanted.setdefault(name, []).extend([field] if field else [])
+    kept = {}
+    for name, fields in wanted.items():
+        prop = props[name]
+        if fields and "$ref" in prop:
+            prop = defs.get(prop["$ref"].rsplit("/", 1)[-1], prop)
+        kept[name] = _prune(prop, fields, defs) if fields and "properties" in prop else prop
+    pruned = {**{k: v for k, v in schema.items() if k not in ("properties", "required", "$defs")},
+              "properties": kept, "required": [r for r in schema.get("required", []) if r in kept]}
+    if "$defs" in schema and '"$ref"' in json.dumps(kept):
+        pruned["$defs"] = schema["$defs"]
+    return pruned
+
+
+def _executor_result(output: str):
+    data = json.loads(output)
+    return json.loads(data["result"]) if isinstance(data.get("result"), str) else data
+
+
+def _integration_text(output: str) -> str:
+    """An integration call's result without the MCP envelope or its structured duplicate."""
+    with suppress(Exception):
+        result = _executor_result(output)
+        if isinstance(result, dict) and isinstance(result.get("content"), list):
+            texts = [c.get("text", "") for c in result["content"] if c.get("type") == "text"]
+            if texts:
+                return "\n".join(texts)
+        return json.dumps(result, ensure_ascii=False, separators=(",", ":"))
+    return output
+
+
+_executor_cache: dict = {"at": 0.0, "tools": [], "ids": {}, "integrations": ""}
+
+
+def _executor_context(enabled: list, disabled: list) -> dict:
+    """Plain functions for EXECUTOR_TOOLS and a list of connected integrations, cached for an hour."""
+    if _executor_cache["tools"] and time.time() - _executor_cache["at"] < EXECUTOR_CACHE_SECONDS:
+        return _executor_cache
+    tools, ids = [], {}
+    for name, (tool_id, keep) in EXECUTOR_TOOLS.items():
+        _, integration, owner, connection, *action = tool_id.split(".")
+        try:
+            found = _executor_result(_run_hermes_tool("mcp__executor__search", {
+                "integration": integration, "owner": owner, "connection": connection, "query": " ".join(action)},
+                enabled, disabled))
+            item = next(i for i in found.get("items", []) if i.get("id") == tool_id)
+        except Exception as e:
+            logger.warning("Voice tool %s unavailable: %s", name, e)
+            continue
+        parameters = _prune(item.get("inputSchema") or {}, keep)
+        parameters["type"] = "object"
+        parameters.setdefault("properties", {})
+        description = " ".join((item.get("description") or name).split())[:500]
+        tools.append({"type": "function", "name": name, "description": description, "parameters": parameters})
+        ids[name] = tool_id
+    integrations = ""
+    with suppress(Exception):
+        items = _executor_result(_run_hermes_tool("mcp__executor__integrations", {}, enabled, disabled)).get("items", [])
+        integrations = "\n".join(f"- {i['integrationName']}: integration {i['integration']}, owner {i['owner']}, "
+                                 f"connection {i['connection']}" for i in items)
+    if tools:
+        _executor_cache.update(at=time.time(), tools=tools, ids=ids, integrations=integrations)
+    return {"tools": tools, "ids": ids, "integrations": integrations}
+
+
+def _hermes_context() -> dict:
+    """Instructions, realtime tools and how to run them, read fresh per connection."""
+    import model_tools
+    from agent.prompt_builder import build_skills_system_prompt, load_soul_md
+    from hermes_cli.config import load_config
+    from hermes_cli.tools_config import _get_platform_tools
+    from hermes_constants import get_hermes_home
+    from tools.registry import registry
+
+    config = load_config()
+    enabled = sorted(_get_platform_tools(config, "api_server"))
+    disabled = list((config.get("agent") or {}).get("disabled_toolsets") or [])
+    # The tool-definition cache records its last answer as the process-wide execute_code default.
+    previous = list(model_tools._last_resolved_tool_names)
+    try:
+        defs = model_tools.get_tool_definitions(enabled_toolsets=enabled, disabled_toolsets=disabled, quiet_mode=True)
+    finally:
+        model_tools._last_resolved_tool_names = previous
+    available = {d["function"]["name"] for d in defs}
+    # MCP tools sit behind the tool-search bridge, so their schemas come from the registry.
+    schemas = [d["function"] for d in defs] + [e.schema for n in VOICE_TOOLS if n not in available
+                                               for e in [registry.get_entry(n)] if e is not None]
+    tools = [{"type": "function", "name": f["name"], "description": f.get("description", ""),
+              "parameters": _shorten(f.get("parameters") or {"type": "object", "properties": {}})}
+             for f in schemas if f["name"] in VOICE_TOOLS]
+    executor = _executor_context(enabled, disabled)
+
+    parts = [load_soul_md() or "You are Hermes, Felix's personal assistant."]
+    user = get_hermes_home() / "memories" / "USER.md"
+    if user.is_file():
+        entries = [e.strip() for e in user.read_text(encoding="utf-8").split("§") if e.strip()]
+        if entries:
+            parts.append("## About Felix\n\n" + "\n".join(f"- {e}" for e in entries))
+    # Names only, without the main agent's skill-maintenance preamble.
+    skills = get_hermes_home() / "skills"
+    categories = frozenset(p.name for p in skills.iterdir() if p.is_dir() and not p.name.startswith(".")) if skills.is_dir() else frozenset()
+    index = re.search(r"<available_skills>\n(.*?)\n</available_skills>", build_skills_system_prompt(
+        available_tools=available, available_toolsets=set(enabled), compact_categories=categories), re.S)
+    if index:
+        parts.append("## Skills\n\nHermes' skills by category. Load one with skill_view(name) when it fits.\n"
+                     + index.group(1).replace(" [names only]", ""))
+    if executor["integrations"]:
+        parts.append("## Integrations in the MCP gateway\n\n" + executor["integrations"])
+    parts.append(VOICE_NOTE)
+    parts.append(time.strftime("It is now %A, %B %d, %Y, %H:%M (%Z, UTC%z)."))
+    return {"instructions": "\n\n".join(p.strip() for p in parts if p),
+            "tools": [*tools, *executor["tools"], ASK_HERMES],
+            "toolsets": (enabled, disabled), "executor_ids": executor["ids"]}
+
+
+def _run_hermes_tool(name: str, args: dict, enabled: list, disabled: list) -> str:
+    import model_tools
+    from gateway.session_context import clear_session_vars, set_session_vars
+
+    tokens = set_session_vars(platform="api_server", session_key=TOOL_SESSION, async_delivery=False, cron_session="")
+    try:
+        return model_tools.handle_function_call(name, args, task_id=TOOL_SESSION, session_id=TOOL_SESSION,
+                                                enabled_toolsets=enabled, disabled_toolsets=disabled)
+    finally:
+        clear_session_vars(tokens)
+
+
+def _tool_failed(output: str) -> bool:
+    with suppress(ValueError):
+        data = json.loads(output)
+        return isinstance(data, dict) and bool(data.get("error"))
+    return False
+
+
+def _for_voice(output: str) -> str:
+    output = _DATA_URL.sub("[binary omitted]", _INLINE_IMAGE.sub("[image omitted]", output))
+    return output if len(output) <= MAX_TOOL_OUTPUT else output[:MAX_TOOL_OUTPUT] + "…[truncated]"
 
 
 def _downsample(pcm: bytes) -> array.array:
@@ -250,6 +481,9 @@ class _Call:
         self.active_response = None
         self.user_speaking = False
         self.session_id = ""
+        self.toolsets: tuple = ([], [])
+        self.executor_ids: dict = {}
+        self.open_calls = 0
         self.transcript: deque = deque(maxlen=12)
         self.started = time.time()
         self.audit_target = None
@@ -278,10 +512,21 @@ class _Call:
             with suppress(Exception):
                 await ws.send(json.dumps(event))
 
+    async def _session(self) -> dict:
+        try:
+            context = await asyncio.to_thread(_hermes_context)
+            instructions, tools = context["instructions"], context["tools"]
+            self.toolsets, self.executor_ids = context["toolsets"], context["executor_ids"]
+        except Exception:
+            logger.exception("Realtime voice could not load Hermes' context; only ask_hermes is available")
+            instructions, tools = FALLBACK_INSTRUCTIONS, [ASK_HERMES]
+        return {**SESSION, "instructions": instructions, "tools": tools}
+
     async def _run_realtime(self) -> None:
         backoff = 1
         while not self.closed:
             try:
+                session = await self._session()
                 async with websockets.connect(
                     f"{REALTIME_URL}?model={MODEL}", max_size=None,
                     additional_headers={"Authorization": "Bearer realtime-voice"},
@@ -289,8 +534,9 @@ class _Call:
                     self.ws = ws
                     self.responding = self.response_pending = self.user_speaking = False
                     self.active_response = None
-                    await ws.send(json.dumps({"type": "session.update", "session": SESSION}))
-                    logger.info("Realtime voice connected (%s)", MODEL)
+                    self.open_calls = 0
+                    await ws.send(json.dumps({"type": "session.update", "session": session}))
+                    logger.info("Realtime voice connected (%s, %d tools)", MODEL, len(session["tools"]))
                     backoff = 1
                     async for raw in ws:
                         await self._on_event(json.loads(raw))
@@ -334,16 +580,18 @@ class _Call:
         elif kind == "response.done":
             self.responding = False
             self.active_response = None
-            if self.response_pending:
-                self.response_pending = False
+            if self.response_pending and self.open_calls == 0:
                 await self._create_response()
         elif kind == "conversation.item.input_audio_transcription.completed":
             self.transcript.append(f"Felix: {event.get('transcript', '').strip()}")
         elif kind in ("response.output_audio_transcript.done", "response.audio_transcript.done"):
             self.transcript.append(f"Hermes: {event.get('transcript', '').strip()}")
-        elif kind == "response.function_call_arguments.done" and event.get("name") == "ask_hermes":
+        elif kind == "response.function_call_arguments.done":
+            name, call_id, arguments = event.get("name", ""), event["call_id"], event.get("arguments") or "{}"
+            run = self._ask_hermes(call_id, arguments) if name == "ask_hermes" else self._run_tool(call_id, name, arguments)
+            self.open_calls += 1
             self.tasks = [t for t in self.tasks if not t.done()]
-            self.tasks.append(asyncio.create_task(self._ask_hermes(event["call_id"], event.get("arguments") or "{}")))
+            self.tasks.append(asyncio.create_task(run))
         elif kind == "error":
             # A rejected response.create never gets a response.created to clear it.
             if self.active_response is None:
@@ -357,6 +605,8 @@ class _Call:
                 self.response_pending = True
             return False
         self.responding = True
+        if response is None:
+            self.response_pending = False
         await self._send({"type": "response.create", **({"response": response} if response else {})})
         return True
 
@@ -417,9 +667,7 @@ class _Call:
         finally:
             if narrator is not None:
                 narrator.cancel()
-        await self._send({"type": "conversation.item.create",
-                          "item": {"type": "function_call_output", "call_id": call_id, "output": output}})
-        await self._create_response()
+        await self._tool_output(call_id, output)
 
         tools = await self._tool_calls_since(started) if ok else []
         lines = [f"🎙️ **Request** ({time.time() - started:.0f}s)", *(f"> {l}" for l in request.splitlines()), *tools,
@@ -427,6 +675,36 @@ class _Call:
         if self.session_id:
             lines.append(f"-# session `{self.session_id}`")
         await self._audit("\n".join(lines))
+
+    async def _run_tool(self, call_id: str, name: str, arguments: str) -> None:
+        started = time.time()
+        try:
+            args = json.loads(arguments)
+        except ValueError:
+            args = {}
+        args = args if isinstance(args, dict) else {}
+        tool_id = self.executor_ids.get(name)
+        try:
+            if tool_id:
+                output = await asyncio.to_thread(_run_hermes_tool, "mcp__executor__invoke",
+                                                 {"tool": tool_id, "arguments": args}, *self.toolsets)
+            else:
+                output = await asyncio.to_thread(_run_hermes_tool, name, args, *self.toolsets)
+        except Exception as e:
+            logger.warning("Voice tool %s failed: %s", name, e)
+            output = json.dumps({"error": f"{name} failed: {e}"})
+        await self._tool_output(call_id, _for_voice(_integration_text(output) if tool_id else output))
+        mark = "❌" if _tool_failed(output) else "✅"
+        call = {"function": {"name": name, "arguments": arguments}}
+        await self._audit(f"{_describe_tool_call(call)} {mark} ({time.time() - started:.1f}s)")
+
+    async def _tool_output(self, call_id: str, output: str) -> None:
+        """Hand a result back; the model answers once every call of its turn has one."""
+        await self._send({"type": "conversation.item.create",
+                          "item": {"type": "function_call_output", "call_id": call_id, "output": output}})
+        self.open_calls = max(0, self.open_calls - 1)
+        if self.open_calls == 0:
+            await self._create_response()
 
     async def _tool_calls_since(self, since: float) -> list:
         try:

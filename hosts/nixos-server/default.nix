@@ -6,5 +6,14 @@
     ../../modules/server
   ];
 
-  networking.hostName = "nixos-server";
+  networking = {
+    firewall = {
+      interfaces = {
+        ens18 = {
+          allowedTCPPorts = [ 1313 ];
+        };
+      };
+    };
+    hostName = "nixos-server";
+  };
 }

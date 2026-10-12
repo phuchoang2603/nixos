@@ -12,9 +12,12 @@ in
   virtualisation.docker = {
     enable = true;
     enableOnBoot = true;
+    # --all removes every image no container uses, not just untagged ones; the images
+    # services run on are pulled (or built) again when they start.
     autoPrune = {
       enable = true;
-      dates = "weekly";
+      dates = "daily";
+      flags = [ "--all" ];
     };
   };
 

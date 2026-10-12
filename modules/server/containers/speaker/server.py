@@ -17,6 +17,7 @@ import wave
 
 import httpx
 from mcp.server.mcpserver import MCPServer
+from mcp.server.mcpserver.exceptions import ToolError
 from piper import PiperVoice
 
 PLAYER = os.environ.get("SPEAKER_PLAYER", "Speaker")
@@ -44,9 +45,9 @@ def call(method: str, path: str, **kwargs):
     try:
         r = jellyfin.request(method, path, **kwargs)
     except httpx.TransportError as e:
-        raise RuntimeError(f"Jellyfin is unreachable ({type(e).__name__})") from None
+        raise ToolError(f"Jellyfin is unreachable ({type(e).__name__})") from None
     if r.status_code == 401:
-        raise RuntimeError("Jellyfin rejected the speaker's API key")
+        raise ToolError("Jellyfin rejected the speaker's API key")
     r.raise_for_status()
     return r.json() if r.content else None
 
@@ -54,7 +55,7 @@ def call(method: str, path: str, **kwargs):
 def session() -> dict:
     found = [s for s in call("GET", "/Sessions") if s.get("DeviceName") == PLAYER and s.get("SupportsRemoteControl")]
     if not found:
-        raise RuntimeError(f'The "{PLAYER}" player isn\'t connected to Jellyfin')
+        raise ToolError(f'The "{PLAYER}" player isn\'t connected to Jellyfin')
     return max(found, key=lambda s: s.get("LastActivityDate") or "")
 
 
@@ -161,7 +162,7 @@ def say_text(text: str) -> None:
                 out.writeframes(src.readframes(src.getnframes()))
             try:
                 current = session()
-            except RuntimeError:
+            except ToolError:
                 current = {}
             state = current.get("PlayState") or {}
             duck = bool(current.get("NowPlayingItem")) and not state.get("IsPaused")

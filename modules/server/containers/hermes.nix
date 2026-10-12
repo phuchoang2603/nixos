@@ -8,15 +8,19 @@
 let
   upstreamImage = "nousresearch/hermes-agent:latest";
   image = "hermes-agent-local:latest";
-  # The upstream image lacks libopus (Discord voice playback).
+  # The upstream image lacks libopus (Discord voice playback) and hindsight-client (the Hindsight
+  # memory plugin); the container is recreated on every start, so runtime installs don't stick.
   # browser_exec on a configured cdp_url can't reach a CDP endpoint inside the sandbox without the
   # exec-stream forward, and has to bring the screen up first.
   # The grep fails the build, keeping the previous image, once upstream moves the patched code.
   dockerfile = pkgs.writeText "hermes-agent-local.Dockerfile" ''
     FROM ${upstreamImage}
+    COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
     RUN apt-get update \
       && apt-get install -y --no-install-recommends libopus0 \
       && rm -rf /var/lib/apt/lists/*
+    RUN uv pip install --no-cache --python /opt/hermes/.venv/bin/python 'hindsight-client>=0.10.1,<1' \
+      && /opt/hermes/.venv/bin/python -c 'import hindsight_client'
     RUN sed -i \
         -e 's/^        _set_cdp_env(env, override)$/        from tools.bot_desktop import runtime as _bd_runtime\n        _bd_runtime.ensure_started_for_tool()\n        _set_cdp_env(env, _reach_sandbox_cdp(override))/' \
         /opt/hermes/tools/browser_use_cli.py \
@@ -51,6 +55,48 @@ let
   ];
   pluginList = builtins.toJSON plugins;
 
+  # Memory provider from Hermes' plugin catalog, at the commit the catalog pins.
+  # Hermes marks cron and subagent agents so providers skip writes, but this release still
+  # retains them; the patch keeps scheduled-job transcripts out of memory.
+  hindsightPlugin =
+    pkgs.runCommand "hermes-hindsight-plugin"
+      {
+        src = pkgs.fetchFromGitHub {
+          owner = "vectorize-io";
+          repo = "hindsight";
+          rev = "d56c4acdf59c41957613d399094cdf8c489b060c";
+          sparseCheckout = [ "hindsight-integrations/hermes" ];
+          hash = "sha256-8QxHgplP1FjlwRzynj+sr9mmQjATkJBLiW9BtDawNPY=";
+        };
+      }
+      ''
+        cp -r $src/hindsight-integrations/hermes $out
+        chmod -R u+w $out
+        substituteInPlace $out/__init__.py --replace-fail \
+          'if not self._auto_retain' \
+          'if not self._auto_retain or self._platform in ("cron", "subagent")'
+      '';
+
+  hindsightConfig = pkgs.writeText "hindsight-config.json" (
+    builtins.toJSON {
+      mode = "local_external";
+      api_url = "http://hindsight:8888";
+      bank_id = "hermes";
+      memory_mode = "hybrid";
+      recall_budget = "mid";
+      # The default injects the previous message's recall; sync matches the current one.
+      recall_sync = true;
+      recall_max_tokens = 2048;
+      retain_context = "Discord conversation between Felix and Hermes, his personal agent";
+      retain_source = "hermes";
+      retain_user_prefix = "Felix";
+      retain_assistant_prefix = "Hermes";
+      # Retains are tagged with their session id, and observations are scoped to a memory's
+      # tags by default, which would keep each session's observations apart.
+      observation_scopes = "shared";
+    }
+  );
+
   managedConfig = (pkgs.formats.yaml { }).generate "hermes-config.yaml" {
     model = {
       provider = "custom";
@@ -59,6 +105,12 @@ let
       default = "gemini-3.8-flash-high";
     };
     mcp_servers.executor.url = "https://${lab.fqdn "mcp"}/mcp?mode=passthrough";
+    # Hindsight holds long-term memory. With MEMORY.md also on, the model favours the built-in
+    # store; USER.md stays as the always-injected profile.
+    memory = {
+      provider = "hindsight";
+      memory_enabled = false;
+    };
     # Terminal, browser and computer_use run in the hermes-desktop sandbox.
     terminal = {
       backend = "ssh";
@@ -99,8 +151,14 @@ in
   ++ map (dir: "d ${shared}/${dir} 0755 ${uid} ${gid} -") sharedDirs;
 
   # hermes-desktop's preStart creates the SSH key Hermes logs in with.
-  systemd.services.docker-hermes.after = [ "docker-hermes-desktop.service" ];
-  systemd.services.docker-hermes.wants = [ "docker-hermes-desktop.service" ];
+  systemd.services.docker-hermes.after = [
+    "docker-hermes-desktop.service"
+    "docker-hindsight.service"
+  ];
+  systemd.services.docker-hermes.wants = [
+    "docker-hermes-desktop.service"
+    "docker-hindsight.service"
+  ];
 
   # Hermes rewrites config.yaml itself (migrations, /model, "always allow"),
   # so the Nix-owned keys are merged in on each start instead of mounted read-only.
@@ -117,6 +175,9 @@ in
     fi
     ${lib.getExe pkgs.yq-go} -i '.plugins.enabled = ((.plugins.enabled // []) + ${pluginList} | unique)' "$cfg"
     chown ${uid}:${gid} "$cfg"
+
+    install -d -o ${uid} -g ${gid} -m 0700 ${state}/hindsight
+    install -o ${uid} -g ${gid} -m 0600 ${hindsightConfig} ${state}/hindsight/config.json
 
     if [ ! -e ${shared}/soul/SOUL.md ]; then
       install -o ${uid} -g ${gid} -m 0644 ${./hermes/SOUL.md} ${shared}/soul/SOUL.md
@@ -136,6 +197,7 @@ in
       "${state}:/opt/data:rw"
     ]
     ++ map (name: "${./hermes/plugins/${name}}:/opt/data/plugins/${name}:ro") plugins
+    ++ [ "${hindsightPlugin}:/opt/data/plugins/hindsight:ro" ]
     ++ map (dir: "${shared}/${dir}:/opt/data/${dir}:rw") sharedDirs;
     environmentFiles = [ "${lab.secrets}/hermes.env" ];
     environment = {

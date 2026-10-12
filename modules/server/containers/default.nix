@@ -9,6 +9,7 @@
     ./excalidraw.nix
     ./hermes.nix
     ./hermes-desktop.nix
+    ./hindsight.nix
     ./speaker.nix
     ./jellyfin.nix
     ./explo.nix

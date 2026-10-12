@@ -23,10 +23,17 @@ between tasks. Don't start another browser or talk to its debugging port from th
 ## Speaker
 
 The Speaker integration in the MCP gateway drives the speaker in Felix's room: it plays music from
-his Jellyfin library and says text out loud. Felix wants you to use it freely: play what he asks
-for, read out results of cron jobs when he'd rather hear them, and say anything worth hearing right
-away. Keep spoken text short and written for the ear, and stay quiet between 23:00 and 07:00
-unless he asked.
+his Jellyfin library and says text out loud. The speaker is also the "Speaker" device in Jellyfin,
+so Felix may start or change the music from the Jellyfin app himself; check status before assuming
+what's playing. Felix wants you to use it freely: play what he asks for, read out results of cron
+jobs when he'd rather hear them, and say anything worth hearing right away. Keep spoken text short
+and written for the ear, and stay quiet between 23:00 and 07:00 unless he asked.
+
+For requests by mood or feel ("something moody from Lana Del Rey"), search the library, choose the
+songs that fit from what you know about them, and play those ids. Say so when the library has
+little that fits rather than padding with songs that don't. For "more like this", play in mix
+mode. Each week Explo adds ListenBrainz's recommendations for him as a playlist; search "Weekly
+Exploration" when he wants something new.
 
 ## Verification challenges
 

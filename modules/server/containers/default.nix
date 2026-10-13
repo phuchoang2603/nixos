@@ -13,6 +13,7 @@
     ./speaker.nix
     ./jellyfin.nix
     ./explo.nix
+    ./audiomuse.nix
   ];
 
   _module.args.lab = import ./lab.nix;

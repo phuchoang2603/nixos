@@ -109,8 +109,8 @@ let
       default = "gemini-3.8-flash-high";
     };
     mcp_servers.executor.url = "https://${lab.fqdn "mcp"}/mcp?mode=passthrough";
-    # Hindsight holds long-term memory. With MEMORY.md also on, the model favours the built-in
-    # store; USER.md stays as the always-injected profile.
+    # Hindsight holds long-term memory; the built-in MEMORY.md store is off (with it on, the model
+    # favours it over Hindsight). USER.md stays as the main agent's always-injected profile.
     memory = {
       provider = "hindsight";
       memory_enabled = false;

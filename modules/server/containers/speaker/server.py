@@ -323,20 +323,35 @@ async def volume(level: int) -> str:
 
 
 @mcp.tool()
-async def status() -> dict:
-    """What's playing on the speaker: the song, its position, whether it's paused, and the volume."""
+async def status(upcoming: int = 10) -> dict:
+    """What's playing on the speaker: the song, its position, whether it's paused, the volume, and
+    the queue: where the song is in it and the next upcoming songs.
+    """
 
     def run():
         current = session()
         item, state = current.get("NowPlayingItem"), current.get("PlayState") or {}
         if not item:
             return {"now_playing": None}
+        queue = [entry["Id"] for entry in current.get("NowPlayingQueue") or []]
+        at = next(
+            (i for i, entry in enumerate(current.get("NowPlayingQueue") or [])
+             if entry.get("PlaylistItemId") == current.get("PlaylistItemId")),
+            queue.index(item["Id"]) if item["Id"] in queue else 0,
+        )
+        following = queue[at + 1 : at + 1 + max(0, upcoming)]
+        names = {}
+        if following:
+            found = call("GET", "/Items", params={"ids": ",".join(following), "userId": user_id()})["Items"]
+            names = {i["Id"]: title(i) for i in found}
         return {
             "now_playing": title(item),
             "album": item.get("Album"),
             "position": f"{clock(state.get('PositionTicks'))} / {clock(item.get('RunTimeTicks'))}",
             "paused": bool(state.get("IsPaused")),
             "volume": state.get("VolumeLevel"),
+            "queue_position": f"{at + 1} / {len(queue)}" if queue else None,
+            "up_next": [names[i] for i in following if i in names],
         }
 
     return await asyncio.to_thread(run)

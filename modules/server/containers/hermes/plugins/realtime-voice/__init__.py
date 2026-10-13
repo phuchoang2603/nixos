@@ -1,10 +1,11 @@
 """Full-duplex Discord voice through an OpenAI Realtime model, with Hermes as the backend.
 
 The realtime model owns the conversation (turn-taking, barge-in, speech). It speaks as Hermes
-(SOUL.md, USER.md and the skills index make up its instructions) and calls Hermes' own tools in
+(SOUL.md and the skills index make up its instructions) and calls Hermes' own tools in
 process, MCP gateway included, with the same toolsets and approval rules as an API server turn.
 Long or multi-step work goes to the full Hermes agent through ask_hermes and its OpenAI-compatible
-API server, which also owns memory and session search.
+API server, which also owns memory and session search. When a call ends, its transcript is
+retained in Hindsight, the same memory bank the agent recalls from.
 
 Audio receive reuses the Discord adapter's ``VoiceReceiver`` (transport + DAVE decryption, Opus
 decode); this plugin only drains its per-speaker PCM buffers. Everything else touching Hermes
@@ -25,6 +26,7 @@ import threading
 import time
 from collections import deque
 from contextlib import suppress
+from datetime import datetime, timezone
 
 import aiohttp
 import discord
@@ -114,7 +116,6 @@ EXECUTOR_TOOLS = {
     "tasks_insert_task": ("tools.google_tasks.user.personalGoogleTasksApi.tasks.tasks.insert",
                           ["tasklist", "body.title", "body.notes", "body.due"]),
 }
-EXECUTOR_CACHE_SECONDS = 3600
 MAX_TOOL_OUTPUT = 16000
 
 TURN_NOTE = (
@@ -222,13 +223,8 @@ def _integration_text(output: str) -> str:
     return output
 
 
-_executor_cache: dict = {"at": 0.0, "tools": [], "ids": {}, "integrations": ""}
-
-
 def _executor_context(enabled: list, disabled: list) -> dict:
-    """Plain functions for EXECUTOR_TOOLS and a list of connected integrations, cached for an hour."""
-    if _executor_cache["tools"] and time.time() - _executor_cache["at"] < EXECUTOR_CACHE_SECONDS:
-        return _executor_cache
+    """Plain functions for EXECUTOR_TOOLS and a list of connected integrations, as Executor has them now."""
     tools, ids = [], {}
     for name, (tool_id, keep) in EXECUTOR_TOOLS.items():
         _, integration, owner, connection, *action = tool_id.split(".")
@@ -251,8 +247,6 @@ def _executor_context(enabled: list, disabled: list) -> dict:
         items = _executor_result(_run_hermes_tool("mcp__executor__integrations", {}, enabled, disabled)).get("items", [])
         integrations = "\n".join(f"- {i['integrationName']}: integration {i['integration']}, owner {i['owner']}, "
                                  f"connection {i['connection']}" for i in items)
-    if tools:
-        _executor_cache.update(at=time.time(), tools=tools, ids=ids, integrations=integrations)
     return {"tools": tools, "ids": ids, "integrations": integrations}
 
 
@@ -284,11 +278,6 @@ def _hermes_context() -> dict:
     executor = _executor_context(enabled, disabled)
 
     parts = [load_soul_md() or "You are Hermes, Felix's personal assistant."]
-    user = get_hermes_home() / "memories" / "USER.md"
-    if user.is_file():
-        entries = [e.strip() for e in user.read_text(encoding="utf-8").split("§") if e.strip()]
-        if entries:
-            parts.append("## About Felix\n\n" + "\n".join(f"- {e}" for e in entries))
     # Names only, without the main agent's skill-maintenance preamble.
     skills = get_hermes_home() / "skills"
     categories = frozenset(p.name for p in skills.iterdir() if p.is_dir() and not p.name.startswith(".")) if skills.is_dir() else frozenset()
@@ -411,6 +400,32 @@ def _api_key() -> str:
     return key
 
 
+async def _retain_call(spoken: list, started: float) -> None:
+    """Hand the call's transcript to Hindsight, where the agent's own conversations go."""
+    if not spoken:
+        return
+    try:
+        from hermes_constants import get_hermes_home
+        config = json.loads((get_hermes_home() / "hindsight" / "config.json").read_text(encoding="utf-8"))
+        item = {
+            "content": json.dumps(spoken, ensure_ascii=False),
+            "timestamp": datetime.fromtimestamp(started, timezone.utc).isoformat(),
+            "context": "Discord voice call between Felix and Hermes, his personal agent",
+            "document_id": f"voice-call-{int(started)}",
+            "metadata": {"source": config.get("retain_source") or "hermes", "platform": "discord-voice"},
+        }
+        if config.get("observation_scopes"):
+            item["observation_scopes"] = config["observation_scopes"]
+        url = f"{config['api_url'].rstrip('/')}/v1/default/banks/{config['bank_id']}/memories"
+        async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=30)) as http:
+            async with http.post(url, json={"items": [item], "async": True}) as resp:
+                if resp.status >= 400:
+                    raise RuntimeError(f"HTTP {resp.status}: {(await resp.text())[:200]}")
+        logger.info("Realtime voice retained %d spoken turns in Hindsight", len(spoken))
+    except Exception as e:
+        logger.warning("Realtime voice could not retain the call in Hindsight: %s", e)
+
+
 def _adapter():
     """The live Discord adapter of the running gateway, or None outside the gateway."""
     run = sys.modules.get("gateway.run")
@@ -485,6 +500,7 @@ class _Call:
         self.executor_ids: dict = {}
         self.open_calls = 0
         self.transcript: deque = deque(maxlen=12)
+        self.spoken: list = []
         self.started = time.time()
         self.audit_target = None
         self.audit_lock = asyncio.Lock()
@@ -496,6 +512,7 @@ class _Call:
         self.closed = True
         for task in self.tasks:
             task.cancel()
+        await _retain_call(self.spoken, self.started)
         if self.audit_target is not None:
             minutes = max(1, round((time.time() - self.started) / 60))
             await self._audit(f"📴 Call ended after {minutes} min.")
@@ -583,9 +600,9 @@ class _Call:
             if self.response_pending and self.open_calls == 0:
                 await self._create_response()
         elif kind == "conversation.item.input_audio_transcription.completed":
-            self.transcript.append(f"Felix: {event.get('transcript', '').strip()}")
+            self._heard("user", "Felix", event.get("transcript", ""))
         elif kind in ("response.output_audio_transcript.done", "response.audio_transcript.done"):
-            self.transcript.append(f"Hermes: {event.get('transcript', '').strip()}")
+            self._heard("assistant", "Hermes", event.get("transcript", ""))
         elif kind == "response.function_call_arguments.done":
             name, call_id, arguments = event.get("name", ""), event["call_id"], event.get("arguments") or "{}"
             run = self._ask_hermes(call_id, arguments) if name == "ask_hermes" else self._run_tool(call_id, name, arguments)
@@ -597,6 +614,13 @@ class _Call:
             if self.active_response is None:
                 self.responding = False
             logger.warning("Realtime voice error: %s", event.get("error"))
+
+    def _heard(self, role: str, speaker: str, text: str) -> None:
+        text = text.strip()
+        if text:
+            self.transcript.append(f"{speaker}: {text}")
+            self.spoken.append({"role": role, "content": f"{speaker}: {text}",
+                                "timestamp": datetime.now(timezone.utc).isoformat()})
 
     async def _create_response(self, response: dict | None = None) -> bool:
         """Start a response unless one is running; a deferred conversation reply runs after it."""

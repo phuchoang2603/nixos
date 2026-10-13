@@ -18,6 +18,10 @@ let
     USE_SUBDIRECTORY=false
     PATH_TEMPLATE={{Artist}}/{{Album}}/{{File}}
     EMBED_COVER_ART=true
+    WEEKLY_JAMS_SCHEDULE=30 00 * * 1
+    WEEKLY_JAMS_FLAGS=--playlist weekly-jams
+    WEEKLY_EXPLORATION_SCHEDULE=15 00 * * 2
+    WEEKLY_EXPLORATION_FLAGS=--playlist weekly-exploration
   '';
 in
 {
@@ -25,6 +29,7 @@ in
     "d ${state} 0750 ${uid} ${gid} -"
     "d ${state}/config 0750 ${uid} ${gid} -"
     "C ${state}/.env 0600 ${uid} ${gid} - ${seed}"
+    "d ${lab.media}/music/explo 0755 ${uid} ${gid} -"
   ];
 
   virtualisation.oci-containers.containers.explo = lab.mkContainer {

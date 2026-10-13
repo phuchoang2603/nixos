@@ -7,16 +7,16 @@
 }:
 
 let
-  version = "0.0.46-nightly.20261009.2886";
+  version = "0.0.46-nightly.20261013.3066";
 
   platforms = {
     x86_64-linux = {
       npmPlatform = "linux-x64";
-      hash = "sha512-hz/+VnpgwO91YUNafT4iGQmm4MibcLByQsguITVAnxRi3UpiWI7raMQudu0Q32TzhR3aDXB8ht02Ku7gp0nPKw==";
+      hash = "sha512-ajIdWZbSGAIKexcBVRRAHBG+Mhc2cP7d0Z6+95nazqfJr5qMlIJ2bClu0zu3jGIgfAmjYXTYs9T60wsY8qUxfQ==";
     };
     aarch64-darwin = {
       npmPlatform = "darwin-arm64";
-      hash = "sha512-1JTEZ4gjBmZ7f2ZenxSsCfz9CCJUWT4UbDrprKZt9giddXiI/5Hy107ySpJWSE1GjBkH+/0W/bIe+YPhwYZteg==";
+      hash = "sha512-rHgEFE8a/6AkVHaNKe1h9Y05v9dYqXRDV+pDYR12JbxkNGp4NH3p0m6NccABLzHlpuRF79XQlL+rJjDX9TfDQw==";
     };
   };
 

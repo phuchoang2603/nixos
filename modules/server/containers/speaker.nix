@@ -11,7 +11,8 @@
 # speaker-player is Jellyfin MPV Shim, a Jellyfin client logged in as Felix and shown in Jellyfin
 # as the "Speaker" device: anything that can cast in Jellyfin can play on it, and its plays count
 # in Jellyfin. speaker serves Hermes' tools to Executor at http://speaker:8000/mcp (no Traefik
-# route): it drives the player through Jellyfin's remote-control API and speaks with Piper.
+# route): AudioMuse-AI (http://audiomuse:8000) picks the songs, the player is driven through
+# Jellyfin's remote-control API, and speech comes from Piper.
 # speaker.env holds JELLYFIN_API_KEY.
 #
 # The player logs in once with Quick Connect: on its first start it prints a code in its log, to
@@ -122,6 +123,7 @@ in
         PULSE_SERVER = pulse;
         PIPER_VOICE = "/voices/${voice}.onnx";
         JELLYFIN_URL = "http://jellyfin:8096";
+        AUDIOMUSE_URL = "http://audiomuse:8000";
         SPEAKER_PLAYER = player;
       };
       environmentFiles = [ "${lab.secrets}/speaker.env" ];

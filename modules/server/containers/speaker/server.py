@@ -1,7 +1,9 @@
-"""Hermes' speaker tools: music through Jellyfin, speech through Piper.
+"""Hermes' speaker tools: music picked by AudioMuse-AI, played through Jellyfin, speech through Piper.
 
-Music plays on the "Speaker" device in Jellyfin (the speaker-player container, Jellyfin MPV Shim),
-which these tools drive through Jellyfin's remote-control API, so Jellyfin shows what's playing and
+AudioMuse chooses every song: by name, by how a description sounds (CLAP), by what the lyrics are
+about, and by sonic similarity to an artist or song. Its item ids are Jellyfin's, so they go
+straight to the "Speaker" device in Jellyfin (the speaker-player container, Jellyfin MPV Shim),
+which these tools drive through Jellyfin's remote-control API; Jellyfin shows what's playing and
 counts the plays. Speech is synthesised here and played straight to the PipeWire sink at
 PULSE_SERVER, with the music turned down underneath.
 """
@@ -25,12 +27,20 @@ VOICE = os.environ["PIPER_VOICE"]
 DUCK = 0.3
 # Item ids go in the query string; batches keep it under the server's request-line limit.
 BATCH = 100
-COMMANDS = {"now": "PlayNow", "next": "PlayNext", "last": "PlayLast", "mix": "PlayInstantMix"}
+COMMANDS = {"now": "PlayNow", "next": "PlayNext", "last": "PlayLast"}
+# Candidates each AudioMuse search contributes before they are blended.
+POOL = 300
+# Reciprocal-rank fusion constant: higher flattens the gap between first and tenth place.
+RRF_K = 20
 
 mcp = MCPServer(
     "speaker",
-    instructions="Felix's speaker at home: play music from his Jellyfin library and speak text out loud.",
+    instructions=(
+        "Felix's speaker at home: play music from his library, chosen by AudioMuse-AI, and speak "
+        "text out loud."
+    ),
 )
+audiomuse = httpx.Client(base_url=os.environ["AUDIOMUSE_URL"], timeout=60)
 jellyfin = httpx.Client(
     base_url=os.environ["JELLYFIN_URL"],
     headers={"Authorization": f'MediaBrowser Token="{os.environ["JELLYFIN_API_KEY"]}"'},
@@ -59,6 +69,79 @@ def session() -> dict:
     return max(found, key=lambda s: s.get("LastActivityDate") or "")
 
 
+def muse(method: str, path: str, **kwargs):
+    try:
+        r = audiomuse.request(method, path, **kwargs)
+    except httpx.TransportError as e:
+        raise ToolError(f"AudioMuse is unreachable ({type(e).__name__})") from None
+    if r.status_code == 404:
+        return []
+    r.raise_for_status()
+    return r.json()
+
+
+def song(track: dict) -> dict:
+    return {"id": track["item_id"], "name": f"{track['title']} - {track['author']}"}
+
+
+def by_name(name: str, loose: bool = False) -> list[dict]:
+    """Songs by an artist, on an album or in a playlist, or titled name; the closest kind wins.
+    Only loose takes songs whose names merely contain name."""
+    wanted = name.strip().casefold()
+    playlists = muse("GET", "/api/search_playlists", params={"query": name})
+    playlist = next((p for p in playlists if p["name"].removesuffix("_automatic").casefold() == wanted), None)
+    if playlist:
+        servers = muse("GET", "/api/playlists")["servers"]
+        return next(s["playlists"][playlist["name"]] for s in servers if playlist["name"] in s["playlists"])
+    tracks = muse("GET", "/api/search_tracks", params={"search_query": name, "end": 500})
+    for field in ("author", "album", "title"):
+        exact = [t for t in tracks if wanted in [part.strip().casefold() for part in t[field].split(",")]]
+        if exact:
+            return exact
+    return tracks if loose else []
+
+
+def text_match(description: str) -> list[dict]:
+    return muse("POST", "/api/clap/search", json={"query": description, "limit": POOL})["results"]
+
+
+def lyrics_match(theme: str) -> list[dict]:
+    return muse("POST", "/api/lyrics/search/text", json={"query": theme, "limit": POOL})["results"]
+
+
+def seeds_and_similar(seeds: list[dict], limit: int) -> list[dict]:
+    """The seed songs, then the songs that sound most like any of them."""
+    closest = {t["item_id"]: (0.0, t) for t in seeds}
+    for seed in seeds[:20]:
+        for t in muse("GET", "/api/similar_tracks", params={"item_id": seed["item_id"], "n": 30}):
+            if t["item_id"] not in closest or t["distance"] < closest[t["item_id"]][0]:
+                closest[t["item_id"]] = (t["distance"], t)
+    return [t for _, t in sorted(closest.values(), key=lambda pair: pair[0])][:limit]
+
+
+def fingerprint(limit: int) -> list[dict]:
+    """Songs like the ones Felix plays most."""
+    return muse(
+        "POST",
+        "/api/sonic_fingerprint/generate",
+        json={"n": limit, "jellyfin_user_identifier": user_id(), "jellyfin_token": os.environ["JELLYFIN_API_KEY"]},
+    )
+
+
+def fuse(ranks: list[list[dict]], limit: int) -> list[dict]:
+    """Blend several ranked lists: a song high in all of them beats one at the top of one."""
+    score, tracks = {}, {}
+    for ranked in ranks:
+        for place, t in enumerate(ranked):
+            score[t["item_id"]] = score.get(t["item_id"], 0) + 1 / (RRF_K + place)
+            tracks[t["item_id"]] = t
+    if len(ranks) > 1:
+        # A song only one search found is no match for "this and that".
+        found = {i for i in score if sum(i in {t["item_id"] for t in r} for r in ranks) > 1}
+        score = {i: v for i, v in score.items() if i in found} or score
+    return [tracks[i] for i in sorted(score, key=score.get, reverse=True)][:limit]
+
+
 def user_id() -> str:
     global _user_id
     if not _user_id:
@@ -67,38 +150,8 @@ def user_id() -> str:
     return _user_id
 
 
-def items(**params) -> list[dict]:
-    return call("GET", "/Items", params={"userId": user_id(), "recursive": True, **params})["Items"]
-
-
-def find(query: str) -> list[dict]:
-    return items(searchTerm=query, includeItemTypes="Playlist,MusicArtist,MusicAlbum,Audio", limit=20)
-
-
-def songs_in(item: dict) -> list[dict]:
-    order = "ParentIndexNumber,IndexNumber,SortName"
-    match item["Type"]:
-        case "Audio":
-            return [item]
-        case "MusicArtist":
-            return items(artistIds=item["Id"], includeItemTypes="Audio", sortBy=f"Album,{order}")
-        case _:
-            return items(parentId=item["Id"], includeItemTypes="Audio", sortBy=order)
-
-
-def best_match(what: str) -> dict | None:
-    hits = find(what)
-    wanted = what.strip().casefold()
-    return (
-        next((h for h in hits if h["Type"] != "Audio" and h["Name"].casefold() == wanted), None)
-        or next((h for h in hits if h["Type"] == "Audio"), None)
-        or (hits[0] if hits else None)
-    )
-
-
 def title(item: dict) -> str:
-    artists = ", ".join(item.get("Artists") or [])
-    return f"{item['Name']} - {artists}" if item.get("Type") == "Audio" and artists else item["Name"]
+    return f"{item['Name']} - {', '.join(item['Artists'])}" if item.get("Artists") else item["Name"]
 
 
 def clock(ticks) -> str:
@@ -115,35 +168,37 @@ def send(session_id: str, command: str, ids: list[str]) -> None:
         call("POST", f"/Sessions/{session_id}/Playing", params={"playCommand": first, "itemIds": ",".join(batch)})
 
 
-def play_music(what: str, ids: list[str], mode: str, shuffle: bool) -> str:
-    sid = session()["Id"]
-    if mode == "mix":
-        seed = ids[0] if ids else (best_match(what) or {}).get("Id")
-        if not seed:
-            return f"Nothing in the library matches {what!r}."
-        send(sid, COMMANDS[mode], [seed])
-        return "Playing a mix of similar songs."
-    if ids:
-        songs, label = ids, None
-    elif what.strip().casefold() in ("", "everything", "all", "anything"):
-        songs, label = [s["Id"] for s in items(includeItemTypes="Audio", sortBy="Random", limit=200)], "the library"
-    else:
-        item = best_match(what)
-        if not item:
-            return f"Nothing in the library matches {what!r}."
-        songs, label = [s["Id"] for s in songs_in(item)], title(item)
-    if not songs:
+def pick(query: str, like: str | None, lyrics: str | None, limit: int) -> list[dict]:
+    """AudioMuse's songs for the request, best first."""
+    seeds = by_name(like, loose=True) if like else []
+    if like and not seeds:
+        raise ToolError(f"Nothing in the library matches {like!r}.")
+    if not query and not lyrics:
+        if not like:
+            return fingerprint(limit)
+        return seeds_and_similar(seeds, limit)
+    if not like and not lyrics:
+        named = by_name(query)
+        if named:
+            return named[:limit]
+    ranks = []
+    if query:
+        ranks.append(text_match(query))
+    if lyrics:
+        ranks.append(lyrics_match(lyrics))
+    if like:
+        ranks.append(seeds_and_similar(seeds, POOL))
+    return fuse(ranks, limit)
+
+
+def play_music(ids: list[str], mode: str, shuffle: bool, label: str) -> str:
+    if not ids:
         return "There are no songs in that."
+    sid = session()["Id"]
     if shuffle:
-        random.shuffle(songs)
-    if mode == "now" and len(songs) == 1:
-        # A lone song leaves nothing to skip to; similar songs follow it.
-        similar = call("GET", f"/Items/{songs[0]}/InstantMix", params={"userId": user_id(), "limit": 50})["Items"]
-        send(sid, COMMANDS[mode], songs + [s["Id"] for s in similar if s["Id"] != songs[0]])
-        return f"Playing {label or 'that song'}, then similar songs."
-    send(sid, COMMANDS[mode], songs)
-    what_played = label if len(songs) == 1 and label else f"{len(songs)} songs" + (f" from {label}" if label else "")
-    return {"now": "Playing", "next": "Up next:", "last": "Queued"}[mode] + f" {what_played}."
+        random.shuffle(ids)
+    send(sid, COMMANDS[mode], ids)
+    return {"now": "Playing", "next": "Up next:", "last": "Queued"}[mode] + f" {label}."
 
 
 def set_volume(session_id: str, level: float) -> None:
@@ -185,39 +240,62 @@ def say_text(text: str) -> None:
                     set_volume(current["Id"], volume)
 
 
-@mcp.tool()
-async def search(query: str) -> list[dict]:
-    """Search Felix's library by name for artists, albums, playlists and songs. Artists, albums
-    and playlists come with their songs, so you can pick some and pass their ids to play()."""
+DISCOVER = """
+    query: a name (artist, album, song or one of the AudioMuse playlists) or a description of
+      the sound, e.g. "moody, melancholic, dreamy female vocals". A name returns its songs; a
+      description finds songs that sound like it. Spell short moods out: "moody, melancholic,
+      slow, dreamy" works better than "moody".
+    like: an artist or song name: songs that sound like it (its own songs included). With query,
+      songs that sound like it and fit the description.
+    lyrics: what the lyrics are about, e.g. "missing someone late at night".
+    Leave all three empty for songs like the ones Felix plays most.
+    limit: how many songs.
+"""
 
+
+@mcp.tool(
+    description="Find songs in Felix's library with AudioMuse, best first, to look through or to pass "
+    "some of their ids to play().\n" + DISCOVER
+)
+async def search(query: str = "", like: str | None = None, lyrics: str | None = None, limit: int = 30) -> list[dict]:
     def run():
-        results = []
-        for hit in find(query):
-            entry = {"type": hit["Type"], "name": title(hit)}
-            if hit["Type"] == "Audio":
-                entry["id"] = hit["Id"]
-            else:
-                entry["songs"] = [{"id": s["Id"], "name": title(s)} for s in songs_in(hit)[:100]]
-            results.append(entry)
-        return results
+        return [song(t) for t in pick(query, like, lyrics, limit)]
 
     return await asyncio.to_thread(run)
 
 
-@mcp.tool()
-async def play(what: str = "everything", ids: list[str] | None = None, mode: str = "now", shuffle: bool = False) -> str:
-    """Play music on the speaker.
+@mcp.tool(
+    description="""Play music on the speaker, chosen the same way as search().
 
-    what: an artist, album, song or playlist name, or "everything" for the whole library.
-    ids: song ids from search(), played in this order, instead of what.
-    mode: "now" replaces the queue (a single song is followed by similar songs), "next" plays
-      after the current song, "last" adds to the end of the queue, "mix" plays a mix of songs
-      similar to what (or the first id).
+    ids: song ids from search(), played in this order, instead of query, like and lyrics.
+    mode: "now" replaces the queue, "next" plays after the current song, "last" adds to the end.
     shuffle: shuffle the songs first.
-    """
+"""
+    + DISCOVER
+)
+async def play(
+    query: str = "",
+    like: str | None = None,
+    lyrics: str | None = None,
+    ids: list[str] | None = None,
+    mode: str = "now",
+    shuffle: bool = False,
+    limit: int = 50,
+) -> str:
     if mode not in COMMANDS:
         return f"mode must be one of {', '.join(COMMANDS)}."
-    return await asyncio.to_thread(play_music, what, ids or [], mode, shuffle)
+
+    def run():
+        if ids:
+            return play_music(list(ids), mode, shuffle, f"{len(ids)} songs")
+        tracks = pick(query, like, lyrics, limit)
+        if not tracks:
+            return "AudioMuse found nothing for that."
+        first = song(tracks[0])["name"]
+        label = first if len(tracks) == 1 else f"{len(tracks)} songs, starting with {first}"
+        return play_music([t["item_id"] for t in tracks], mode, shuffle, label)
+
+    return await asyncio.to_thread(run)
 
 
 @mcp.tool()

@@ -1,7 +1,5 @@
 {
   lab,
-  lib,
-  pkgs,
   ...
 }:
 
@@ -62,19 +60,7 @@ in
     "d ${state}/web-ivf-cache 0750 ${uid} ${gid} -"
   ];
 
-  systemd.services.docker-audiomuse-db.preStart = lib.mkBefore ''
-    if [ ! -s ${envFile} ]; then
-      (
-        umask 077
-        printf 'POSTGRES_PASSWORD=%s\nAUDIOMUSE_PASSWORD=%s\nAPI_TOKEN=%s\nJWT_SECRET=%s\n' \
-          "$(${lib.getExe pkgs.openssl} rand -hex 24)" \
-          "$(${lib.getExe pkgs.openssl} rand -hex 16)" \
-          "$(${lib.getExe pkgs.openssl} rand -hex 32)" \
-          "$(${lib.getExe pkgs.openssl} rand -hex 32)" > ${envFile}
-      )
-      chown ${uid}:${gid} ${envFile}
-    fi
-  '';
+  systemd.services.docker-audiomuse-db = lab.postgresReady "audiomuse-db" "audiomuse";
 
   virtualisation.oci-containers.containers = {
     audiomuse-db = lab.mkContainer {
@@ -88,10 +74,6 @@ in
       extraOptions = [
         "--memory=512m"
         "--cpus=0.5"
-        "--health-cmd=pg_isready -U audiomuse -d audiomuse"
-        "--health-interval=10s"
-        "--health-timeout=5s"
-        "--health-retries=6"
       ];
     };
 

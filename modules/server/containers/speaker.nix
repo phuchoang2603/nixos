@@ -1,6 +1,5 @@
 {
   lab,
-  lib,
   pkgs,
   ...
 }:
@@ -41,14 +40,12 @@ let
   '';
 
   images = {
-    # The release feed changes with each shim release, so a restart rebuilds with the newest.
     speaker-player = pkgs.writeText "speaker-player.Dockerfile" ''
       FROM python:3.13-slim
       RUN apt-get update \
         && apt-get install -y --no-install-recommends libmpv2 ca-certificates \
         && rm -rf /var/lib/apt/lists/*
-      ADD https://pypi.org/rss/project/jellyfin-mpv-shim/releases.xml /tmp/releases.xml
-      RUN pip install --no-cache-dir jellyfin-mpv-shim && rm /tmp/releases.xml
+      RUN pip install --no-cache-dir jellyfin-mpv-shim
     '';
     speaker = pkgs.writeText "speaker.Dockerfile" ''
       FROM python:3.13-slim
@@ -63,10 +60,14 @@ let
     '';
   };
 
-  build = name: ''
-    ${pkgs.docker}/bin/docker build --pull -t ${name}:latest - < ${images.${name}} \
-      || ${pkgs.docker}/bin/docker image inspect ${name}:latest > /dev/null
-  '';
+  playerImage = lab.mkImage {
+    name = "speaker-player";
+    dockerfile = images.speaker-player;
+  };
+  speakerImage = lab.mkImage {
+    name = "speaker";
+    dockerfile = images.speaker;
+  };
   hardening = [
     "--cap-drop=ALL"
     "--security-opt=no-new-privileges"
@@ -83,12 +84,12 @@ in
     "C ${playerState}/mpv.conf 0644 1000 100 - ${playerMpvConf}"
   ];
 
-  systemd.services.docker-speaker-player.preStart = lib.mkBefore (build "speaker-player");
-  systemd.services.docker-speaker.preStart = lib.mkBefore (build "speaker");
+  systemd.services.docker-image-speaker-player = playerImage.service;
+  systemd.services.docker-image-speaker = speakerImage.service;
 
   virtualisation.oci-containers.containers = {
     speaker-player = lab.mkContainer {
-      image = "speaker-player:latest";
+      inherit (playerImage) image;
       pull = "never";
       user = "1000:100";
       cmd = [
@@ -110,7 +111,7 @@ in
     };
 
     speaker = lab.mkContainer {
-      image = "speaker:latest";
+      inherit (speakerImage) image;
       pull = "never";
       user = "1000:100";
       cmd = [

@@ -9,8 +9,7 @@
 # away from the gateway's own state and secrets.
 let
   upstreamImage = "nousresearch/hermes-sandbox:desktop";
-  image = "hermes-desktop:latest";
-  # Stock Chrome is re-downloaded on every build, so a restart picks up its updates.
+  # Stock Chrome is downloaded when preparing a new image revision.
   dockerfile = pkgs.writeText "hermes-desktop.Dockerfile" ''
     FROM ${upstreamImage}
     ADD https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb /tmp/chrome.deb
@@ -18,6 +17,15 @@ let
       && apt-get install -y --no-install-recommends openssh-server novnc python3-websockify /tmp/chrome.deb \
       && rm -rf /var/lib/apt/lists/* /tmp/chrome.deb
   '';
+
+  localImage = lab.mkImage {
+    name = "hermes-desktop";
+    inherit dockerfile;
+    containers = [
+      "hermes-desktop"
+      "hermes-desktop-vnc"
+    ];
+  };
 
   # Sites like Walmart block a Chrome that agent-browser launches (it reports navigator.webdriver),
   # so the browser tool attaches over CDP to stock Chrome started here instead. Docker's seccomp
@@ -90,10 +98,8 @@ in
     "d ${screen} 0700 ${uid} ${uid} -"
   ];
 
+  systemd.services.docker-image-hermes-desktop = localImage.service;
   systemd.services.docker-hermes-desktop.preStart = lib.mkBefore ''
-    ${pkgs.docker}/bin/docker build --pull -t ${image} - < ${dockerfile} \
-      || ${pkgs.docker}/bin/docker image inspect ${image} > /dev/null
-
     keygen=${pkgs.openssh}/bin/ssh-keygen
     [ -f ${state}/ssh/host_ed25519 ] || $keygen -q -t ed25519 -N "" -C hermes-desktop -f ${state}/ssh/host_ed25519
     install -d -m 0700 ${hermesState}/.ssh
@@ -119,7 +125,8 @@ in
   '';
 
   virtualisation.oci-containers.containers.hermes-desktop = lab.mkContainer {
-    inherit image user;
+    inherit user;
+    inherit (localImage) image;
     pull = "never";
     entrypoint = "/bin/sh";
     cmd = [
@@ -147,14 +154,11 @@ in
 
   # Browser view of the desktop for solving challenges by hand, open to anyone on the LAN. It
   # bypasses Hermes' take-control lease, so the agent has to wait while Felix is on it.
-  systemd.services.docker-hermes-desktop-vnc = {
-    after = [ "docker-hermes-desktop.service" ];
-    requires = [ "docker-hermes-desktop.service" ];
-  };
-
   virtualisation.oci-containers.containers.hermes-desktop-vnc = lab.mkContainer {
-    inherit image user;
+    inherit user;
+    inherit (localImage) image;
     pull = "never";
+    dependsOn = [ "hermes-desktop" ];
     entrypoint = "websockify";
     cmd = [
       "--web=/usr/share/novnc"

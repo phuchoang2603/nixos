@@ -1,3 +1,5 @@
+{ lib, pkgs, ... }:
+
 {
   imports = [
     ./traefik.nix
@@ -16,5 +18,5 @@
     ./audiomuse.nix
   ];
 
-  _module.args.lab = import ./lab.nix;
+  _module.args.lab = import ./lab.nix { inherit lib pkgs; };
 }

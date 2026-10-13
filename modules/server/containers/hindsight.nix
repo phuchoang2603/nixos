@@ -12,7 +12,7 @@
 let
   # Postgres must stay off NFS.
   state = "/var/lib/hindsight";
-  # Generated on first start; holds only the database password.
+  # Provision this file explicitly; keep the password when restoring the database.
   envFile = "${lab.secrets}/hindsight.env";
 
   vault = "${config.users.users.${user}.home}/repos/obsidian";
@@ -66,16 +66,7 @@ in
     };
   };
 
-  systemd.services.docker-hindsight-db.preStart = lib.mkBefore ''
-    if [ ! -s ${envFile} ]; then
-      pw=$(${lib.getExe pkgs.openssl} rand -hex 24)
-      (
-        umask 077
-        printf 'POSTGRES_PASSWORD=%s\nHINDSIGHT_API_DATABASE_URL=postgresql://hindsight:%s@hindsight-db:5432/hindsight\n' \
-          "$pw" "$pw" > ${envFile}
-      )
-    fi
-  '';
+  systemd.services.docker-hindsight-db = lab.postgresReady "hindsight-db" "hindsight";
 
   virtualisation.oci-containers.containers = {
     hindsight-db = lab.mkContainer {

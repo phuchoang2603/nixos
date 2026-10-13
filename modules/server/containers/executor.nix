@@ -1,13 +1,12 @@
 { lab, pkgs, ... }:
 
 let
-  image = "ghcr.io/rhyssullivan/executor-selfhost:latest";
   data = "/var/lib/executor";
   # The image runs as distroless `nonroot`.
   uid = "65532";
 
-  # Stdio MCP servers are installed ahead of time because `bun x` cannot run
-  # package bins in the distroless image. Register them in Executor as stdio
+  # Stdio MCP servers are baked in because `bun x` cannot run package bins in
+  # the distroless image. Register them in Executor as stdio
   # integrations with command `bun` and args
   # `/mcp/node_modules/<package>/<bin>`.
   stdioServers = pkgs.writeText "executor-mcp-package.json" (
@@ -20,38 +19,34 @@ let
       };
     }
   );
+
+  localImage = lab.mkImage {
+    name = "executor";
+    context = pkgs.runCommand "executor-mcp-context" { } ''
+      mkdir "$out"
+      cp ${stdioServers} "$out/package.json"
+    '';
+    dockerfile = pkgs.writeText "executor.Dockerfile" ''
+      FROM ghcr.io/rhyssullivan/executor-selfhost:latest
+      USER 0
+      COPY package.json /mcp/package.json
+      RUN ["bun", "install", "--cwd", "/mcp", "--production"]
+      USER ${uid}:${uid}
+    '';
+  };
 in
 {
   systemd.tmpfiles.rules = [
     "d ${data} 0700 ${uid} ${uid} -"
     "d ${data}/data 0700 ${uid} ${uid} -"
-    "d ${data}/mcp 0755 ${uid} ${uid} -"
   ];
 
-  systemd.services.executor-mcp-install = {
-    description = "Install stdio MCP servers for Executor";
-    after = [
-      "docker.service"
-      "network-online.target"
-    ];
-    requires = [ "docker.service" ];
-    wants = [ "network-online.target" ];
-    before = [ "docker-executor.service" ];
-    wantedBy = [ "docker-executor.service" ];
-    serviceConfig = {
-      Type = "oneshot";
-      RemainAfterExit = true;
-      ExecStartPre = "${pkgs.coreutils}/bin/install -o ${uid} -g ${uid} -m 0644 ${stdioServers} ${data}/mcp/package.json";
-      ExecStart = "${pkgs.docker}/bin/docker run --rm -v ${data}/mcp:/mcp -w /mcp --entrypoint bun ${image} install --production";
-    };
-  };
+  systemd.services.docker-image-executor = localImage.service;
 
   virtualisation.oci-containers.containers.executor = lab.mkContainer {
-    inherit image;
-    volumes = [
-      "${data}/data:/data:rw"
-      "${data}/mcp:/mcp:ro"
-    ];
+    inherit (localImage) image;
+    pull = "never";
+    volumes = [ "${data}/data:/data:rw" ];
     environment = {
       EXECUTOR_WEB_BASE_URL = "https://${lab.fqdn "mcp"}";
       EXECUTOR_ALLOW_STDIO_MCP = "true";

@@ -7,12 +7,11 @@
 
 let
   upstreamImage = "nousresearch/hermes-agent:latest";
-  image = "hermes-agent-local:latest";
   # The upstream image lacks libopus (Discord voice playback) and hindsight-client (the Hindsight
   # memory plugin); the container is recreated on every start, so runtime installs don't stick.
   # browser_exec on a configured cdp_url can't reach a CDP endpoint inside the sandbox without the
   # exec-stream forward, and has to bring the screen up first.
-  # The grep fails the build, keeping the previous image, once upstream moves the patched code.
+  # The grep fails the build if upstream moves the patched code.
   dockerfile = pkgs.writeText "hermes-agent-local.Dockerfile" ''
     FROM ${upstreamImage}
     COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
@@ -26,6 +25,12 @@ let
         /opt/hermes/tools/browser_use_cli.py \
       && grep -q '_set_cdp_env(env, _reach_sandbox_cdp(override))' /opt/hermes/tools/browser_use_cli.py
   '';
+
+  localImage = lab.mkImage {
+    name = "hermes-agent-local";
+    inherit dockerfile;
+    containers = [ "hermes" ];
+  };
 
   # Hermes runs as this user so the NFS-backed files stay editable from the desktop.
   uid = "1000";
@@ -154,22 +159,15 @@ in
   ]
   ++ map (dir: "d ${shared}/${dir} 0755 ${uid} ${gid} -") sharedDirs;
 
-  # hermes-desktop's preStart creates the SSH key Hermes logs in with.
-  systemd.services.docker-hermes.after = [
-    "docker-hermes-desktop.service"
-    "docker-hindsight.service"
-  ];
+  systemd.services.docker-image-hermes = localImage.service;
+  systemd.services.docker-hermes.after = [ "docker-hindsight.service" ];
   systemd.services.docker-hermes.wants = [
-    "docker-hermes-desktop.service"
     "docker-hindsight.service"
   ];
 
   # Hermes rewrites config.yaml itself (migrations, /model, "always allow"),
   # so the Nix-owned keys are merged in on each start instead of mounted read-only.
   systemd.services.docker-hermes.preStart = lib.mkBefore ''
-    ${pkgs.docker}/bin/docker build --pull -t ${image} - < ${dockerfile} \
-      || ${pkgs.docker}/bin/docker image inspect ${image} > /dev/null
-
     cfg=${state}/config.yaml
     if [ -f "$cfg" ]; then
       ${lib.getExe pkgs.yq-go} ea '. as $i ireduce ({}; . * $i)' "$cfg" ${managedConfig} > "$cfg.tmp"
@@ -191,8 +189,10 @@ in
   '';
 
   virtualisation.oci-containers.containers.hermes = lab.mkContainer {
-    inherit image;
+    inherit (localImage) image;
     pull = "never";
+    # The desktop's preStart creates the SSH key Hermes logs in with.
+    dependsOn = [ "hermes-desktop" ];
     cmd = [
       "gateway"
       "run"

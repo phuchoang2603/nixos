@@ -4,10 +4,7 @@
   virtualisation.oci-containers.containers = {
     karakeep = lab.mkContainer {
       image = "ghcr.io/karakeep-app/karakeep:release";
-      dependsOn = [
-        "karakeep-chrome"
-        "karakeep-meilisearch"
-      ];
+      dependsOn = [ "karakeep-meilisearch" ];
       volumes = [ "${lab.appdata}/hoarderr/data:/data:rw" ];
       environmentFiles = [ "${lab.secrets}/karakeep.env" ];
       environment = {
@@ -15,8 +12,16 @@
         PGID = "1000";
         DATA_DIR = "/data";
         MEILI_ADDR = "http://karakeep-meilisearch:7700";
-        BROWSER_WEB_URL = "http://karakeep-chrome:9222";
         NEXTAUTH_URL = "https://${lab.fqdn "karakeep"}";
+
+        # With no browser URL, Karakeep fetches HTML over HTTP without Chrome/JS.
+        # Keep text extraction and AI/search, but skip browser-generated assets.
+        CRAWLER_NUM_WORKERS = "1";
+        CRAWLER_STORE_SCREENSHOT = "false";
+        CRAWLER_FULL_PAGE_SCREENSHOT = "false";
+        CRAWLER_STORE_PDF = "false";
+        CRAWLER_FULL_PAGE_ARCHIVE = "false";
+        CRAWLER_VIDEO_DOWNLOAD = "false";
 
         OPENAI_BASE_URL = "http://cli-proxy-api:8317/v1";
         OPENAI_API_KEY = "cliproxyapi";
@@ -34,22 +39,11 @@
         SEMANTIC_SEARCH_ENABLED = "true";
         RATE_LIMITING_ENABLED = "true";
       };
+      extraOptions = [ "--cpus=1" ];
       traefik = {
         name = "karakeep";
         port = 3000;
       };
-    };
-
-    karakeep-chrome = lab.mkContainer {
-      image = "ghcr.io/karakeep-app/karakeep-chrome:latest";
-      extraOptions = [ "--init" ];
-      cmd = [
-        "--disable-gpu"
-        "--disable-dev-shm-usage"
-        "--hide-scrollbars"
-        "--disable-blink-features=AutomationControlled"
-        "--window-size=1440,900"
-      ];
     };
 
     karakeep-meilisearch = lab.mkContainer {

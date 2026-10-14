@@ -45,19 +45,26 @@ in
       };
     };
   }
-  // lib.mapAttrs' (name: container: {
-    name = "docker-${name}";
-    value = {
-      after = [ "docker-network-proxy.service" ];
-      requires = [ "docker-network-proxy.service" ];
-      # Bind mounts and environment files carry their own storage dependencies.
-      # Named Docker volumes do not refer to host paths.
-      unitConfig.RequiresMountsFor = lib.unique (
-        lib.filter (lib.hasPrefix "/") (
-          map (volume: builtins.head (lib.splitString ":" volume)) container.volumes
-          ++ container.environmentFiles
-        )
-      );
-    };
-  }) config.virtualisation.oci-containers.containers;
+  // lib.mapAttrs' (
+    name: container:
+    let
+      paths =
+        map (volume: builtins.head (lib.splitString ":" volume)) container.volumes
+        ++ container.environmentFiles;
+    in
+    {
+      name = "docker-${name}";
+      value = {
+        after = [ "docker-network-proxy.service" ];
+        requires = [ "docker-network-proxy.service" ];
+        # Recreate containers on a normal switch when their encrypted secrets change.
+        restartTriggers = map (secret: secret.file) (
+          lib.filter (secret: builtins.elem secret.path paths) (builtins.attrValues config.age.secrets)
+        );
+        # Bind mounts and environment files carry their own storage dependencies.
+        # Named Docker volumes do not refer to host paths.
+        unitConfig.RequiresMountsFor = lib.unique (lib.filter (lib.hasPrefix "/") paths);
+      };
+    }
+  ) config.virtualisation.oci-containers.containers;
 }

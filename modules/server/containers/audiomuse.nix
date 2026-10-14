@@ -7,7 +7,7 @@ let
   uid = "1000";
   gid = "100";
   state = "${lab.appdata}/audiomuse";
-  envFile = "${state}/secrets.env";
+  envFile = "${lab.secrets}/audiomuse.env";
   image = "ghcr.io/neptunehub/audiomuse-ai:3.6.3-nvidia";
 
   # These seed the database on first startup. After that, change settings in

@@ -19,7 +19,7 @@ in
       "/config/config.yaml"
     ];
     volumes = [
-      "${lab.secrets}/cliproxyapi:/config:rw"
+      "${data}/config:/config:rw"
       "${data}/auths:/root/.cli-proxy-api:rw"
       "${data}/logs:/CLIProxyAPI/logs:rw"
       "${data}/plugins:/CLIProxyAPI/plugins:rw"

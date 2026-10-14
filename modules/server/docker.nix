@@ -6,7 +6,7 @@
 }:
 
 let
-  inherit (import ./lib.nix) proxyNetwork;
+  inherit (import ./lib.nix) proxyNetwork appdata;
 in
 {
   virtualisation.docker = {
@@ -28,10 +28,12 @@ in
 
   systemd.services = {
     docker-network-proxy = {
-      description = "Create Docker ${proxyNetwork} network";
+      description = "Prepare Docker ${proxyNetwork} network and application directories";
       wantedBy = [ "multi-user.target" ];
       after = [ "docker.service" ];
       requires = [ "docker.service" ];
+      unitConfig.RequiresMountsFor = [ appdata ];
+      preStart = "${pkgs.systemd}/bin/systemd-tmpfiles --create --prefix=${appdata}";
       path = [ pkgs.docker ];
       serviceConfig = {
         Type = "oneshot";

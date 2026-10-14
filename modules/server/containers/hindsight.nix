@@ -10,8 +10,8 @@
 # Hindsight: Hermes' long-term memory (retain/recall/reflect over a knowledge graph).
 # API on :8888 for Hermes, web UI on :9999 behind Traefik.
 let
-  # Postgres must stay off NFS.
-  state = "/var/lib/hindsight";
+  state = "${lab.appdata}/hindsight";
+  syncState = "${lab.appdata}/hindsight-obsidian";
   # Provision this file explicitly; keep the password when restoring the database.
   envFile = "${lab.secrets}/hindsight.env";
 
@@ -23,7 +23,10 @@ let
   };
 in
 {
-  systemd.tmpfiles.rules = [ "d ${state} 0755 root root -" ];
+  systemd.tmpfiles.rules = [
+    "d ${state} 0755 root root -"
+    "d ${syncState} 0700 ${user} ${config.users.users.${user}.group} -"
+  ];
 
   # Pulls the vault and syncs its notes into Hermes' bank (bank_id in hermes.nix), so recall
   # and the mental models see them. Only notes whose content changed are re-ingested. Deleted
@@ -36,6 +39,8 @@ in
       "network-online.target"
     ];
     wants = [ "network-online.target" ];
+    requires = [ "docker-hindsight.service" ];
+    unitConfig.RequiresMountsFor = [ syncState ];
     path = [
       pkgs.git
       pkgs.curl
@@ -43,7 +48,6 @@ in
     serviceConfig = {
       Type = "oneshot";
       User = user;
-      StateDirectory = "hindsight-obsidian";
     };
     script = ''
       git -C ${vault} pull --ff-only || echo "git pull failed; syncing the vault as it is on disk" >&2
@@ -55,7 +59,7 @@ in
         --include journals --include people --include publish \
         --prefix-doc-id \
         --observation-scopes shared \
-        --index /var/lib/hindsight-obsidian/index.json
+        --index ${syncState}/index.json
     '';
   };
   systemd.timers.hindsight-obsidian-sync = {

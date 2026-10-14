@@ -7,7 +7,7 @@
 let
   uid = "1000";
   gid = "100";
-  state = "/var/lib/explo";
+  state = "${lab.appdata}/explo";
   seed = pkgs.writeText "explo.env" ''
     DISCOVERY_SERVICE=listenbrainz
     EXPLO_SYSTEM=jellyfin

@@ -19,7 +19,7 @@
 let
   player = "Speaker";
   pulse = "tcp:10.69.1.110:4713";
-  playerState = "/var/lib/speaker-player";
+  playerState = "${lab.appdata}/speaker-player";
   voice = "en_US-lessac-medium";
   voiceBase = "https://huggingface.co/rhasspy/piper-voices/resolve/main/en/en_US/lessac/medium";
 

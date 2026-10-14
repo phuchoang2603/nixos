@@ -32,12 +32,11 @@ let
     containers = [ "hermes" ];
   };
 
-  # Hermes runs as this user so the NFS-backed files stay editable from the desktop.
+  # Keep persistent files owned by the desktop user.
   uid = "1000";
   gid = "100";
 
-  # SQLite state (state.db, sessions) must stay off NFS.
-  state = "/var/lib/hermes";
+  state = "${lab.appdata}/hermes";
 
   discordChannels = {
     main = "1558532054889660416";
@@ -45,8 +44,7 @@ let
     reports = "1558532114423484507";
   };
   # Agent-evolved files: its own skills, memories, cron jobs, persona.
-  shared = "${lab.appdata}/hermes";
-  sharedDirs = [
+  dataDirs = [
     "skills"
     "memories"
     "cron"
@@ -155,9 +153,8 @@ in
 {
   systemd.tmpfiles.rules = [
     "d ${state} 0700 ${uid} ${gid} -"
-    "d ${shared} 0755 ${uid} ${gid} -"
   ]
-  ++ map (dir: "d ${shared}/${dir} 0755 ${uid} ${gid} -") sharedDirs;
+  ++ map (dir: "d ${state}/${dir} 0755 ${uid} ${gid} -") dataDirs;
 
   systemd.services.docker-image-hermes = localImage.service;
   systemd.services.docker-hermes.after = [ "docker-hindsight.service" ];
@@ -181,8 +178,8 @@ in
     install -d -o ${uid} -g ${gid} -m 0700 ${state}/hindsight
     install -o ${uid} -g ${gid} -m 0600 ${hindsightConfig} ${state}/hindsight/config.json
 
-    if [ ! -e ${shared}/soul/SOUL.md ]; then
-      install -o ${uid} -g ${gid} -m 0644 ${./hermes/SOUL.md} ${shared}/soul/SOUL.md
+    if [ ! -e ${state}/soul/SOUL.md ]; then
+      install -o ${uid} -g ${gid} -m 0644 ${./hermes/SOUL.md} ${state}/soul/SOUL.md
     fi
     # Hermes only reads SOUL.md from the root of its home; its file tool resolves symlinks before writing.
     ln -sfn soul/SOUL.md ${state}/SOUL.md
@@ -201,8 +198,7 @@ in
       "${state}:/opt/data:rw"
     ]
     ++ map (name: "${./hermes/plugins/${name}}:/opt/data/plugins/${name}:ro") plugins
-    ++ [ "${hindsightPlugin}:/opt/data/plugins/hindsight:ro" ]
-    ++ map (dir: "${shared}/${dir}:/opt/data/${dir}:rw") sharedDirs;
+    ++ [ "${hindsightPlugin}:/opt/data/plugins/hindsight:ro" ];
     environmentFiles = [ "${lab.secrets}/hermes.env" ];
     environment = {
       PUID = uid;

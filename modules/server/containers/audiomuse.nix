@@ -6,8 +6,7 @@
 let
   uid = "1000";
   gid = "100";
-  # Analysis and PostgreSQL state stay on the local SSD, alongside Jellyfin.
-  state = "/var/lib/audiomuse";
+  state = "${lab.appdata}/audiomuse";
   envFile = "${state}/secrets.env";
   image = "ghcr.io/neptunehub/audiomuse-ai:3.6.3-nvidia";
 

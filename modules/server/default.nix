@@ -4,7 +4,7 @@
     ./base.nix
     ./nvidia.nix
     ./docker.nix
-    ./nfs.nix
+    ./storage.nix
     ./containers
     ./ssh.nix
   ];

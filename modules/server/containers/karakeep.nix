@@ -5,7 +5,7 @@
     karakeep = lab.mkContainer {
       image = "ghcr.io/karakeep-app/karakeep:release";
       dependsOn = [ "karakeep-meilisearch" ];
-      volumes = [ "${lab.appdata}/hoarderr/data:/data:rw" ];
+      volumes = [ "${lab.appdata}/karakeep/data:/data:rw" ];
       environmentFiles = [ "${lab.secrets}/karakeep.env" ];
       environment = {
         PUID = "1000";
@@ -48,7 +48,7 @@
 
     karakeep-meilisearch = lab.mkContainer {
       image = "getmeili/meilisearch:latest";
-      volumes = [ "${lab.appdata}/hoarderr/meili_data:/meili_data:rw" ];
+      volumes = [ "${lab.appdata}/karakeep/meili_data:/meili_data:rw" ];
       environmentFiles = [ "${lab.secrets}/karakeep.env" ];
       environment = {
         MEILI_NO_ANALYTICS = "true";

@@ -59,8 +59,8 @@ let
   # The image's desktop user; Hermes logs in as it and runs Xvnc/Chromium as it.
   user = "pn";
   uid = "1000";
-  state = "/var/lib/hermes-desktop";
-  hermesState = "/var/lib/hermes";
+  state = "${lab.appdata}/hermes-desktop";
+  hermesState = "${lab.appdata}/hermes";
   hermesOwner = "1000:100";
   hermesKey = "${hermesState}/.ssh/desktop_ed25519";
 
@@ -112,10 +112,6 @@ in
     # symlinks Chromium keeps in its profile, so the desktop's state lives beside it.
     home=${state}/home
     install -d -o ${uid} -g ${uid} -m 0700 $home/.hermes $home/.bot-desktop
-    if [ -d $home/.hermes/bot-desktop ] && [ ! -L $home/.hermes/bot-desktop ]; then
-      cp -a $home/.hermes/bot-desktop/. $home/.bot-desktop/
-      rm -rf $home/.hermes/bot-desktop
-    fi
     ln -sfn ../.bot-desktop $home/.hermes/bot-desktop
     chown -h ${uid}:${uid} $home/.hermes/bot-desktop
 

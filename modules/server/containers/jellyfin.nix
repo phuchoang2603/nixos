@@ -3,8 +3,7 @@
 let
   uid = "1000";
   gid = "100";
-  # Jellyfin's database is SQLite, which must stay off NFS; the media stays on it, read-only.
-  state = "/var/lib/jellyfin";
+  state = "${lab.appdata}/jellyfin";
 in
 {
   systemd.tmpfiles.rules = [

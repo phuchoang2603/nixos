@@ -91,11 +91,36 @@ For a server install, use `nixos-server` and `hosts/nixos-server/hardware-config
 
 Containers are declared in Nix under `modules/server/containers/` using
 `virtualisation.oci-containers`. Services share the Docker `proxy` network, with
-Traefik routing configured services over ports 80/443. Local database and
-application state live under `/var/lib/`; shared appdata, media, and most secrets
-live on NFS under `/mnt/storage/`. Each container requires the mounts used by its
-bind mounts and environment files. Containers using only local storage have no
-NFS dependency.
+Traefik routing configured services over ports 80/443. Application data and
+databases live in one directory per application under `/mnt/storage/container`,
+an ext4 filesystem on the TrueNAS `storage/container` zvol connected directly
+through iSCSI. Only media uses NFS, at `/mnt/storage/media`. Docker images and
+the Nix store remain on the host disk. Each container requires the mounts used
+by its bind mounts and environment files; missing storage blocks startup.
+Both mounts are declared in `modules/server/storage.nix`. The existing Docker
+network preparation unit creates application directories on the mounted disk
+using tmpfiles rules before starting containers.
+
+Hermes uses a single writable mount from `/mnt/storage/container/hermes` to
+`/opt/data`, including its SQLite databases, sessions, configuration, cron jobs,
+memories, skills, and soul. Nix-managed plugins are mounted read-only within it.
+Other applications retain the internal paths expected by their images, such as
+Jellyfin's `/config` and `/cache`. There is no extra `state/` directory and no
+recurring database copy job.
+
+The NAS target is `iqn.2005-10.org.freenas.ctl:container`, LUN 0, at
+`10.69.1.102:3260`. Allow only the initiator
+`iqn.2026-10.local.nixos:nixos-server` to use it, and include `storage/container`
+in the TrueNAS snapshot task.
+
+The migration and reboot verification are complete. The original NFS dataset
+and local state copies are retained for cleanup; live containers use only the
+new storage. The temporary migration helpers are gone after reboot. No SQLite
+integrity checks or database repair were performed.
+
+DHCP is limited to the server's `ens18` interface and waits for IPv4 before
+marking the network online, so NAS mounts start after the required address is
+available.
 
 Deploy container changes by rebuilding the server configuration. Services
 routed through the public tunnel or DNS should have suitable access controls.
@@ -128,11 +153,11 @@ secret values. Examples are in `modules/server/secrets-examples/`. Fill them in
 outside the repository and install them at the configured paths before a fresh
 deployment:
 
-- Hindsight: `/mnt/storage/appdata/secrets/hindsight.env`, mode `0600`, owned by
+- Hindsight: `/mnt/storage/container/secrets/hindsight.env`, mode `0600`, owned by
   root. Its database URL must use the same password as `POSTGRES_PASSWORD`.
-- AudioMuse: `/var/lib/audiomuse/secrets.env`, mode `0600`, owned by `1000:100`.
-- Other services: `/mnt/storage/appdata/secrets/<service>.env`, mode `0600`.
+- AudioMuse: `/mnt/storage/container/audiomuse/secrets.env`, mode `0600`, owned by `1000:100`.
+- Other services: `/mnt/storage/container/secrets/<service>.env`, mode `0600`.
 
-Existing Hindsight and AudioMuse environment files remain valid at their current
-paths. Preserve them with database backups; changing `POSTGRES_PASSWORD` in the
+The migration preserves existing environment files and their values. Preserve
+them with database backups; changing `POSTGRES_PASSWORD` in the
 file does not change the password in an initialized PostgreSQL database.

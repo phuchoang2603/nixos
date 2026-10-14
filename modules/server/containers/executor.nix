@@ -1,7 +1,7 @@
 { lab, pkgs, ... }:
 
 let
-  data = "/var/lib/executor";
+  data = "${lab.appdata}/executor";
   # The image runs as distroless `nonroot`.
   uid = "65532";
 

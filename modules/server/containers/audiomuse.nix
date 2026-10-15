@@ -63,7 +63,7 @@ in
 
   virtualisation.oci-containers.containers = {
     audiomuse-db = lab.mkContainer {
-      image = "postgres:15-alpine";
+      image = "postgres:18-alpine";
       environmentFiles = [ envFile ];
       environment = {
         POSTGRES_USER = "audiomuse";

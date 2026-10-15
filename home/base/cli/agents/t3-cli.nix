@@ -7,15 +7,17 @@
 }:
 
 let
-  version = "0.0.46-nightly.20261013.3066";
-
   platforms = {
     x86_64-linux = {
       npmPlatform = "linux-x64";
+      # renovate: depName=@t3code/t3-linux-x64
+      version = "0.0.46-nightly.20261013.3066";
       hash = "sha512-ajIdWZbSGAIKexcBVRRAHBG+Mhc2cP7d0Z6+95nazqfJr5qMlIJ2bClu0zu3jGIgfAmjYXTYs9T60wsY8qUxfQ==";
     };
     aarch64-darwin = {
       npmPlatform = "darwin-arm64";
+      # renovate: depName=@t3code/t3-darwin-arm64
+      version = "0.0.46-nightly.20261013.3066";
       hash = "sha512-rHgEFE8a/6AkVHaNKe1h9Y05v9dYqXRDV+pDYR12JbxkNGp4NH3p0m6NccABLzHlpuRF79XQlL+rJjDX9TfDQw==";
     };
   };
@@ -25,10 +27,10 @@ let
 in
 (if stdenv.hostPlatform.isLinux then stdenv else stdenvNoCC).mkDerivation {
   pname = "t3-cli";
-  inherit version;
+  inherit (platform) version;
 
   src = fetchurl {
-    url = "https://registry.npmjs.org/@t3code/t3-${platform.npmPlatform}/-/t3-${platform.npmPlatform}-${version}.tgz";
+    url = "https://registry.npmjs.org/@t3code/t3-${platform.npmPlatform}/-/t3-${platform.npmPlatform}-${platform.version}.tgz";
     inherit (platform) hash;
   };
 

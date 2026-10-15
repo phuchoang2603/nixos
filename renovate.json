@@ -1,13 +1,24 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:recommended"],
-  "enabledManagers": ["nix", "github-actions", "custom.regex"],
-  "nix": { "enabled": true },
+  "extends": [
+    "config:recommended"
+  ],
+  "enabledManagers": [
+    "nix",
+    "custom.regex"
+  ],
+  "nix": {
+    "enabled": true
+  },
   "timezone": "America/New_York",
-  "schedule": ["* 0-5 * * *"],
+  "schedule": [
+    "* 0-5 * * *"
+  ],
   "lockFileMaintenance": {
     "enabled": true,
-    "schedule": ["* 0-5 * * *"]
+    "schedule": [
+      "* 0-5 * * *"
+    ]
   },
   "automerge": true,
   "automergeType": "pr",
@@ -17,19 +28,31 @@
   "customManagers": [
     {
       "customType": "regex",
-      "managerFilePatterns": ["/^modules/server/containers/.*\\.nix$/"],
-      "matchStrings": [
-        "image\\s*=\\s*\"(?<depName>[a-zA-Z0-9][a-zA-Z0-9./_-]*):(?<currentValue>[a-zA-Z0-9][a-zA-Z0-9._-]*)(?:@(?<currentDigest>sha256:[a-f0-9]+))?\""
+      "managerFilePatterns": [
+        "/^home/base/cli/agents/t3-cli\\.nix$/"
       ],
-      "datasourceTemplate": "docker",
-      "versioningTemplate": "docker"
+      "matchStrings": [
+        "# renovate: depName=(?<depName>\\S+)\\s+version = \"(?<currentValue>[^\"]+)\";\\s+hash = \"(?<currentDigest>[^\"]+)\";"
+      ],
+      "datasourceTemplate": "custom.t3code-nightly",
+      "versioningTemplate": "npm"
     }
   ],
   "packageRules": [
     {
-      "matchDatasources": ["docker"],
-      "pinDigests": true,
-      "groupName": "container images"
+      "matchDatasources": [
+        "custom.t3code-nightly"
+      ],
+      "ignoreUnstable": false,
+      "groupName": "T3 Code nightly"
     }
-  ]
+  ],
+  "customDatasources": {
+    "t3code-nightly": {
+      "defaultRegistryUrlTemplate": "https://registry.npmjs.org/{{{packageName}}}/nightly",
+      "transformTemplates": [
+        "{\"releases\": [{\"version\": version, \"digest\": dist.integrity}]}"
+      ]
+    }
+  }
 }

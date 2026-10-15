@@ -1,10 +1,10 @@
 # Dependency updates and server deployment
 
-Renovate opens overnight updates for flake inputs and `flake.lock`, GitHub
-Actions, and literal `image = "registry/name:tag"` references in the server's
-container modules. Container images are pinned by digest so moving tags such
-as `latest` produce reviewable updates. Custom package versions and hashes in
-Nix expressions need their own updater and are not covered by this configuration.
+Renovate opens overnight updates for flake inputs, `flake.lock`, and T3 Code
+nightly releases. The T3 Code rule reads the npm registry's
+nightly version and SHA-512 integrity hash for Linux x64 and macOS ARM64,
+updating the version and hash together in `home/base/cli/agents/t3-cli.nix`.
+Docker images and GitHub Actions are not managed by Renovate.
 
 The `Build nixos-server` workflow validates the automation files and builds the complete
 server configuration on GitHub-hosted runners for pull requests and pushes to

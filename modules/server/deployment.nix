@@ -1,12 +1,22 @@
 {
   config,
-  lib,
   pkgs,
   ...
 }:
 let
   runnerUser = "github-deploy";
-  stateDir = "/var/lib/nixos-deploy";
+  deploy = pkgs.writeShellScript "deploy-nixos-server" ''
+    set -euo pipefail
+    commit="$1"
+    main=$(git ls-remote https://github.com/phuchoang2603/nixos.git refs/heads/main | cut -f1)
+    if [[ "$commit" != "$main" ]]; then
+      echo "Skipping superseded commit $commit"
+      exit 0
+    fi
+    exec ${config.system.build.nixos-rebuild}/bin/nixos-rebuild switch \
+      --flake "github:phuchoang2603/nixos/$commit#${config.networking.hostName}" \
+      --no-write-lock-file
+  '';
 in
 {
   users.groups.${runnerUser} = { };
@@ -34,7 +44,7 @@ in
   systemd.services.github-runner-nixos-server.restartIfChanged = false;
 
   # The runner retains the module's sandbox. Its only privileged operation is
-  # starting this service, which independently checks main and its CI result.
+  # starting this service. GitHub Actions gates deployment on successful CI.
   security.polkit.enable = true;
   security.polkit.extraConfig = ''
     polkit.addRule(function(action, subject) {
@@ -57,23 +67,13 @@ in
     path = [
       config.nix.package
       pkgs.gitMinimal
-      pkgs.util-linux
+      pkgs.coreutils
     ];
     serviceConfig = {
       Type = "oneshot";
       User = "root";
-      StateDirectory = "nixos-deploy";
-      StateDirectoryMode = "0700";
       TimeoutStartSec = "2h";
-      # Serialize even if separate workflow runs request different commits.
-      ExecStart = "${pkgs.util-linux}/bin/flock ${stateDir}/deploy.lock ${pkgs.python3}/bin/python3 ${./deployment/deploy.py} ${
-        lib.escapeShellArgs [
-          "phuchoang2603/nixos"
-          config.networking.hostName
-          stateDir
-          "${config.system.build.nixos-rebuild}/bin/nixos-rebuild"
-        ]
-      } %i";
+      ExecStart = "${deploy} %i";
     };
   };
 }

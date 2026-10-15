@@ -6,17 +6,17 @@ container modules. Container images are pinned by digest so moving tags such
 as `latest` produce reviewable updates. Custom package versions and hashes in
 Nix expressions need their own updater and are not covered by this configuration.
 
-The `Build nixos-server` workflow runs deployment tests and builds the complete
+The `Build nixos-server` workflow validates the automation files and builds the complete
 server configuration on GitHub-hosted runners for pull requests and pushes to
 `main`. Renovate automatically merges its PRs after required checks pass.
 Major updates are included in automerge.
 
 After a successful **push** build on `main`, the `Deploy nixos-server` workflow
 runs on the server's self-hosted runner. It requests activation of that exact
-commit through `nixos-deploy@COMMIT.service`. This root service independently
-checks GitHub's current `main` and its successful push build before running
+commit through `nixos-deploy@COMMIT.service`. GitHub Actions checks the build
+result; the service checks that the commit is still `main` before running
 `nixos-rebuild switch --flake github:phuchoang2603/nixos/COMMIT#nixos-server`.
-Superseded commits are skipped. Failed checks or API requests prevent deployment.
+Superseded commits are skipped. There is no custom deployment controller or timer.
 
 The runner uses a separate system user and the NixOS runner module's sandbox.
 It has no general sudo access: Polkit only permits it to start deployment units
@@ -61,8 +61,7 @@ by the NixOS build.
    The `read` command above uses the server's default Zsh syntax. The file must
    contain only the token, without a trailing newline.
 
-5. Commit and push the repository changes to `main`, then bootstrap the server
-   once from this checkout:
+5. Bootstrap the server once from this checkout after CI passes:
 
    ```bash
    sudo nixos-rebuild switch --flake path:.#nixos-server --no-write-lock-file
@@ -78,21 +77,18 @@ by the NixOS build.
 ```bash
 systemctl status github-runner-nixos-server
 journalctl -u 'nixos-deploy@*' -n 100 --no-pager
-sudo cat /var/lib/nixos-deploy/last-deployment.json
 ```
 
-Failed activations are reported as failed deployment jobs and are not recorded
-as successful. Review the journal, fix the configuration, or rerun the deploy
-workflow. Network/API failures require rerunning the deployment workflow too.
+Failed activations are reported as failed deployment jobs. Review the journal,
+fix the configuration, or rerun the failed deployment from GitHub Actions.
 
 To pause automatic activation before a manual rollback:
 
 ```bash
 sudo systemctl stop github-runner-nixos-server.service
-sudo touch /var/lib/nixos-deploy/paused
 sudo nixos-rebuild switch --rollback
 ```
 
 Pausing the runner does not cancel an already running deployment. Let that
-deployment finish before rolling back. To resume, remove
-`/var/lib/nixos-deploy/paused` and start `github-runner-nixos-server.service`.
+deployment finish before rolling back. To resume, start
+`github-runner-nixos-server.service`.

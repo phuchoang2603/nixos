@@ -44,14 +44,15 @@
         "custom.t3code-nightly"
       ],
       "ignoreUnstable": false,
-      "groupName": "T3 Code nightly"
+      "groupName": "T3 Code nightly",
+      "followTag": "nightly"
     }
   ],
   "customDatasources": {
     "t3code-nightly": {
-      "defaultRegistryUrlTemplate": "https://registry.npmjs.org/{{{packageName}}}/nightly",
+      "defaultRegistryUrlTemplate": "https://registry.npmjs.org/{{{packageName}}}",
       "transformTemplates": [
-        "{\"releases\": [{\"version\": version, \"digest\": dist.integrity}]}"
+        "{\"releases\": $each(versions, function($v) { {\"version\": $v.version, \"digest\": $v.dist.integrity} }), \"tags\": $.\"dist-tags\"}"
       ]
     }
   }

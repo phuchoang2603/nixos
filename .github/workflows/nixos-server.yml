@@ -1,0 +1,64 @@
+name: Build nixos-server
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  merge_group:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: nixos-server-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build nixos-server
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Check deployment gating
+        run: python3 -B -m unittest discover -s modules/server/deployment -p 'test_*.py' -v
+
+      - name: Free disk space for the NVIDIA and CUDA closure
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache
+          df -h /
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@448cde739abec1eaf0646249e3d25bb8d9bc7702 # v31.11.2
+        with:
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+            max-jobs = 2
+            cores = 2
+
+      - name: Restore and save the Nix store
+        uses: nix-community/cache-nix-action@7df957e333c1e5da7721f60227dbba6d06080569 # v7
+        with:
+          primary-key: nixos-server-${{ runner.os }}-${{ runner.arch }}-${{ github.sha }}
+          restore-prefixes-first-match: nixos-server-${{ runner.os }}-${{ runner.arch }}-
+          gc-max-store-size-linux: 4G
+
+      - name: Validate automation configuration
+        run: |
+          nix shell --inputs-from . --no-write-lock-file nixpkgs#actionlint nixpkgs#renovate --command bash -euc '
+            actionlint .github/workflows/*.yml
+            renovate-config-validator --strict renovate.json
+          '
+
+      - name: Build the server system
+        run: >-
+          nix build
+          .#nixosConfigurations.nixos-server.config.system.build.toplevel
+          --no-link
+          --no-write-lock-file
+          --print-build-logs

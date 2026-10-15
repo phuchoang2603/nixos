@@ -2,6 +2,7 @@
   imports = [
     ../common
     ./base.nix
+    ./deployment.nix
     ./nvidia.nix
     ./docker.nix
     ./storage.nix

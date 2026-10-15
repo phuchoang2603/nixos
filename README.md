@@ -4,9 +4,10 @@ Use your existing local copy of this repository.
 
 - [Desktop](docs/desktop.md)
 - [Server](docs/server.md)
+- [Dependency updates and server deployment](docs/deployment.md)
 - [MacBook](docs/macbook.md)
 - [Docker containers](docs/docker.md)
-- [Hermes and agent tools](docs/agents.md)
+- [Hermes and agent tools](docs/hermes.md)
 
 Each guide covers installation and rebuilding. The configurations use account `felix`.
 Replace `/path/to/nixos` with your repository directory; a fresh NixOS install

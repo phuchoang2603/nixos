@@ -25,7 +25,7 @@ Web names below use `.home.phuchoang.sbs`.
 | `speaker`, `speaker-player` | Speech and music playback | — |
 | `excalidraw` | Drawing canvas | `excalidraw` |
 
-See [Hermes and agent tools](agents.md) for the agent services.
+See [Hermes and agent tools](hermes.md) for the agent services.
 
 ## Files and storage
 

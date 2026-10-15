@@ -1,0 +1,35 @@
+name: Deploy nixos-server
+
+on:
+  workflow_run:
+    workflows: [Build nixos-server]
+    types: [completed]
+    branches: [main]
+
+permissions: {}
+
+concurrency:
+  group: deploy-nixos-server
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Switch nixos-server
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.head_branch == 'main' &&
+      github.event.workflow_run.head_repository.full_name == github.repository
+    runs-on: [self-hosted, Linux, X64, nixos-server-deploy]
+    timeout-minutes: 130
+    steps:
+      # No checkout or PR artifacts run on the deployment runner.
+      - name: Activate the tested main commit
+        env:
+          DEPLOY_COMMIT: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          if [[ ! "$DEPLOY_COMMIT" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "Invalid deployment commit" >&2
+            exit 1
+          fi
+          systemctl --no-ask-password start --wait "nixos-deploy@${DEPLOY_COMMIT}.service"

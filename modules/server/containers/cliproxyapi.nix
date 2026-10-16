@@ -11,6 +11,8 @@ let
 
   localImage = lab.mkImage {
     name = "cli-proxy-api-plus";
+    # Image name differs from the oci-container unit name.
+    containers = [ "cli-proxy-api" ];
     revision = 1;
     dockerfile = pkgs.writeText "cli-proxy-api-plus.Dockerfile" ''
       FROM debian:bookworm-slim

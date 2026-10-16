@@ -39,9 +39,9 @@ container toolkit remain installed; GPU containers provide their own CUDA librar
 
 One public Cachix cache, `phuchoang2603-nixos`, shares successful main builds with
 normal NixOS switches. Its name and public signing key live in
-`modules/common/cachix.json`, read by both CI and the common NixOS module. A null
-key leaves Cachix disabled until account setup is complete. Upstream Nix caches
-remain available. Application health and Docker startup are not tested by the build.
+`modules/common/cachix.json`, read by both CI and the common NixOS module.
+Upstream Nix caches remain available. Application health and Docker startup are
+not tested by the build.
 
 Create the public cache at https://app.cachix.org and put its public signing key
 in that JSON file. Save a cache-scoped write token as the repository Actions secret

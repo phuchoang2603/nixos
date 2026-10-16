@@ -57,15 +57,9 @@ jobs:
         id: cachix
         run: |
           cache_name=$(jq -r '.name' modules/common/cachix.json)
-          cache_key=$(jq -r '.publicKey // empty' modules/common/cachix.json)
-          if [ -n "$cache_key" ]; then
-            echo "name=$cache_name" >> "$GITHUB_OUTPUT"
-          else
-            echo "::notice::Cachix is not enabled until its public signing key is configured."
-          fi
+          echo "name=$cache_name" >> "$GITHUB_OUTPUT"
 
       - name: Read from Cachix
-        if: steps.cachix.outputs.name != ''
         uses: cachix/cachix-action@38b082610b782e7e93e209c35fd730d399dee866 # v17
         with:
           name: ${{ steps.cachix.outputs.name }}
@@ -88,7 +82,7 @@ jobs:
           --print-build-logs
 
       - name: Publish the successful system closure to Cachix
-        if: steps.cachix.outputs.name != '' && github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+        if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
         env:
           CACHIX_CACHE: ${{ steps.cachix.outputs.name }}
           CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_AUTH_TOKEN }}

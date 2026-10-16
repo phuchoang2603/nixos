@@ -1,5 +1,3 @@
-{ lib, ... }:
-
 let
   cache = builtins.fromJSON (builtins.readFile ./cachix.json);
 in
@@ -10,8 +8,6 @@ in
       "flakes"
     ];
     auto-optimise-store = true;
-  }
-  // lib.optionalAttrs (cache.publicKey != null) {
     extra-substituters = [ "https://${cache.name}.cachix.org" ];
     extra-trusted-public-keys = [ cache.publicKey ];
   };

@@ -69,6 +69,7 @@ in
       PUID = uid;
       PGID = gid;
       HERMES_DASHBOARD = "1";
+      HERMES_WRITE_SAFE_ROOT = "/opt/data:/home/pn";
       DISCORD_HOME_CHANNEL = "1558532114423484507";
       REALTIME_VOICE_LOG_CHANNEL = "1558532054889660416";
     };

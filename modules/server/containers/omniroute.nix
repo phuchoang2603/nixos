@@ -5,11 +5,15 @@
 let
   data = "${lab.appdata}/omniroute";
   envFile = "${lab.secrets}/omniroute.env";
+  publicOrigin = "https://${lab.fqdn "omniroute"}";
+  # OmniRoute runs as uid/gid 1000 (node); sql.js persists to DATA_DIR.
+  uid = "1000";
+  gid = "1000";
 in
 {
   systemd.tmpfiles.rules = [
-    "d ${data} 0755 root root -"
-    "d ${data}/data 0755 root root -"
+    "d ${data} 0755 ${uid} ${gid} -"
+    "d ${data}/data 0755 ${uid} ${gid} -"
   ];
 
   virtualisation.oci-containers.containers = {
@@ -30,25 +34,43 @@ in
       environment = {
         DATA_DIR = "/app/data";
         REDIS_URL = "redis://omniroute-redis:6379";
+        PORT = "20128";
         DASHBOARD_PORT = "20128";
         API_PORT = "20129";
         LIVE_WS_PORT = "20132";
-        # Listen on all interfaces inside the container so Traefik on the proxy
-        # network can reach it. Do not publish these ports on the host.
+        # Traefik reaches the container on the proxy network; do not publish host ports.
         API_HOST = "0.0.0.0";
-        # false keeps Codex/Hermes/Karakeep/Hindsight working with placeholder
-        # keys on day one. Set true in omniroute.env after creating real API
-        # keys in the dashboard (required before treating the URL as public).
+        LIVE_WS_HOST = "0.0.0.0";
+        LIVE_WS_ALLOWED_ORIGINS = publicOrigin;
+
+        # Public HTTPS via Traefik — required for session cookies.
+        AUTH_COOKIE_SECURE = "true";
+        ALLOW_API_KEY_REVEAL = "false";
+        # Open /v1 for Codex and the other containers (no gateway API keys).
         REQUIRE_API_KEY = "false";
-        OMNIROUTE_MEMORY_MB = "2048";
-        NEXT_PUBLIC_BASE_URL = "https://${lab.fqdn "omniroute"}";
+
+        # Prefer explicit public/internal URLs over trusting X-Forwarded-*.
+        NEXT_PUBLIC_BASE_URL = publicOrigin;
         BASE_URL = "http://omniroute:20128";
+
+        # Coding agents (/v1/responses) need a larger V8 heap than the image default (1024).
+        OMNIROUTE_MEMORY_MB = "4096";
+        # Long Codex/Claude streams; env.example recommends 10m for agent workloads.
+        API_BRIDGE_PROXY_TIMEOUT_MS = "600000";
+        API_BRIDGE_SERVER_REQUEST_TIMEOUT_MS = "600000";
+
+        # Defaults worth pinning: warn-only injection scan, keep SQLite backups on.
+        INPUT_SANITIZER_ENABLED = "true";
+        INPUT_SANITIZER_MODE = "warn";
+        DISABLE_SQLITE_AUTO_BACKUP = "false";
+
         NODE_ENV = "production";
         INSTANCE_NAME = "omniroute";
       };
       extraOptions = [
         "--stop-timeout=40"
-        "--memory=3g"
+        # Heap 4G + native buffers (SQLite, etc.).
+        "--memory=5g"
         "--cpus=2"
         "--security-opt=no-new-privileges"
       ];

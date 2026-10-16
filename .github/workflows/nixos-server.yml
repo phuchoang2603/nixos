@@ -18,32 +18,59 @@ concurrency:
 jobs:
   build:
     name: Build nixos-server
-    runs-on: ubuntu-24.04
+    # Enable only after the first deployment has registered the builder.
+    # PR and merge-queue code always stays on GitHub-hosted runners.
+    runs-on: ${{ github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && vars.NIXOS_PERSISTENT_BUILDER == 'true' && fromJSON('["self-hosted", "Linux", "X64", "nixos-server-build"]') || fromJSON('["ubuntu-24.04"]') }}
     timeout-minutes: 120
+    env:
+      NIX_CONFIG: |
+        experimental-features = nix-command flakes
+        max-jobs = 2
+        cores = 2
     steps:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - name: Free disk space for the NVIDIA and CUDA closure
+      - name: Free space on hosted runners
+        if: runner.environment == 'github-hosted'
         run: |
-          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache
+          sudo rm -rf /usr/share/dotnet /opt/ghc
           df -h /
 
       - name: Install Nix
+        if: runner.environment == 'github-hosted'
         uses: cachix/install-nix-action@448cde739abec1eaf0646249e3d25bb8d9bc7702 # v31.11.2
         with:
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
-          extra_nix_config: |
-            experimental-features = nix-command flakes
-            max-jobs = 2
-            cores = 2
 
-      - name: Restore and save the Nix store
+      - name: Restore and save the hosted Nix store
+        if: runner.environment == 'github-hosted'
         uses: nix-community/cache-nix-action@7df957e333c1e5da7721f60227dbba6d06080569 # v7
         with:
-          primary-key: nixos-server-${{ runner.os }}-${{ runner.arch }}-${{ github.sha }}
-          restore-prefixes-first-match: nixos-server-${{ runner.os }}-${{ runner.arch }}-
-          gc-max-store-size-linux: 4G
+          primary-key: nixos-server-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('flake.lock') }}-${{ github.sha }}
+          restore-prefixes-first-match: |
+            nixos-server-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('flake.lock') }}-
+            nixos-server-v2-${{ runner.os }}-${{ runner.arch }}-
+          gc-max-store-size-linux: 12G
+
+      - name: Read the shared Cachix configuration
+        id: cachix
+        run: |
+          cache_name=$(jq -r '.name' modules/common/cachix.json)
+          cache_key=$(jq -r '.publicKey // empty' modules/common/cachix.json)
+          if [ -n "$cache_key" ]; then
+            echo "name=$cache_name" >> "$GITHUB_OUTPUT"
+          else
+            echo "::notice::Cachix is not enabled until its public signing key is configured."
+          fi
+
+      - name: Read from Cachix
+        if: steps.cachix.outputs.name != ''
+        uses: cachix/cachix-action@38b082610b782e7e93e209c35fd730d399dee866 # v17
+        with:
+          name: ${{ steps.cachix.outputs.name }}
+          skipPush: true
+          skipAddingSubstituter: ${{ runner.environment == 'self-hosted' }}
 
       - name: Validate automation configuration
         run: |
@@ -56,6 +83,18 @@ jobs:
         run: >-
           nix build
           .#nixosConfigurations.nixos-server.config.system.build.toplevel
-          --no-link
+          --out-link result
           --no-write-lock-file
           --print-build-logs
+
+      - name: Publish the successful system closure to Cachix
+        if: steps.cachix.outputs.name != '' && github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+        env:
+          CACHIX_CACHE: ${{ steps.cachix.outputs.name }}
+          CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_AUTH_TOKEN }}
+        run: |
+          if [ -z "$CACHIX_AUTH_TOKEN" ]; then
+            echo "::notice::Set CACHIX_AUTH_TOKEN to publish build outputs to Cachix."
+            exit 0
+          fi
+          cachix push "$CACHIX_CACHE" "$(readlink -f result)"

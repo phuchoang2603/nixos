@@ -103,13 +103,18 @@ let
     }
   );
 
-  applicationJob = pkgs.writeText "hermes-application-job.json" (builtins.toJSON {
-    name = "SimplifyJobs Summer 2027 Internships Monitor";
-    schedule = "60m";
-    deliver = "discord:${discordChannels.reports}";
-    skills = [ "internship-application-assistant" "desktop-browser" ];
-    prompt = "Run the internship-application-assistant workflow end to end. Reconcile pending jobs, then run /home/pn/scripts/monitor_simplify_jobs.py and process eligible new roles. Use desktop-browser for browser interaction. Read current profile, configuration and state from /home/pn/internships/.";
-  });
+  applicationJob = pkgs.writeText "hermes-application-job.json" (
+    builtins.toJSON {
+      name = "SimplifyJobs Summer 2027 Internships Monitor";
+      schedule = "60m";
+      deliver = "discord:${discordChannels.reports}";
+      skills = [
+        "internship-application-assistant"
+        "desktop-browser"
+      ];
+      prompt = "Run the internship-application-assistant workflow end to end. Reconcile pending jobs, then run /home/pn/scripts/monitor_simplify_jobs.py and process eligible new roles. Use desktop-browser for browser interaction. Read current profile, configuration and state from /home/pn/internships/.";
+    }
+  );
 
   managedConfig = (pkgs.formats.yaml { }).generate "hermes-config.yaml" {
     plugins.enabled = plugins;
@@ -144,7 +149,10 @@ let
     stt.enabled = false;
     # The account plugin names the interactive Vault tools as one exclusion.
     # Disabling the full browser group would also remove browser_exec.
-    agent.disabled_toolsets = [ "tts" "interactive-vault" ];
+    agent.disabled_toolsets = [
+      "tts"
+      "interactive-vault"
+    ];
     discord = {
       free_response_channels = with discordChannels; [
         main
@@ -173,6 +181,13 @@ in
   ];
 
   systemd.services.docker-hermes.postStart = lib.mkAfter ''
+    # Docker's foreground process starts asynchronously with this hook.
+    for attempt in $(seq 1 60); do
+      if [ "$(${pkgs.docker}/bin/docker inspect --format '{{.State.Running}}' hermes 2>/dev/null)" = true ]; then
+        break
+      fi
+      sleep 1
+    done
     ${pkgs.docker}/bin/docker exec --user ${uid}:${gid} --workdir /opt/hermes hermes \
       python /opt/data/managed/reconcile-job.py /opt/data/managed/application-job.json
   '';

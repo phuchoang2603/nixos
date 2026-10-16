@@ -7,8 +7,10 @@ updating the version and hash together in `home/base/cli/agents/t3-cli.nix`.
 Docker images and GitHub Actions are not managed by Renovate.
 
 The `Build nixos-server` workflow validates the automation files and builds the complete
-server configuration on GitHub-hosted runners for pull requests and pushes to
-`main`. Renovate automatically merges its PRs after required checks pass.
+server configuration. Pull requests and merge queues use GitHub-hosted runners;
+main pushes and manual main builds use the server's separate build runner once
+the repository variable `NIXOS_PERSISTENT_BUILDER` is `true`. Until then they also
+use hosted runners. Renovate automatically merges its PRs after required checks pass.
 Major updates are included in automerge.
 
 After a successful **push** build on `main`, the `Deploy nixos-server` workflow
@@ -29,10 +31,25 @@ ephemeral runner completes one job, then re-registers with the latest system
 configuration so runner updates do not interrupt its active job. Activation can restart changed applications,
 including T3 Code, and does not reboot; new kernels need a later reboot.
 
-GitHub's build cache speeds up CI; it is not a binary cache for the server.
-The server rebuilds the same pinned commit using its local store and configured
-Nix binary caches. Application health and Docker image startup are not tested
-by the NixOS build.
+The build runner uses `github-build`, without deployment permission, sudo, or
+Docker access. Each job gets a fresh workspace while the host's Nix store persists.
+Hosted builds restore the Nix store from GitHub's cache, retaining up to 12 GB
+and keeping the system result rooted through cache upload. The NVIDIA driver and
+container toolkit remain installed; GPU containers provide their own CUDA libraries.
+
+One public Cachix cache, `phuchoang2603-nixos`, shares successful main builds with
+normal NixOS switches. Its name and public signing key live in
+`modules/common/cachix.json`, read by both CI and the common NixOS module. A null
+key leaves Cachix disabled until account setup is complete. Upstream Nix caches
+remain available. Application health and Docker startup are not tested by the build.
+
+Create the public cache at https://app.cachix.org and put its public signing key
+in that JSON file. Save a cache-scoped write token as the repository Actions secret
+`CACHIX_AUTH_TOKEN`; never commit the token. CI uploads the successful system
+closure. Consumers need no token or repeated `cachix use` command. After activating
+the configuration, normal `sudo nixos-rebuild switch --flake .#nixos-server`
+automatically checks Cachix. The first switch can use `--option extra-substituters`
+and `--option extra-trusted-public-keys` with those same values to use it immediately.
 
 ## One-time setup
 
@@ -67,15 +84,27 @@ by the NixOS build.
    sudo nixos-rebuild switch --flake path:.#nixos-server --no-write-lock-file
    ```
 
-   This creates the runner user, registers the runner with label
-   `nixos-server-deploy`, and installs the privileged deployment service. An old
+   This creates separate build and deploy users, registers runners with labels
+   `nixos-server-build` and `nixos-server-deploy`, and installs the deployment service. An old
    runner registration named `nixos-server` is replaced. Future main pushes and
    Renovate merges deploy automatically after CI succeeds.
+
+6. After the build runner appears online in repository Actions settings, enable
+   main builds on it:
+
+   ```bash
+   gh variable set NIXOS_PERSISTENT_BUILDER --repo phuchoang2603/nixos --body true
+   ```
+
+   For an existing deployment installation, the first push remains hosted and
+   deploys the new runner before this variable is enabled. Set it to `false` to
+   route subsequent main builds back to GitHub-hosted runners.
 
 ## Inspect and recover
 
 ```bash
 systemctl status github-runner-nixos-server
+systemctl status github-runner-nixos-server-build
 journalctl -u 'nixos-deploy@*' -n 100 --no-pager
 ```
 

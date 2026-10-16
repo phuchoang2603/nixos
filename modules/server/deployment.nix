@@ -5,6 +5,7 @@
 }:
 let
   runnerUser = "github-deploy";
+  builderUser = "github-build";
   deploy = pkgs.writeShellScript "deploy-nixos-server" ''
     set -euo pipefail
     commit="$1"
@@ -24,6 +25,30 @@ in
     isSystemUser = true;
     group = runnerUser;
   };
+  users.groups.${builderUser} = { };
+  users.users.${builderUser} = {
+    isSystemUser = true;
+    group = builderUser;
+  };
+
+  # The job workspace is fresh each time, while /nix/store persists on the host.
+  # This account has neither Docker access nor deployment's polkit permission.
+  services.github-runners.nixos-server-build = {
+    enable = true;
+    url = "https://github.com/phuchoang2603/nixos";
+    name = "nixos-server-build";
+    replace = true;
+    ephemeral = true;
+    user = builderUser;
+    group = builderUser;
+    tokenFile = "/var/lib/github-runner-secrets/nixos-server.token";
+    tokenType = "access";
+    extraLabels = [ "nixos-server-build" ];
+    extraPackages = [
+      pkgs.cachix
+      pkgs.jq
+    ];
+  };
 
   services.github-runners.nixos-server = {
     enable = true;
@@ -42,6 +67,7 @@ in
   # Finish the current job before taking runner changes. An ephemeral runner
   # exits after its job; the module then restarts it with the new configuration.
   systemd.services.github-runner-nixos-server.restartIfChanged = false;
+  systemd.services.github-runner-nixos-server-build.restartIfChanged = false;
 
   # The runner retains the module's sandbox. Its only privileged operation is
   # starting this service. GitHub Actions gates deployment on successful CI.

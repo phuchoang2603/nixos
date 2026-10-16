@@ -7,13 +7,12 @@ let
 in
 {
   imports = [
-    ./opencode.nix
+    ./codex.nix
     ./t3code.nix
     ./excalidraw.nix
   ];
 
   home.packages = with pkgs; [
-    pi-coding-agent
     openspec
   ];
   # Shared MCP Servers
@@ -27,8 +26,8 @@ in
   };
 
   # Shared Skills
-  programs.opencode.skills = agentSkills;
+  programs.codex.skills = agentSkills;
 
   # Shared Context
-  programs.opencode.context = sharedContext;
+  programs.codex.context = sharedContext;
 }

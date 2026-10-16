@@ -242,30 +242,12 @@
         "type": "github"
       }
     },
-    "opencode-nixpkgs": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1792084379,
-        "narHash": "sha256-mcQW+NUOYlPdpuiGzsoMOJr8+E7Hf2vJbsFQ5Ys/Bzo=",
-        "owner": "shamil2",
-        "repo": "nixpkgs",
-        "rev": "5c9f5203ef8db502d91d15232edef121e74f8605",
-        "type": "github"
-      },
-      "original": {
-        "owner": "shamil2",
-        "ref": "opencode-2.0.22",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
     "root": {
       "inputs": {
         "agenix": "agenix",
         "home-manager": "home-manager",
         "nix-darwin": "nix-darwin",
         "nixpkgs": "nixpkgs",
-        "opencode-nixpkgs": "opencode-nixpkgs",
         "stylix": "stylix"
       }
     },

@@ -11,11 +11,6 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    # Temporary until nixpkgs PR #569770 reaches nixos-unstable.
-    opencode-nixpkgs = {
-      url = "github:shamil2/nixpkgs/opencode-2.0.22";
-      flake = false;
-    };
     nix-darwin = {
       url = "github:nix-darwin/nix-darwin/master";
       inputs.nixpkgs.follows = "nixpkgs";

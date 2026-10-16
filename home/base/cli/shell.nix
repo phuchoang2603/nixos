@@ -68,8 +68,7 @@
         dcp = "docker compose";
         lzg = "lazygit";
         lzd = "lazydocker";
-        oc = "opencode";
-        q = "pi --model opencode/deepseek-v4-flash-free -p";
+        cx = "codex";
 
         # Kubernetes
         k = "kubectl";

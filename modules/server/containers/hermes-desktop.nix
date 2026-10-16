@@ -110,10 +110,14 @@ in
 
     # Hermes tars the remote ~/.hermes back after each session and rejects the absolute
     # symlinks Chromium keeps in its profile, so the desktop's state lives beside it.
-    home=${state}/home
-    install -d -o ${uid} -g ${uid} -m 0700 $home/.hermes $home/.bot-desktop
-    ln -sfn ../.bot-desktop $home/.hermes/bot-desktop
-    chown -h ${uid}:${uid} $home/.hermes/bot-desktop
+    desktopHome=${state}/home
+    install -d -o ${uid} -g ${uid} -m 0700 $desktopHome/.hermes $desktopHome/.bot-desktop
+    ln -sfn ../.bot-desktop $desktopHome/.hermes/bot-desktop
+    chown -h ${uid}:${uid} $desktopHome/.hermes/bot-desktop
+
+    # Chrome's persistent profile refers to the previous container's hostname/pid.
+    # This container has not started yet, so no Chrome can own these locks.
+    rm -f "$desktopHome/.chrome/SingletonLock" "$desktopHome/.chrome/SingletonSocket" "$desktopHome/.chrome/SingletonCookie"
 
     # A previous container's screen is dead; its pid files could match new processes.
     install -d -o ${uid} -g ${uid} -m 0700 ${screen}

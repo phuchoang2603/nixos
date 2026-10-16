@@ -36,6 +36,11 @@ Nix owns the [container infrastructure](../modules/server/containers/hermes.nix)
 image, mounts, resource limits, and environment-file wiring. Deploy infrastructure
 changes through the [deployment workflow](deployment.md).
 
+Chrome keeps its profile in the desktop's persistent home. Container startup clears
+the previous container's Chrome lock files so browser automation can reconnect.
+If the browser is unavailable, check `/json/version` on port 9222 inside
+`hermes-desktop` and its Chrome processes before changing Hermes's settings.
+
 ## Internship applications
 
 The hourly monitor is a native Hermes cron job. Manage it through Hermes or its CLI.

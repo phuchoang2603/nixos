@@ -28,6 +28,31 @@ settings into the writable `config.yaml` each time Hermes starts.
 configuration, databases, sessions, skills, memories, cron jobs, and the soul.
 Plugins maintained in this repository are mounted read-only.
 
+The `application-accounts` plugin lets the agent create applicant credentials without
+an interactive password prompt. `browser_application_account` generates a unique
+password, saves it in Hermes' encrypted local vault, and fills registration and
+confirmation fields. Later calls reuse the same credential. It does not submit the
+form or confirm account creation; the application workflow checks the site's response.
+Interactive Vault tools are disabled through `agent.disabled_toolsets`; `browser_exec`
+and the account helper remain enabled. No upstream account-policy patch is needed.
+
+Skills stay editable in Hermes, alongside its other skills, outside this repository:
+
+- `/opt/data/skills/productivity/internship-application-assistant/`: application policy.
+- `/opt/data/skills/web/desktop-browser/`: browser mechanics and ATS references.
+
+On the host these live under `/mnt/storage/container/hermes/skills/`. Hermes syncs
+skills into the desktop sandbox's `~/.hermes/skills/` when needed. Edit the main
+Hermes copy or use its skill tools; Nix deployments do not replace the skills.
+
+The repository owns `hermes/SOUL.md`, the plugins, and
+`hermes/scripts/monitor_simplify_jobs.py`, mounted read-only. Personal answers remain
+in the private desktop `/home/pn/internships/profile.json`; credentials, sessions
+and progress remain writable.
+`applicationJob` in `hermes.nix` declares the hourly job. A small startup reconciler
+uses Hermes's scheduler API to update only that named job, preserving its ID, history
+and next run when unchanged. CAPTCHA and device approval remain user handoffs.
+
 Related services:
 
 - `hermes-desktop`: terminal, browser, and computer-use sandbox over SSH.
@@ -75,5 +100,8 @@ docker logs --tail 50 executor
 docker exec -it hermes /bin/bash
 ```
 
-Deploy Nix changes with the [Docker rebuild workflow](docker.md#change-and-deploy).
+Pushing to `main` runs **Build nixos-server**. A successful push build triggers
+**Deploy nixos-server** on the local runner, which runs `nixos-rebuild switch` for
+that commit. PR builds and manual build runs do not deploy. Superseded commits
+are skipped. For manual deployment, use the [Docker rebuild workflow](docker.md#change-and-deploy).
 Edit static credentials using [agenix on the MacBook](macbook.md#edit-server-secrets).

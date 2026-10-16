@@ -43,7 +43,7 @@ let
     tasks = "1558532205507125299";
     reports = "1558532114423484507";
   };
-  # Agent-evolved files: its own skills, memories, cron jobs, persona.
+  # Writable agent state; maintained workflow files are mounted below.
   dataDirs = [
     "skills"
     "memories"
@@ -53,10 +53,9 @@ let
 
   # Local plugins under ./hermes/plugins, mounted read-only and enabled on start.
   plugins = [
-    "model-autocomplete"
+    "application-accounts"
     "realtime-voice"
   ];
-  pluginList = builtins.toJSON plugins;
 
   # Memory provider from Hermes' plugin catalog, at the commit the catalog pins.
   # Hermes marks cron and subagent agents so providers skip writes, but this release still
@@ -104,7 +103,16 @@ let
     }
   );
 
+  applicationJob = pkgs.writeText "hermes-application-job.json" (builtins.toJSON {
+    name = "SimplifyJobs Summer 2027 Internships Monitor";
+    schedule = "60m";
+    deliver = "discord:${discordChannels.reports}";
+    skills = [ "internship-application-assistant" "desktop-browser" ];
+    prompt = "Run the internship-application-assistant workflow end to end. Reconcile pending jobs, then run /home/pn/scripts/monitor_simplify_jobs.py and process eligible new roles. Use desktop-browser for browser interaction. Read current profile, configuration and state from /home/pn/internships/.";
+  });
+
   managedConfig = (pkgs.formats.yaml { }).generate "hermes-config.yaml" {
+    plugins.enabled = plugins;
     model = {
       provider = "custom";
       base_url = "http://cli-proxy-api:8317/v1";
@@ -134,7 +142,9 @@ let
     };
     # Voice runs through the realtime-voice plugin, not Hermes' chained STT/TTS.
     stt.enabled = false;
-    agent.disabled_toolsets = [ "tts" ];
+    # The account plugin names the interactive Vault tools as one exclusion.
+    # Disabling the full browser group would also remove browser_exec.
+    agent.disabled_toolsets = [ "tts" "interactive-vault" ];
     discord = {
       free_response_channels = with discordChannels; [
         main
@@ -162,6 +172,11 @@ in
     "docker-hindsight.service"
   ];
 
+  systemd.services.docker-hermes.postStart = lib.mkAfter ''
+    ${pkgs.docker}/bin/docker exec --user ${uid}:${gid} --workdir /opt/hermes hermes \
+      python /opt/data/managed/reconcile-job.py /opt/data/managed/application-job.json
+  '';
+
   # Hermes rewrites config.yaml itself (migrations, /model, "always allow"),
   # so the Nix-owned keys are merged in on each start instead of mounted read-only.
   systemd.services.docker-hermes.preStart = lib.mkBefore ''
@@ -172,17 +187,12 @@ in
     else
       install -m 0600 ${managedConfig} "$cfg"
     fi
-    ${lib.getExe pkgs.yq-go} -i '.plugins.enabled = ((.plugins.enabled // []) + ${pluginList} | unique)' "$cfg"
     chown ${uid}:${gid} "$cfg"
+    ln -sfn soul/SOUL.md ${state}/SOUL.md
 
     install -d -o ${uid} -g ${gid} -m 0700 ${state}/hindsight
     install -o ${uid} -g ${gid} -m 0600 ${hindsightConfig} ${state}/hindsight/config.json
 
-    if [ ! -e ${state}/soul/SOUL.md ]; then
-      install -o ${uid} -g ${gid} -m 0644 ${./hermes/SOUL.md} ${state}/soul/SOUL.md
-    fi
-    # Hermes only reads SOUL.md from the root of its home; its file tool resolves symlinks before writing.
-    ln -sfn soul/SOUL.md ${state}/SOUL.md
   '';
 
   virtualisation.oci-containers.containers.hermes = lab.mkContainer {
@@ -196,6 +206,9 @@ in
     ];
     volumes = [
       "${state}:/opt/data:rw"
+      "${./hermes/SOUL.md}:/opt/data/soul/SOUL.md:ro"
+      "${applicationJob}:/opt/data/managed/application-job.json:ro"
+      "${./hermes/scripts/reconcile-job.py}:/opt/data/managed/reconcile-job.py:ro"
     ]
     ++ map (name: "${./hermes/plugins/${name}}:/opt/data/plugins/${name}:ro") plugins
     ++ [ "${hindsightPlugin}:/opt/data/plugins/hindsight:ro" ];

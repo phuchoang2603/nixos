@@ -1,0 +1,5 @@
+name: application-accounts
+version: 0.1.0
+description: "Creates and fills applicant credentials without an interactive vault prompt."
+author: felix
+kind: standalone

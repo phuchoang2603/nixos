@@ -1,5 +1,0 @@
-name: model-autocomplete
-version: 0.1.0
-description: "Suggests models from the /model picker's catalog while typing Discord's /model name."
-author: felix
-kind: standalone

@@ -52,11 +52,18 @@ hermes cron edit --help
 | `/opt/data/skills/web/desktop-browser/` | Browser mechanics and ATS references |
 | `/home/pn/internships/profile.json` in `hermes-desktop` | Personal answers and experience |
 | `/home/pn/internships/` in `hermes-desktop` | Application configuration and progress |
+| `/home/pn/scripts/` in `hermes-desktop` | Writable automation scripts |
 
 Edit skills in Hermes; it syncs them to the desktop as needed. Desktop files persist
 under `/mnt/storage/container/hermes-desktop/home/` on the host.
-The discovery script is [repo-managed](../modules/server/containers/hermes/scripts/monitor_simplify_jobs.py)
-and mounted read-only in the desktop.
+The discovery script lives at `/home/pn/scripts/monitor_simplify_jobs.py` in that
+same persistent home. Hermes can edit it when the workflow needs changes; container
+restarts and Nix deployments preserve those edits. Matching rules live beside it
+in `discovery-filters.json`. Run `python3 /home/pn/scripts/test_monitor.py` for offline
+checks, then use the monitor's `--dry-run` to preview matches without posting or
+changing state. Normal runs serialize discovery, checkpoint
+confirmed Discord posts, and retry failed deliveries on the next run. Preserve the
+existing application state; `--init` is only for creating a baseline.
 
 The `application-accounts` plugin creates dedicated credentials, stores them in
 Hermes's encrypted local vault, and fills account forms. The application workflow

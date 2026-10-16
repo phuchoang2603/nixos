@@ -135,7 +135,6 @@ in
       "${sshdConfig}:/etc/ssh/sshd_config:ro"
       "${chrome}:/usr/local/bin/chrome:ro"
       "${chromeKeeper}:/usr/local/bin/chrome-keeper:ro"
-      "${./hermes/scripts/monitor_simplify_jobs.py}:/home/${user}/scripts/monitor_simplify_jobs.py:ro"
       screenMount
     ];
     capabilities.ALL = false;

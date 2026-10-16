@@ -132,8 +132,10 @@ The temporary `opencode-nixpkgs` flake input supplies the v2 package recipe from
 `flake.lock`. The official OpenCode flake also packages v2, and the community
 [`pbek/nixcfg#opencode2`](https://github.com/pbek/nixcfg) is another option; the
 PR recipe additionally exports the schemas used by Home Manager validation.
-Once v2 reaches our normal locked `nixos-unstable`, remove that input and the
-explicit `programs.opencode.package` override. A daily T3 task tracks that adoption.
+Config schema validation stays off because it fetches remote `$ref`s during the
+Nix build. Once v2 reaches our normal locked `nixos-unstable`, remove that input
+and the explicit `programs.opencode.package` override. A daily T3 task tracks
+that adoption.
 
 Codex and Cursor are no longer installed or configured by this module; their
 existing local session and authentication data is left intact.

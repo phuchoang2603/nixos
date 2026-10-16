@@ -13,7 +13,9 @@ in
     package = pkgs.callPackage "${inputs.opencode-nixpkgs}/pkgs/by-name/op/opencode/package.nix" { };
     enableMcpIntegration = true;
     mutableSettings = true;
-    validateFiles.config = true;
+    # Schema validation pulls https://models.dev/model-schema.json at build time,
+    # which fails in the Nix sandbox / CI.
+    validateFiles.config = false;
     web = {
       enable = true;
       extraArgs = [

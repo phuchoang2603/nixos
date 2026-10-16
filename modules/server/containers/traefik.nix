@@ -7,7 +7,10 @@
   ];
 
   # Host services proxied via host.docker.internal; reachable from Docker bridges only.
-  networking.firewall.interfaces."br-+".allowedTCPPorts = [ 3773 ];
+  networking.firewall.interfaces."br-+".allowedTCPPorts = [
+    3773
+    4096
+  ];
 
   virtualisation.oci-containers.containers.traefik = lab.mkContainer {
     image = "traefik:latest";
@@ -22,6 +25,7 @@
       "${./traefik/dynamic.yaml}:/etc/traefik/dynamic/external-services.yml:ro"
       "${./traefik/executor.yaml}:/etc/traefik/dynamic/executor.yml:ro"
       "${./traefik/t3code.yaml}:/etc/traefik/dynamic/t3code.yml:ro"
+      "${./traefik/opencode.yaml}:/etc/traefik/dynamic/opencode.yml:ro"
       "${lab.appdata}/traefik/certs:/var/traefik/certs:rw"
     ];
     environmentFiles = [ "${lab.secrets}/traefik.env" ];

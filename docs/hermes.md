@@ -13,7 +13,7 @@ and a separate desktop for terminal and browser work.
 | CLIProxyAPI | https://cliproxyapi.home.phuchoang.sbs |
 | Executor | https://mcp.home.phuchoang.sbs |
 | Executor MCP | https://mcp.home.phuchoang.sbs/mcp?mode=passthrough |
-| OpenCode | OpenTunnel via `opencode pair --remote` |
+| OpenCode | https://opencode.home.phuchoang.sbs |
 
 Traefik adds Executor's API key on the MCP route. Its web UI keeps its normal login.
 
@@ -106,26 +106,20 @@ over the writable global settings. Start a new login shell after rebuilding so
 terminal launches inherit that variable. The persistent service receives it directly.
 Stylix theming for OpenCode is disabled.
 
-`web.enable` keeps the local API/UI server running (`opencode serve --service` on
-`127.0.0.1:4096`) via a systemd user service on Linux and a launchd agent on
-macOS. OpenTunnel only bridges that process; without it there is nothing to pair
-to. Remote access uses OpenCode's built-in [OpenTunnel](https://opentunnel.xyz/)
-bridge (end-to-end encrypted; the relay never sees plaintext). After the first
-rebuild and login shell, enable it once on that host:
+`web.enable` runs `opencode serve` on `0.0.0.0:4096` via a systemd user service on
+Linux and a launchd agent on macOS. Traefik proxies
+`https://opencode.home.phuchoang.sbs` to `host.docker.internal:4096`, same pattern
+as T3 Code. The host firewall allows that port from Docker bridges.
 
-```bash
-opencode pair --remote --yes
-```
-
-That prints a one-time link/QR (expires in 5 minutes; session cookie lasts 30 days).
-Later pairing links reuse the same tunnel until you run
-`opencode service set remote false`. Retrieve the server password with
-`opencode service get password`. Check Linux service logs with
+No server password is configured: OpenCode only enforces Basic auth when
+`OPENCODE_SERVER_PASSWORD` is set, and this setup does not set it (and does not
+use `serve --service`, which would generate one). Rely on the LAN/Traefik edge
+for access control. Check Linux service logs with
 `journalctl --user -u opencode-web -f`.
 
-OpenCode does not use Traefik or Pangolin/Newt for its UI. Keep browser automation
-on Hermes desktop (`hermes-desktop` CDP Chrome); Browser Control needs a local
-Chromium extension and is a poor fit for the headless server.
+Keep browser automation on Hermes desktop (`hermes-desktop` CDP Chrome); Browser
+Control needs a local Chromium extension and is a poor fit for the headless
+server.
 
 The temporary `opencode-nixpkgs` flake input supplies the v2 package recipe from
 [nixpkgs PR #569770](https://github.com/NixOS/nixpkgs/pull/569770), pinned in

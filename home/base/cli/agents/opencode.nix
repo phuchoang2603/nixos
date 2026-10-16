@@ -18,12 +18,12 @@ in
     validateFiles.config = false;
     web = {
       enable = true;
+      # Plain serve (no --service): OpenCode only requires a password when
+      # OPENCODE_SERVER_PASSWORD is set. Traefik reaches the host via
+      # host.docker.internal, so bind on all interfaces.
       extraArgs = [
-        # Shared background service on localhost; remote access uses OpenTunnel
-        # (`opencode pair --remote`), not Traefik/Pangolin.
-        "--service"
         "--hostname"
-        "127.0.0.1"
+        "0.0.0.0"
         "--port"
         "4096"
       ];

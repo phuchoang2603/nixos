@@ -1,0 +1,13 @@
+http:
+  routers:
+    opencode:
+      rule: Host(`opencode.home.phuchoang.sbs`)
+      entryPoints: [websecure]
+      service: opencode
+      tls:
+        certResolver: letsencrypt
+  services:
+    opencode:
+      loadBalancer:
+        servers:
+          - url: http://host.docker.internal:4096

@@ -93,27 +93,9 @@ since Hermes's plugin updater cannot replace read-only mounts.
 OmniRoute ([diegosouzapw/OmniRoute](https://github.com/diegosouzapw/OmniRoute))
 is the model gateway: dashboard + OpenAI-compatible `/v1` on port 20128, with
 Redis for rate limits. Persistent state is in
-`/mnt/storage/container/omniroute/data/` (must be writable by uid 1000 so
-`storage.sqlite` and `server.env` can be created). Inside Docker the endpoint is
-`http://omniroute:20128/v1`.
-
-**First boot:** log in with `INITIAL_PASSWORD` from `omniroute.env` (or
-`docker logs omniroute`) and rotate it. Gateway API keys are off
-(`REQUIRE_API_KEY=false`); clients can use any placeholder bearer.
-Bootstrap secrets (`JWT_SECRET`, `STORAGE_ENCRYPTION_KEY`, `API_KEY_SECRET`)
-are written to `server.env` on that volume — do not delete them or encrypted
-provider credentials become unreadable.
-
-**Providers:** add OpenCode Zen (free) plus any OAuth/API subscriptions you use.
-Prefer `model: auto` (or a free-tier combo) so quota exhaustion falls through
-instead of hard-failing. Hermes keeps model id `gemini-3.8-flash-high` via an
-OmniRoute alias to `antigravity/gemini-3.8-flash-tiered`.
-
-**Dashboard defaults worth turning on**
-- Compression → mode `stacked`, pipeline RTK (`standard`) then Caveman (`full`),
-  `applyToToolResults: true` (the 9router-style token saver).
-- Leave injection sanitizer on **warn** (Nix already sets this); use **block**
-  only if you accept false positives on agent tool traffic.
+`/mnt/storage/container/omniroute/data/`. Inside Docker the endpoint is
+`http://omniroute:20128/v1`. Add providers in the dashboard. After first boot,
+log in with `INITIAL_PASSWORD` from `omniroute.env` (or container logs).
 
 Executor's UI manages MCP integrations. State lives in
 `/mnt/storage/container/executor/data/`. Its [image definition](../modules/server/containers/executor.nix)

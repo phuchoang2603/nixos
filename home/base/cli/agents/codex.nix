@@ -10,10 +10,10 @@ in
     # Keep login/auth and interactive tweaks; declared settings still win on conflict.
     mutableSettings = true;
     settings = {
-      model_provider = "omniroute";
-      model_providers.omniroute = {
-        name = "OmniRoute";
-        base_url = "https://omniroute.${gatewayDomain}/v1";
+      model_provider = "cliproxyapi";
+      model_providers.cliproxyapi = {
+        name = "CLIProxyAPI";
+        base_url = "https://cliproxyapi.${gatewayDomain}/v1";
         wire_api = "responses";
         requires_openai_auth = false;
       };

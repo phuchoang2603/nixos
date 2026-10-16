@@ -93,8 +93,8 @@ in
         # Extraction, consolidation and reflect all go through the proxy; a flash-class model
         # keeps extraction quality up without the cost of the chat model.
         HINDSIGHT_API_LLM_PROVIDER = "openai";
-        HINDSIGHT_API_LLM_BASE_URL = "http://omniroute:20128/v1";
-        HINDSIGHT_API_LLM_API_KEY = "omniroute";
+        HINDSIGHT_API_LLM_BASE_URL = "http://cli-proxy-api:8317/v1";
+        HINDSIGHT_API_LLM_API_KEY = "cliproxyapi";
         HINDSIGHT_API_LLM_MODEL = "gpt-6-luna";
         # Caps background retain/consolidation so a burst of turns queues instead of
         # flooding the proxy accounts.

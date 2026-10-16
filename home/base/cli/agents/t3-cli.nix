@@ -11,14 +11,14 @@ let
     x86_64-linux = {
       npmPlatform = "linux-x64";
       # renovate: depName=@t3code/t3-linux-x64
-      version = "0.0.46-nightly.20261015.3158";
-      hash = "sha512-2fza65BiXNQL9bpul9iRbJXwMP9vbWA7qflK9ENw5K3iTfoMlYcT0mNaFnlmU118RCvDAVOnhufAB6dNmUNTvw==";
+      version = "0.1.1-nightly.20261016.3190";
+      hash = "sha512-1s1XaTjPxjHn4daTYsPs1zDCjjXvxrzNc/iwLRDs2IZ+IPsHMlLAcmG44HgLUIlaYgd3ECpWQeqvUgDvcn1a/A==";
     };
     aarch64-darwin = {
       npmPlatform = "darwin-arm64";
       # renovate: depName=@t3code/t3-darwin-arm64
-      version = "0.0.46-nightly.20261015.3158";
-      hash = "sha512-Zp7VMlJdPPFlZnqFgVBSKvotU0zYpVs85P/FITB/MPWwn9lNk1hAVKnJkzXpHZOhBGYygyIY5wJ32BaRyVxZSA==";
+      version = "0.1.1-nightly.20261016.3190";
+      hash = "sha512-PXauKQYQSFRLbPd6c3KaC7/KPNTaK2H6nv5PbX3CSHa96ZEaDiQlV5N7UkBTDLvQwfi6LaoB/Nn6l8hd4eXL2w==";
     };
   };
 

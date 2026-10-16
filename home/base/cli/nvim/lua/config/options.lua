@@ -7,7 +7,6 @@ opt.wrap = true -- Wrap lines
 opt.linebreak = true -- Wrap based on word
 opt.breakindent = true -- Keep indent when wrap
 opt.scrolloff = 16 -- Keep lines above/below cursor
-opt.scrolloffpad = 1 -- preserve scrolloff when go to end of buffer
 opt.sidescrolloff = 8 -- Keep 8 columns left/right of cursor
 
 -- Indentation

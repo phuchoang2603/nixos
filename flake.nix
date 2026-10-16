@@ -24,7 +24,6 @@
       url = "github:danth/stylix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
   };
 
   outputs =
@@ -43,7 +42,6 @@
         import nixpkgs {
           inherit system;
           config.allowUnfree = true;
-          overlays = [ inputs.neovim-nightly-overlay.overlays.default ];
         };
 
       mkHomeConfig =

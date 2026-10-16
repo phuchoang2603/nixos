@@ -6,6 +6,8 @@
 {
   programs.neovim = {
     enable = true;
+    # Use the stable Neovim release from nixpkgs.
+    package = pkgs.neovim-unwrapped;
 
     vimAlias = true;
     viAlias = true;
@@ -20,50 +22,13 @@
       blink-cmp
       friendly-snippets
       conform-nvim
-      (nvim-treesitter.withPlugins (p: [
-        p.comment
-        p.regex
-        p.vim
-        p.ini
-        p.sql
-        p.bash
-        p.c
-        p.cpp
-        p.python
-        p.go
-        p.templ
-        p.lua
-        p.html
-        p.css
-        p.javascript
-        p.json
-        p.nix
-        p.latex
-        p.markdown
-        p.markdown_inline
-        p.dockerfile
-        p.yaml
-        p.toml
-        p.starlark
-        p.hcl
-        p.helm
-      ]))
+      nvim-treesitter.withAllGrammars
       nvim-treesitter-textobjects
       nvim-lspconfig
 
       # Language-support
       helm-ls-nvim
       live-preview-nvim
-      (pkgs.vimUtils.buildVimPlugin {
-        name = "sqls-nvim";
-        src = pkgs.fetchFromGitHub {
-          owner = "nanotee";
-          repo = "sqls.nvim";
-          rev = "332caa9ab86af1a00259feb01051ea825e8fc461";
-          hash = "sha256-wCU6wqFykkUv0dpO9MY8VNjPeyUqV4x0LngSZ2D967s=";
-        };
-        doCheck = false;
-      })
 
       # Test
       neotest
@@ -81,7 +46,6 @@
       nvim-nio
       yazi-nvim
       quicker-nvim
-      sidekick-nvim
       mini-icons
       gitsigns-nvim
       which-key-nvim
@@ -104,7 +68,6 @@
       ty
       gopls
       bash-language-server
-      copilot-language-server
       vscode-langservers-extracted
       lua-language-server
       nixd

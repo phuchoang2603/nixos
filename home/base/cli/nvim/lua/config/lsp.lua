@@ -5,8 +5,6 @@ end
 -- LSP
 local servers = {
 	"bashls",
-	"sqls",
-	"sqruff",
 	"clangd",
 	"gopls",
 	"protols",
@@ -41,58 +39,6 @@ local default_keymaps = {
 	{ keys = "<leader>cl", func = vim.lsp.codelens.run, desc = "Run Code Lens", has = "codeLensProvider" },
 	{ keys = "K", func = vim.lsp.buf.hover, desc = "Hover (alt)", has = "hoverProvider" },
 	{ keys = "gd", func = vim.lsp.buf.definition, desc = "Goto Definition", has = "definitionProvider" },
-	{
-		mode = "i",
-		keys = "<Tab>",
-		func = function()
-			if vim.lsp.inline_completion.get() then
-				return
-			end
-
-			return "<Tab>"
-		end,
-		expr = true,
-		desc = "Accept Copilot Suggestions or Tab",
-	},
-	{
-		mode = "i",
-		keys = "<c-b>",
-		func = function()
-			local result = vim.lsp.inline_completion.get({
-				on_accept = function(item)
-					local insert_text = item.insert_text
-					if type(insert_text) ~= "string" or insert_text == "" then
-						return item
-					end
-
-					local cursor_col = vim.fn.col(".") - 1
-					local current_line = vim.fn.getline(".")
-					local typed_so_far = current_line:sub(1, cursor_col)
-
-					local remaining = ""
-					if insert_text:sub(1, #typed_so_far) == typed_so_far then
-						remaining = insert_text:sub(#typed_so_far + 1)
-					else
-						remaining = insert_text
-					end
-
-					local next_chunk = remaining:match("^%s*%S+")
-
-					if next_chunk then
-						item.insert_text = typed_so_far .. next_chunk
-						return item
-					end
-
-					return item
-				end,
-			})
-			if not result then
-				return "<c-b>"
-			end
-		end,
-		expr = true,
-		desc = "Accept partial Copilot Suggestions",
-	},
 }
 
 -- Events

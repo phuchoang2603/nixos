@@ -4,7 +4,6 @@ wk.setup({
 })
 
 wk.add({
-	{ "<leader>a", group = "AI" },
 	{ "<leader>b", group = "Buffer" },
 	{ "<leader>c", group = "Code" },
 	{ "<leader>d", group = "Debug" },

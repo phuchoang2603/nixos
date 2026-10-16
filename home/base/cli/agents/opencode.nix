@@ -17,11 +17,11 @@ in
     validateFiles.config = false;
     web = {
       enable = true;
-      # Shared service so `opencode service get password` matches Traefik :4096.
+      # Local shared service for T3 Code / CLI clients on this host.
       extraArgs = [
         "--service"
         "--hostname"
-        "0.0.0.0"
+        "127.0.0.1"
         "--port"
         "4096"
       ];

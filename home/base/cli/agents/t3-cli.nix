@@ -11,14 +11,14 @@ let
     x86_64-linux = {
       npmPlatform = "linux-x64";
       # renovate: depName=@t3code/t3-linux-x64
-      version = "0.1.1-nightly.20261016.3190";
-      hash = "sha512-1s1XaTjPxjHn4daTYsPs1zDCjjXvxrzNc/iwLRDs2IZ+IPsHMlLAcmG44HgLUIlaYgd3ECpWQeqvUgDvcn1a/A==";
+      version = "0.1.0";
+      hash = "sha512-y+yXTAjT//syOY+hx8l1gfGzl59U29iPfXYQRsO5oG/EFnn+vsgEL5FzRgyXDrlYDShLaVkO65hiWug8lRQx0g==";
     };
     aarch64-darwin = {
       npmPlatform = "darwin-arm64";
       # renovate: depName=@t3code/t3-darwin-arm64
-      version = "0.1.1-nightly.20261016.3190";
-      hash = "sha512-PXauKQYQSFRLbPd6c3KaC7/KPNTaK2H6nv5PbX3CSHa96ZEaDiQlV5N7UkBTDLvQwfi6LaoB/Nn6l8hd4eXL2w==";
+      version = "0.1.0";
+      hash = "sha512-Lh9Z8t6j0djYvl/u8aaQIFhVkJfccDg5payjo6q2ZWqV6+GpMVgk2lHz8/QC7rjaTWoZ+jiSCp/Fys91zPR2/A==";
     };
   };
 
@@ -55,7 +55,7 @@ in
   '';
 
   meta = {
-    description = "T3 Code headless CLI/server (nightly), without the desktop app";
+    description = "T3 Code headless CLI/server, without the desktop app";
     homepage = "https://github.com/pingdotgg/t3code";
     license = lib.licenses.mit;
     mainProgram = "t3";

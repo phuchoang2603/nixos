@@ -23,7 +23,8 @@ in
     };
     Service = {
       Type = "simple";
-      ExecStart = "${lib.getExe t3codePkg} serve --host 0.0.0.0 --port ${toString t3codePort}";
+      # Local only; remote access goes through T3 Connect.
+      ExecStart = "${lib.getExe t3codePkg} serve --host 127.0.0.1 --port ${toString t3codePort}";
       Restart = "on-failure";
       RestartSec = 5;
     };

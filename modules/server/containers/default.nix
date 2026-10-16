@@ -6,7 +6,7 @@
     ./vaultwarden.nix
     ./karakeep.nix
     ./newt.nix
-    ./cliproxyapi.nix
+    ./omniroute.nix
     ./executor.nix
     ./excalidraw.nix
     ./hermes.nix

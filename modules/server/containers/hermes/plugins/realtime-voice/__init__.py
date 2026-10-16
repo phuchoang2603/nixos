@@ -34,7 +34,7 @@ import websockets
 
 logger = logging.getLogger(__name__)
 
-REALTIME_URL = os.getenv("REALTIME_VOICE_URL", "ws://cli-proxy-api:8317/v1/realtime")
+REALTIME_URL = os.getenv("REALTIME_VOICE_URL", "ws://omniroute:20128/v1/realtime")
 MODEL = os.getenv("REALTIME_VOICE_MODEL", "gpt-realtime-2")
 VOICE = os.getenv("REALTIME_VOICE_VOICE", "marin")
 AUTO_JOIN = os.getenv("REALTIME_VOICE_AUTO_JOIN", "true").lower() in ("1", "true", "yes")

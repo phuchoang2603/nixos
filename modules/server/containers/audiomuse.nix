@@ -23,9 +23,9 @@ let
     AUTH_ENABLED = "false";
     AUDIOMUSE_USER = "felix";
     AI_MODEL_PROVIDER = "OPENAI";
-    OPENAI_SERVER_URL = "http://cli-proxy-api:8317/v1/chat/completions";
+    OPENAI_SERVER_URL = "http://omniroute:20128/v1/chat/completions";
     OPENAI_MODEL_NAME = "gpt-6-luna";
-    OPENAI_API_KEY = "cliproxyapi";
+    OPENAI_API_KEY = "omniroute";
     CLAP_ENABLED = "true";
     LYRICS_ENABLED = "true";
     LYRICS_ASR_ENABLE = "false";

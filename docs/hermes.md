@@ -1,6 +1,6 @@
 # Hermes and agent tools
 
-Hermes uses CLIProxyAPI for models, Executor for MCP tools, Hindsight for memory,
+Hermes uses OmniRoute for models, Executor for MCP tools, Hindsight for memory,
 and a separate desktop for terminal and browser work.
 
 ## Open
@@ -10,7 +10,7 @@ and a separate desktop for terminal and browser work.
 | Hermes | https://hermes.home.phuchoang.sbs |
 | Desktop viewer | https://desktop.home.phuchoang.sbs |
 | Hindsight | https://hindsight.home.phuchoang.sbs |
-| CLIProxyAPI | https://cliproxyapi.home.phuchoang.sbs |
+| OmniRoute | https://omniroute.home.phuchoang.sbs |
 | Executor | https://mcp.home.phuchoang.sbs |
 | Executor MCP | https://mcp.home.phuchoang.sbs/mcp?mode=passthrough |
 
@@ -90,12 +90,14 @@ since Hermes's plugin updater cannot replace read-only mounts.
 
 ## Other agent services
 
-CLIProxyAPI runs [CLIProxyAPIPlus](https://github.com/jc01rho/CLIProxyAPIPlus)
-(MIT fork with a native OpenCode Zen executor). The UI manages provider accounts
-and settings. Persistent state is in `/mnt/storage/container/cliproxyapi/`:
-`config/`, `auths/`, `logs/`, and `plugins/`. Inside Docker, its model endpoint
-is `http://cli-proxy-api:8317/v1`. OpenCode free models use the `opencode`
-provider group with `api-key: public`.
+OmniRoute ([diegosouzapw/OmniRoute](https://github.com/diegosouzapw/OmniRoute))
+is the model gateway: dashboard + OpenAI-compatible `/v1` on port 20128, with
+Redis for rate limits. Persistent state is in
+`/mnt/storage/container/omniroute/data/`. Inside Docker the endpoint is
+`http://omniroute:20128/v1`. Add OpenCode Zen and other providers in the
+dashboard; use `model: auto` or a specific free-tier id. After first boot, read
+`INITIAL_PASSWORD` from `omniroute.env` (or container logs), then optionally set
+`REQUIRE_API_KEY=true` and issue API keys for Codex and the other containers.
 
 Executor's UI manages MCP integrations. State lives in
 `/mnt/storage/container/executor/data/`. Its [image definition](../modules/server/containers/executor.nix)

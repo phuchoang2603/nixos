@@ -19,7 +19,7 @@ Web names below use `.home.phuchoang.sbs`.
 | `audiomuse`, `audiomuse-db`, `audiomuse-worker` | Music analysis and recommendations | `audiomuse` |
 | `hermes` | Agent gateway and dashboard | `hermes` |
 | `hermes-desktop`, `hermes-desktop-vnc` | Agent desktop and browser viewer | `desktop` |
-| `cli-proxy-api` | Model API gateway | `cliproxyapi` |
+| `omniroute`, `omniroute-redis` | Model API gateway | `omniroute` |
 | `executor` | MCP integrations and tools | `mcp` |
 | `hindsight`, `hindsight-db` | Agent long-term memory | `hindsight` |
 | `speaker`, `speaker-player` | Speech and music playback | — |

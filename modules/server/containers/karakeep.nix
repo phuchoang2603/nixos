@@ -23,8 +23,8 @@
         CRAWLER_FULL_PAGE_ARCHIVE = "false";
         CRAWLER_VIDEO_DOWNLOAD = "false";
 
-        OPENAI_BASE_URL = "http://cli-proxy-api:8317/v1";
-        OPENAI_API_KEY = "cliproxyapi";
+        OPENAI_BASE_URL = "http://omniroute:20128/v1";
+        OPENAI_API_KEY = "omniroute";
         INFERENCE_TEXT_MODEL = "gpt-6-luna";
         INFERENCE_IMAGE_MODEL = "gemini-3-flash";
         INFERENCE_USE_MAX_COMPLETION_TOKENS = "true";

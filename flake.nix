@@ -11,6 +11,12 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    # Temporary v2 recipe until https://github.com/NixOS/nixpkgs/pull/569770
+    # reaches nixos-unstable. Keep the rest of the system on our normal nixpkgs.
+    opencode-nixpkgs = {
+      url = "github:shamil2/nixpkgs/opencode-2.0.22";
+      flake = false;
+    };
     nix-darwin = {
       url = "github:nix-darwin/nix-darwin/master";
       inputs.nixpkgs.follows = "nixpkgs";

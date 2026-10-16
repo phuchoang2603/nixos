@@ -7,8 +7,7 @@ let
 in
 {
   imports = [
-    ./cursor.nix
-    ./codex.nix
+    ./opencode.nix
     ./t3code.nix
     ./excalidraw.nix
   ];
@@ -28,15 +27,8 @@ in
   };
 
   # Shared Skills
-  programs.codex.skills = agentSkills;
-  programs.cursor-agent.skillsDir = agentSkills;
+  programs.opencode.skills = agentSkills;
 
   # Shared Context
-  programs.codex.context = sharedContext;
-  programs.cursor-agent.rules.global-context = ''
-    ---
-    alwaysApply: true
-    ---
-    ${builtins.readFile sharedContext}
-  '';
+  programs.opencode.context = sharedContext;
 }

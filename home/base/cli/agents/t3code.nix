@@ -7,12 +7,46 @@
 
 let
   t3codePort = 3773;
+  t3codeUnwrapped = pkgs.callPackage ./t3-cli.nix { };
   t3codePkg = config.programs.t3code.package;
 in
 {
   programs.t3code = {
     enable = true;
-    package = pkgs.callPackage ./t3-cli.nix { };
+    package =
+      if pkgs.stdenv.hostPlatform.isLinux then
+        pkgs.buildFHSEnv {
+          pname = "t3";
+          inherit (t3codeUnwrapped) version;
+          multiArch = false;
+          targetPkgs =
+            p: with p; [
+              glib
+              nss
+              nspr
+              at-spi2-core
+              dbus
+              libX11
+              libXcomposite
+              libXdamage
+              libXext
+              libXfixes
+              libXrandr
+              libxcb
+              libxkbcommon
+              libgbm
+              expat
+              alsa-lib
+              systemd
+              fontconfig
+              freetype
+              dejavu_fonts
+              noto-fonts-color-emoji
+            ];
+          runScript = lib.getExe t3codeUnwrapped;
+        }
+      else
+        t3codeUnwrapped;
   };
 
   systemd.user.services.t3code = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {

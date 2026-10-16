@@ -120,8 +120,8 @@ in
         "${state}/worker-plugins:/app/plugin/installed:rw"
         "${state}/model-cache:/app/cache:rw"
       ];
+      devices = [ "nvidia.com/gpu=all" ];
       extraOptions = [
-        "--device=nvidia.com/gpu=all"
         "--memory=4g"
         "--cpus=2"
         "--security-opt=no-new-privileges"

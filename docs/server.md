@@ -87,10 +87,5 @@ After reboot, log in as root on the console and run `passwd felix`.
 
 ## Rebuild
 
-Stage changes for the next boot, keeping services running until you reboot:
-
-```bash
-cd /path/to/nixos
-sudo nixos-rebuild boot --flake .#nixos-server
-sudo reboot
-```
+Push changes to `main` for automatic build and deployment. See
+[deployment](deployment.md) for manual switches, staging for reboot, and rollback.

@@ -31,7 +31,7 @@ See [Hermes and agent tools](hermes.md) for the agent services.
 
 | Path | What to change or store |
 | --- | --- |
-| `modules/server/containers/<app>.nix` | Image, mounts, settings, and routing |
+| `modules/server/containers/<app>.nix` | Container infrastructure and declared app settings |
 | `modules/server/containers/default.nix` | Which app modules are enabled |
 | `modules/server/containers/lab.nix` | Shared container and image helpers |
 | `modules/server/docker.nix` | Docker daemon, network, and startup dependencies |
@@ -61,22 +61,18 @@ Restart a chosen application through systemd:
 sudo systemctl restart docker-hermes
 ```
 
-Replace `hermes` with the container name. For Traefik or CLIProxyAPI changes,
-use the staged rebuild below when your connection depends on them.
+Replace `hermes` with the container name. App-managed settings can be edited in
+the app or its persistent files. Hermes's [settings, skills, and cron jobs](hermes.md#what-to-edit)
+stay outside Nix.
 
 ## Change and deploy
 
-Edit the app's Nix file, then stage and reboot when ready:
+Edit Nix infrastructure or plugin source, then commit and push to `main`.
+The [deployment workflow](deployment.md) builds and activates the change.
+That guide also covers manual switches, staging for reboot, and rollback.
 
-```bash
-cd /path/to/nixos
-sudo nixos-rebuild boot --flake .#nixos-server
-sudo reboot
-```
-
-For credentials, use [Edit server secrets](macbook.md#edit-server-secrets).
-Changed encrypted files cause their consuming containers to restart on a normal
-rebuild switch.
+Edit static credentials through [agenix](macbook.md#edit-server-secrets).
+Changed encrypted files restart their consuming containers on a normal switch.
 
 Custom images are prepared automatically before their containers start and reused
 while their tags exist. Edit the recipe to change it, or increase `revision` in

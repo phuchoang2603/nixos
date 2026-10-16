@@ -21,7 +21,7 @@ in
       "${lab.media}:/media:ro"
     ];
     environment.JELLYFIN_PublishedServerUrl = "https://${lab.fqdn "jellyfin"}";
-    extraOptions = [ "--device=nvidia.com/gpu=all" ];
+    devices = [ "nvidia.com/gpu=all" ];
     traefik = {
       name = "jellyfin";
       port = 8096;

@@ -20,7 +20,7 @@ jobs:
       github.event.workflow_run.event == 'push' &&
       github.event.workflow_run.head_branch == 'main' &&
       github.event.workflow_run.head_repository.full_name == github.repository
-    runs-on: [self-hosted, Linux, X64, nixos-server-deploy]
+    runs-on: nixos-server-deploy
     timeout-minutes: 130
     steps:
       # No checkout or PR artifacts run on the deployment runner.

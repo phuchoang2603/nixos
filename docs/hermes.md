@@ -1,107 +1,92 @@
 # Hermes and agent tools
 
-Hermes uses CLIProxyAPI for model requests, Executor for MCP tools, Hindsight
-for long-term memory, and a separate desktop for terminal and browser work.
+Hermes uses CLIProxyAPI for models, Executor for MCP tools, Hindsight for memory,
+and a separate desktop for terminal and browser work.
 
 ## Open
 
 | Service | Address |
 | --- | --- |
-| Hermes dashboard | https://hermes.home.phuchoang.sbs |
-| CLIProxyAPI | https://cliproxyapi.home.phuchoang.sbs |
-| Executor UI | https://mcp.home.phuchoang.sbs |
-| Executor MCP endpoint | https://mcp.home.phuchoang.sbs/mcp?mode=passthrough |
+| Hermes | https://hermes.home.phuchoang.sbs |
 | Desktop viewer | https://desktop.home.phuchoang.sbs |
-| Hindsight UI | https://hindsight.home.phuchoang.sbs |
+| Hindsight | https://hindsight.home.phuchoang.sbs |
+| CLIProxyAPI | https://cliproxyapi.home.phuchoang.sbs |
+| Executor | https://mcp.home.phuchoang.sbs |
+| Executor MCP | https://mcp.home.phuchoang.sbs/mcp?mode=passthrough |
 
-Inside Docker, the model API is `http://cli-proxy-api:8317/v1`.
-Traefik injects Executor's API key on the `/mcp` route; its web UI uses its normal
-login.
+Traefik adds Executor's API key on the MCP route. Its web UI keeps its normal login.
 
-## Hermes
+## What to edit
 
-Edit [hermes.nix](../modules/server/containers/hermes.nix) for the default model,
-MCP connection, memory provider, and gateway settings. Nix merges these managed
-settings into the writable `config.yaml` each time Hermes starts.
+Hermes manages its own settings and jobs. Its home is `/opt/data` in the container,
+backed by `/mnt/storage/container/hermes/` on the host.
 
-`/mnt/storage/container/hermes/` mounts at `/opt/data` in the container. It holds
-configuration, databases, sessions, skills, memories, cron jobs, and the soul.
-Plugins maintained in this repository are mounted read-only.
+| Path under `/opt/data` | Purpose |
+| --- | --- |
+| `config.yaml` | Model, tools, MCP, Discord, and gateway settings |
+| `SOUL.md` | Personality and standing authorization |
+| `skills/` | Editable skills |
+| `hindsight/config.json` | Memory-provider settings |
+| `cron/` | Native schedules and execution history |
 
-The `application-accounts` plugin lets the agent create applicant credentials without
-an interactive password prompt. `browser_application_account` generates a unique
-password, saves it in Hermes' encrypted local vault, and fills registration and
-confirmation fields. Later calls reuse the same credential. It does not submit the
-form or confirm account creation; the application workflow checks the site's response.
-Interactive Vault tools are disabled through `agent.disabled_toolsets`; `browser_exec`
-and the account helper remain enabled. No upstream account-policy patch is needed.
+Use Hermes's controls or edit these files directly; they persist across restarts.
+A fresh installation needs restored app data or Hermes's setup flow.
 
-Skills stay editable in Hermes, alongside its other skills, outside this repository:
+Nix owns the [container infrastructure](../modules/server/containers/hermes.nix):
+image, mounts, resource limits, and environment-file wiring. Deploy infrastructure
+changes through the [deployment workflow](deployment.md).
 
-- `/opt/data/skills/productivity/internship-application-assistant/`: application policy.
-- `/opt/data/skills/web/desktop-browser/`: browser mechanics and ATS references.
+## Internship applications
 
-On the host these live under `/mnt/storage/container/hermes/skills/`. Hermes syncs
-skills into the desktop sandbox's `~/.hermes/skills/` when needed. Edit the main
-Hermes copy or use its skill tools; Nix deployments do not replace the skills.
-
-The repository owns `hermes/SOUL.md`, the plugins, and
-`hermes/scripts/monitor_simplify_jobs.py`, mounted read-only. Personal answers remain
-in the private desktop `/home/pn/internships/profile.json`; credentials, sessions
-and progress remain writable.
-`applicationJob` in `hermes.nix` declares the hourly job. A small startup reconciler
-uses Hermes's scheduler API to update only that named job, preserving its ID, history
-and next run when unchanged. CAPTCHA and device approval remain user handoffs.
-
-Related services:
-
-- `hermes-desktop`: terminal, browser, and computer-use sandbox over SSH.
-- `hermes-desktop-vnc`: browser access to that desktop.
-- `hindsight` and `hindsight-db`: long-term memory and its PostgreSQL database.
-- `speaker` and `speaker-player`: speech and music tools available through Executor.
-
-## CLIProxyAPI
-
-Use its management UI to manage provider accounts and configuration.
-[cliproxyapi.nix](../modules/server/containers/cliproxyapi.nix) declares the
-container and its mounts.
-
-Its data lives under `/mnt/storage/container/cliproxyapi/`:
-
-```text
-config/config.yaml  # Writable settings; may also contain credentials
-auths/              # Provider login sessions
-logs/               # Application logs
-plugins/            # Proxy plugins
-```
-
-The separate environment file is encrypted in `secrets/server/cliproxyapi.env.age`.
-
-## Executor
-
-Add and configure tool integrations in its web UI. Its persistent data is in
-`/mnt/storage/container/executor/data/`, mounted at `/data`.
-
-[executor.nix](../modules/server/containers/executor.nix) builds the image with
-Excalidraw, Karakeep, and Proxmox MCP packages installed. Stdio integrations run
-with command `bun` and the package's executable path under `/mcp/node_modules/`.
-Change that package list in Nix when adding another bundled MCP server.
-
-Local Codex and Cursor configuration lives in
-`home/base/cli/agents/`. It shares the Executor endpoint and repository-managed
-skills. Codex also uses CLIProxyAPI as its model provider.
-
-## Check and apply changes
+The hourly monitor is a native Hermes cron job. Manage it through Hermes or its CLI.
 
 ```bash
-docker logs --tail 50 hermes
-docker logs --tail 50 cli-proxy-api
-docker logs --tail 50 executor
-docker exec -it hermes /bin/bash
+docker exec -it --user 1000:100 --workdir /opt/hermes hermes /bin/bash
+hermes cron list
+hermes cron edit --help
 ```
 
-Pushing to `main` runs **Build nixos-server**. A successful push build triggers
-**Deploy nixos-server** on the local runner, which runs `nixos-rebuild switch` for
-that commit. PR builds and manual build runs do not deploy. Superseded commits
-are skipped. For manual deployment, use the [Docker rebuild workflow](docker.md#change-and-deploy).
-Edit static credentials using [agenix on the MacBook](macbook.md#edit-server-secrets).
+| Location | Purpose |
+| --- | --- |
+| `/opt/data/skills/productivity/internship-application-assistant/` | Application policy |
+| `/opt/data/skills/web/desktop-browser/` | Browser mechanics and ATS references |
+| `/home/pn/internships/profile.json` in `hermes-desktop` | Personal answers and experience |
+| `/home/pn/internships/` in `hermes-desktop` | Application configuration and progress |
+
+Edit skills in Hermes; it syncs them to the desktop as needed. Desktop files persist
+under `/mnt/storage/container/hermes-desktop/home/` on the host.
+The discovery script is [repo-managed](../modules/server/containers/hermes/scripts/monitor_simplify_jobs.py)
+and mounted read-only in the desktop.
+
+The `application-accounts` plugin creates dedicated credentials, stores them in
+Hermes's encrypted local vault, and fills account forms. The application workflow
+checks results and submits forms. CAPTCHA and device approval require user help.
+
+## Plugins
+
+[One registry](../modules/server/containers/hermes/plugins/default.nix) declares
+all three custom plugins, mounted read-only through the same pattern:
+
+| Plugin | Source and purpose |
+| --- | --- |
+| `application-accounts` | Local code for applicant credentials |
+| `realtime-voice` | Local code for Discord voice |
+| `hindsight` | Pinned upstream memory provider; patched to exclude cron and subagent transcripts |
+
+Enable or disable plugins through Hermes. Update their source in this repository,
+since Hermes's plugin updater cannot replace read-only mounts.
+
+## Other agent services
+
+CLIProxyAPI's UI manages provider accounts and settings. Its persistent state is in
+`/mnt/storage/container/cliproxyapi/`: `config/`, `auths/`, `logs/`, and `plugins/`.
+Inside Docker, its model endpoint is `http://cli-proxy-api:8317/v1`.
+
+Executor's UI manages MCP integrations. State lives in
+`/mnt/storage/container/executor/data/`. Its [image definition](../modules/server/containers/executor.nix)
+bundles Excalidraw, Karakeep, and Proxmox MCP packages. Stdio integrations use `bun`
+with `/mcp/node_modules/<package>/<bin>` as the argument.
+
+`speaker` and `speaker-player` provide speech and music tools through Executor.
+See [container operations](docker.md#check-and-restart) for logs and restarts,
+and [secret editing](macbook.md#edit-server-secrets) for static credentials.

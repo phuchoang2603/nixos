@@ -38,177 +38,18 @@ let
 
   state = "${lab.appdata}/hermes";
 
-  discordChannels = {
-    main = "1558532054889660416";
-    tasks = "1558532205507125299";
-    reports = "1558532114423484507";
-  };
-  # Writable agent state; maintained workflow files are mounted below.
-  dataDirs = [
-    "skills"
-    "memories"
-    "cron"
-    "soul"
-  ];
+  plugins = import ./hermes/plugins { inherit pkgs; };
 
-  # Local plugins under ./hermes/plugins, mounted read-only and enabled on start.
-  plugins = [
-    "application-accounts"
-    "realtime-voice"
-  ];
-
-  # Memory provider from Hermes' plugin catalog, at the commit the catalog pins.
-  # Hermes marks cron and subagent agents so providers skip writes, but this release still
-  # retains them; the patch keeps scheduled-job transcripts out of memory.
-  hindsightPlugin =
-    pkgs.runCommand "hermes-hindsight-plugin"
-      {
-        src = pkgs.fetchFromGitHub {
-          owner = "vectorize-io";
-          repo = "hindsight";
-          rev = "d56c4acdf59c41957613d399094cdf8c489b060c";
-          sparseCheckout = [ "hindsight-integrations/hermes" ];
-          hash = "sha256-8QxHgplP1FjlwRzynj+sr9mmQjATkJBLiW9BtDawNPY=";
-        };
-      }
-      ''
-        cp -r $src/hindsight-integrations/hermes $out
-        chmod -R u+w $out
-        substituteInPlace $out/__init__.py --replace-fail \
-          'if not self._auto_retain' \
-          'if not self._auto_retain or self._platform in ("cron", "subagent")'
-      '';
-
-  hindsightConfig = pkgs.writeText "hindsight-config.json" (
-    builtins.toJSON {
-      mode = "local_external";
-      api_url = "http://hindsight:8888";
-      bank_id = "hermes";
-      memory_mode = "hybrid";
-      recall_budget = "mid";
-      # The default injects the previous message's recall; sync matches the current one.
-      recall_sync = true;
-      recall_max_tokens = 2048;
-      # By default recall first waits up to 10s for the previous turn's retain to finish
-      # extraction, which alone overruns Hermes' 8s prefetch timeout. That turn is still in
-      # the conversation context, so recall doesn't need it.
-      prefetch_waits_for_retain = false;
-      retain_context = "Discord conversation between Felix and Hermes, his personal agent";
-      retain_source = "hermes";
-      retain_user_prefix = "Felix";
-      retain_assistant_prefix = "Hermes";
-      # Retains are tagged with their session id, and observations are scoped to a memory's
-      # tags by default, which would keep each session's observations apart.
-      observation_scopes = "shared";
-    }
-  );
-
-  applicationJob = pkgs.writeText "hermes-application-job.json" (
-    builtins.toJSON {
-      name = "SimplifyJobs Summer 2027 Internships Monitor";
-      schedule = "60m";
-      deliver = "discord:${discordChannels.reports}";
-      skills = [
-        "internship-application-assistant"
-        "desktop-browser"
-      ];
-      prompt = "Run the internship-application-assistant workflow end to end. Reconcile pending jobs, then run /home/pn/scripts/monitor_simplify_jobs.py and process eligible new roles. Use desktop-browser for browser interaction. Read current profile, configuration and state from /home/pn/internships/.";
-    }
-  );
-
-  managedConfig = (pkgs.formats.yaml { }).generate "hermes-config.yaml" {
-    plugins.enabled = plugins;
-    model = {
-      provider = "custom";
-      base_url = "http://cli-proxy-api:8317/v1";
-      api_key = "cliproxyapi";
-      default = "gemini-3.8-flash-high";
-    };
-    mcp_servers.executor.url = "https://${lab.fqdn "mcp"}/mcp?mode=passthrough";
-    # Hindsight holds long-term memory; the built-in MEMORY.md store is off (with it on, the model
-    # favours it over Hindsight). USER.md stays as the main agent's always-injected profile.
-    memory = {
-      provider = "hindsight";
-      memory_enabled = false;
-    };
-    # Terminal, browser and computer_use run in the hermes-desktop sandbox.
-    terminal = {
-      backend = "ssh";
-      ssh_host = "hermes-desktop";
-      ssh_user = "pn";
-      ssh_port = 2222;
-      ssh_key = "/opt/data/.ssh/desktop_ed25519";
-    };
-    browser = {
-      # Stock Chrome inside the sandbox (hermes-desktop's chrome-keeper), reached over the SSH session.
-      cdp_url = "http://127.0.0.1:9222";
-      # Keeps a page open while Felix answers a verification challenge from Discord.
-      inactivity_timeout = 1800;
-    };
-    # Voice runs through the realtime-voice plugin, not Hermes' chained STT/TTS.
-    stt.enabled = false;
-    # The account plugin names the interactive Vault tools as one exclusion.
-    # Disabling the full browser group would also remove browser_exec.
-    agent.disabled_toolsets = [
-      "tts"
-      "interactive-vault"
-    ];
-    discord = {
-      free_response_channels = with discordChannels; [
-        main
-        tasks
-      ];
-      free_response_auto_thread = true;
-      missed_message_backfill.enabled = true;
-      gateway_restart_notification = false;
-    };
-    dashboard = {
-      public_url = "https://${lab.fqdn "hermes"}";
-      trusted_proxies = [ "172.18.0.0/16" ];
-    };
-  };
 in
 {
-  systemd.tmpfiles.rules = [
-    "d ${state} 0700 ${uid} ${gid} -"
-  ]
-  ++ map (dir: "d ${state}/${dir} 0755 ${uid} ${gid} -") dataDirs;
+  # Hermes owns configuration, SOUL, skills, and native cron state here.
+  systemd.tmpfiles.rules = [ "d ${state} 0700 ${uid} ${gid} -" ];
 
   systemd.services.docker-image-hermes = localImage.service;
   systemd.services.docker-hermes.after = [ "docker-hindsight.service" ];
   systemd.services.docker-hermes.wants = [
     "docker-hindsight.service"
   ];
-
-  systemd.services.docker-hermes.postStart = lib.mkAfter ''
-    # Docker's foreground process starts asynchronously with this hook.
-    for attempt in $(seq 1 60); do
-      if [ "$(${pkgs.docker}/bin/docker inspect --format '{{.State.Running}}' hermes 2>/dev/null)" = true ]; then
-        break
-      fi
-      sleep 1
-    done
-    ${pkgs.docker}/bin/docker exec --user ${uid}:${gid} --workdir /opt/hermes hermes \
-      python /opt/data/managed/reconcile-job.py /opt/data/managed/application-job.json
-  '';
-
-  # Hermes rewrites config.yaml itself (migrations, /model, "always allow"),
-  # so the Nix-owned keys are merged in on each start instead of mounted read-only.
-  systemd.services.docker-hermes.preStart = lib.mkBefore ''
-    cfg=${state}/config.yaml
-    if [ -f "$cfg" ]; then
-      ${lib.getExe pkgs.yq-go} ea '. as $i ireduce ({}; . * $i)' "$cfg" ${managedConfig} > "$cfg.tmp"
-      mv "$cfg.tmp" "$cfg"
-    else
-      install -m 0600 ${managedConfig} "$cfg"
-    fi
-    chown ${uid}:${gid} "$cfg"
-    ln -sfn soul/SOUL.md ${state}/SOUL.md
-
-    install -d -o ${uid} -g ${gid} -m 0700 ${state}/hindsight
-    install -o ${uid} -g ${gid} -m 0600 ${hindsightConfig} ${state}/hindsight/config.json
-
-  '';
 
   virtualisation.oci-containers.containers.hermes = lab.mkContainer {
     inherit (localImage) image;
@@ -221,19 +62,15 @@ in
     ];
     volumes = [
       "${state}:/opt/data:rw"
-      "${./hermes/SOUL.md}:/opt/data/soul/SOUL.md:ro"
-      "${applicationJob}:/opt/data/managed/application-job.json:ro"
-      "${./hermes/scripts/reconcile-job.py}:/opt/data/managed/reconcile-job.py:ro"
     ]
-    ++ map (name: "${./hermes/plugins/${name}}:/opt/data/plugins/${name}:ro") plugins
-    ++ [ "${hindsightPlugin}:/opt/data/plugins/hindsight:ro" ];
+    ++ lib.mapAttrsToList (name: source: "${source}:/opt/data/plugins/${name}:ro") plugins;
     environmentFiles = [ "${lab.secrets}/hermes.env" ];
     environment = {
       PUID = uid;
       PGID = gid;
       HERMES_DASHBOARD = "1";
-      DISCORD_HOME_CHANNEL = discordChannels.reports;
-      REALTIME_VOICE_LOG_CHANNEL = discordChannels.main;
+      DISCORD_HOME_CHANNEL = "1558532114423484507";
+      REALTIME_VOICE_LOG_CHANNEL = "1558532054889660416";
     };
     extraOptions = [
       "--shm-size=1g"

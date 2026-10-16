@@ -69,7 +69,6 @@ let
     dockerfile = images.speaker;
   };
   hardening = [
-    "--cap-drop=ALL"
     "--security-opt=no-new-privileges"
     "--read-only"
     "--tmpfs=/tmp:rw,nosuid,size=256m"
@@ -107,6 +106,7 @@ in
         USER = "speaker";
         PULSE_SERVER = pulse;
       };
+      capabilities.ALL = false;
       extraOptions = hardening;
     };
 
@@ -128,6 +128,7 @@ in
         SPEAKER_PLAYER = player;
       };
       environmentFiles = [ "${lab.secrets}/speaker.env" ];
+      capabilities.ALL = false;
       extraOptions = hardening;
     };
   };

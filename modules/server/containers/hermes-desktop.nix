@@ -138,8 +138,8 @@ in
       "${./hermes/scripts/monitor_simplify_jobs.py}:/home/${user}/scripts/monitor_simplify_jobs.py:ro"
       screenMount
     ];
+    capabilities.ALL = false;
     extraOptions = [
-      "--cap-drop=ALL"
       "--security-opt=no-new-privileges"
       "--pids-limit=2048"
       "--tmpfs=/tmp:rw,nosuid,size=1g"
@@ -164,8 +164,8 @@ in
       "6080"
     ];
     volumes = [ screenMount ];
+    capabilities.ALL = false;
     extraOptions = [
-      "--cap-drop=ALL"
       "--security-opt=no-new-privileges"
       "--read-only"
       "--memory=256m"

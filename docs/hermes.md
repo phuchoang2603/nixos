@@ -13,7 +13,6 @@ and a separate desktop for terminal and browser work.
 | CLIProxyAPI | https://cliproxyapi.home.phuchoang.sbs |
 | Executor | https://mcp.home.phuchoang.sbs |
 | Executor MCP | https://mcp.home.phuchoang.sbs/mcp?mode=passthrough |
-| OpenCode | https://opencode.home.phuchoang.sbs |
 
 Traefik adds Executor's API key on the MCP route. Its web UI keeps its normal login.
 
@@ -90,49 +89,6 @@ Enable or disable plugins through Hermes. Update their source in this repository
 since Hermes's plugin updater cannot replace read-only mounts.
 
 ## Other agent services
-
-Home Manager installs OpenCode v2 on the desktop, server, and MacBook. Run `opencode`
-or the `oc` shell alias. Its default model is `openai/gpt-6.1-sol`; the OpenAI
-provider routes through CLIProxyAPI instead of connecting directly to OpenAI.
-The gateway needs no client credential, so no `/connect` setup is required.
-
-The configuration lives in `home/base/cli/agents/`: `opencode.nix` configures the
-provider, and `default.nix` shares Executor MCP, the full `skills/` directory, and
-the global rules in `AGENTS.md`. Home Manager installs these under
-`~/.config/opencode/` as `home-manager.json`, `skills/`, and `AGENTS.md`.
-`mutableSettings` leaves `opencode.json` writable by OpenCode; Home Manager loads
-its declarative layer through `OPENCODE_CONFIG`. Declared values take precedence
-over the writable global settings. Start a new login shell after rebuilding so
-terminal launches inherit that variable. The persistent service receives it directly.
-Stylix theming for OpenCode is disabled.
-
-`web.enable` runs `opencode serve` on `0.0.0.0:4096` via a systemd user service on
-Linux and a launchd agent on macOS. Traefik proxies
-`https://opencode.home.phuchoang.sbs` to `host.docker.internal:4096`, same pattern
-as T3 Code. The host firewall allows that port from Docker bridges.
-
-No server password is configured: OpenCode only enforces Basic auth when
-`OPENCODE_SERVER_PASSWORD` is set, and this setup does not set it (and does not
-use `serve --service`, which would generate one). Rely on the LAN/Traefik edge
-for access control. Check Linux service logs with
-`journalctl --user -u opencode-web -f`.
-
-Keep browser automation on Hermes desktop (`hermes-desktop` CDP Chrome); Browser
-Control needs a local Chromium extension and is a poor fit for the headless
-server.
-
-The temporary `opencode-nixpkgs` flake input supplies the v2 package recipe from
-[nixpkgs PR #569770](https://github.com/NixOS/nixpkgs/pull/569770), pinned in
-`flake.lock`. The official OpenCode flake also packages v2, and the community
-[`pbek/nixcfg#opencode2`](https://github.com/pbek/nixcfg) is another option; the
-PR recipe additionally exports the schemas used by Home Manager validation.
-Config schema validation stays off because it fetches remote `$ref`s during the
-Nix build. Once v2 reaches our normal locked `nixos-unstable`, remove that input
-and the explicit `programs.opencode.package` override. A daily T3 task tracks
-that adoption.
-
-Codex and Cursor are no longer installed or configured by this module; their
-existing local session and authentication data is left intact.
 
 CLIProxyAPI's UI manages provider accounts and settings. Its persistent state is in
 `/mnt/storage/container/cliproxyapi/`: `config/`, `auths/`, `logs/`, and `plugins/`.

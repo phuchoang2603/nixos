@@ -13,15 +13,13 @@ in
     package = pkgs.callPackage "${inputs.opencode-nixpkgs}/pkgs/by-name/op/opencode/package.nix" { };
     enableMcpIntegration = true;
     mutableSettings = true;
-    # Schema validation pulls https://models.dev/model-schema.json at build time,
-    # which fails in the Nix sandbox / CI.
+    # Remote schema $refs break Nix/CI builds.
     validateFiles.config = false;
     web = {
       enable = true;
-      # Plain serve (no --service): OpenCode only requires a password when
-      # OPENCODE_SERVER_PASSWORD is set. Traefik reaches the host via
-      # host.docker.internal, so bind on all interfaces.
+      # Shared service so `opencode service get password` matches Traefik :4096.
       extraArgs = [
+        "--service"
         "--hostname"
         "0.0.0.0"
         "--port"

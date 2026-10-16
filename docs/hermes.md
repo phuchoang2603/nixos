@@ -96,7 +96,7 @@ Inside Docker, its model endpoint is `http://cli-proxy-api:8317/v1`.
 
 Executor's UI manages MCP integrations. State lives in
 `/mnt/storage/container/executor/data/`. Its [image definition](../modules/server/containers/executor.nix)
-bundles Excalidraw, Karakeep, and Proxmox MCP packages. Stdio integrations use `bun`
+bundles Excalidraw and Karakeep MCP packages. Stdio integrations use `bun`
 with `/mcp/node_modules/<package>/<bin>` as the argument.
 
 `speaker` and `speaker-player` provide speech and music tools through Executor.

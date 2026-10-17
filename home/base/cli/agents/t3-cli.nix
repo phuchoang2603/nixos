@@ -9,16 +9,16 @@
 let
   platforms = {
     x86_64-linux = {
-      npmPlatform = "linux-x64";
-      # renovate: depName=@t3code/t3-linux-x64
+      releasePlatform = "linux-x64";
+      # renovate: depName=pingdotgg/t3code-linux-x64
       version = "0.1.0";
-      hash = "sha512-y+yXTAjT//syOY+hx8l1gfGzl59U29iPfXYQRsO5oG/EFnn+vsgEL5FzRgyXDrlYDShLaVkO65hiWug8lRQx0g==";
+      hash = "f7703ff1bb8f6243580058b3ccf2c02abb62eba4b991e26bbb1da22f4b56d9b1";
     };
     aarch64-darwin = {
-      npmPlatform = "darwin-arm64";
-      # renovate: depName=@t3code/t3-darwin-arm64
+      releasePlatform = "darwin-arm64";
+      # renovate: depName=pingdotgg/t3code-darwin-arm64
       version = "0.1.0";
-      hash = "sha512-Lh9Z8t6j0djYvl/u8aaQIFhVkJfccDg5payjo6q2ZWqV6+GpMVgk2lHz8/QC7rjaTWoZ+jiSCp/Fys91zPR2/A==";
+      hash = "bb54ae6576b78f327afa1a5cc3ca03c4f8635f8ceccfc70a907f737c0dbea9f0";
     };
   };
 
@@ -30,7 +30,7 @@ in
   inherit (platform) version;
 
   src = fetchurl {
-    url = "https://registry.npmjs.org/@t3code/t3-${platform.npmPlatform}/-/t3-${platform.npmPlatform}-${platform.version}.tgz";
+    url = "https://github.com/pingdotgg/t3code/releases/download/v${platform.version}/t3-${platform.version}-${platform.releasePlatform}.tar.gz";
     inherit (platform) hash;
   };
 

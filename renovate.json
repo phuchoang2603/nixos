@@ -32,27 +32,35 @@
         "/^home/base/cli/agents/t3-cli\\.nix$/"
       ],
       "matchStrings": [
-        "# renovate: depName=(?<depName>\\S+)\\s+version = \"(?<currentValue>[^\"]+)\";\\s+hash = \"(?<currentDigest>[^\"]+)\";"
+        "# renovate: depName=pingdotgg/t3code-(?<assetPlatform>\\S+)\\s+version = \"(?<currentValue>[^\"]+)\";\\s+hash = \"(?<currentDigest>[^\"]+)\";"
       ],
-      "datasourceTemplate": "custom.t3code",
+      "depNameTemplate": "pingdotgg/t3code-{{{assetPlatform}}}",
+      "datasourceTemplate": "custom.t3code-{{{assetPlatform}}}",
       "versioningTemplate": "npm"
     }
   ],
   "packageRules": [
     {
       "matchDatasources": [
-        "custom.t3code"
+        "custom.t3code-linux-x64",
+        "custom.t3code-darwin-arm64"
       ],
       "groupName": "T3 Code",
       "followTag": "latest"
     }
   ],
   "customDatasources": {
-    "t3code": {
-      "defaultRegistryUrlTemplate": "https://registry.npmjs.org/{{{packageName}}}",
-      "transformTemplates": [
-        "{\"releases\": $each(versions, function($v) { {\"version\": $v.version, \"digest\": $v.dist.integrity} }), \"tags\": $.\"dist-tags\"}"
-      ]
+      "t3code-linux-x64": {
+        "defaultRegistryUrlTemplate": "https://api.github.com/repos/pingdotgg/t3code/releases",
+        "transformTemplates": [
+          "{\"releases\": $map($, function($r) { {\"version\": $substring($r.tag_name, 2), \"digest\": $substringAfter($filter($r.assets, function($a) { $contains($a.name, 'linux-x64.tar.gz') })[0].digest, 'sha256:')} })}"
+        ]
+      },
+      "t3code-darwin-arm64": {
+        "defaultRegistryUrlTemplate": "https://api.github.com/repos/pingdotgg/t3code/releases",
+        "transformTemplates": [
+          "{\"releases\": $map($, function($r) { {\"version\": $substring($r.tag_name, 2), \"digest\": $substringAfter($filter($r.assets, function($a) { $contains($a.name, 'darwin-arm64.tar.gz') })[0].digest, 'sha256:')} })}"
+        ]
+      }
     }
   }
-}

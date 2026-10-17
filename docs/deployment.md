@@ -41,8 +41,8 @@ configured alongside Cachix.
 
 ## Dependency updates
 
-Renovate opens overnight updates for flake dependencies and T3 Code nightly
-releases. T3 Code's version and npm integrity hash update together in
+Renovate opens overnight updates for flake dependencies and T3 Code releases.
+T3 Code's version and GitHub release asset hash update together in
 `home/base/cli/agents/t3-cli.nix`. Docker images and GitHub Actions are not managed
 by Renovate. Renovate PRs, including major updates, merge after required checks pass.
 

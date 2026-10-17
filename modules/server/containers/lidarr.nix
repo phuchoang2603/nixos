@@ -26,6 +26,7 @@ in
     volumes = [
       "${state}/config:/config:rw"
       "${lab.media}/music:/music:rw"
+      "${lab.media}:/data:rw"
       "${slskdDownloads}:/downloads:rw"
     ];
     traefik = {

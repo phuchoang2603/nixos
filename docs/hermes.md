@@ -99,6 +99,5 @@ Executor's UI manages MCP integrations. State lives in
 bundles Excalidraw, Karakeep, and Proxmox MCP packages. Stdio integrations use `bun`
 with `/mcp/node_modules/<package>/<bin>` as the argument.
 
-`speaker` and `speaker-player` provide speech and music tools through Executor.
 See [container operations](docker.md#check-and-restart) for logs and restarts,
 and [secret editing](macbook.md#edit-server-secrets) for static credentials.

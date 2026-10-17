@@ -12,9 +12,9 @@
     ./hermes.nix
     ./hermes-desktop.nix
     ./hindsight.nix
-    ./speaker.nix
     ./jellyfin.nix
-    ./explo.nix
+    ./slskd.nix
+    ./lidarr.nix
     ./audiomuse.nix
   ];
 

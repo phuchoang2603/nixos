@@ -10,6 +10,8 @@ in
     "d ${state} 0750 ${uid} ${gid} -"
     "d ${state}/config 0750 ${uid} ${gid} -"
     "d ${state}/downloads 0750 ${uid} ${gid} -"
+    "d ${state}/downloads/complete 0750 ${uid} ${gid} -"
+    "d ${state}/downloads/incomplete 0750 ${uid} ${gid} -"
   ];
 
   networking.firewall.interfaces.ens18 = {

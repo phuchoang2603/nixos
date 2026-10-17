@@ -25,10 +25,10 @@ Jellyfin Music library for recommendations.
 | `/mnt/storage/container/jellyfin/` | Jellyfin config and cache |
 | `/mnt/storage/container/audiomuse/` | AudioMuse app and Postgres data |
 
-Nix owns the containers: [jellyfin](../modules/server/containers/jellyfin.nix),
-[slskd](../modules/server/containers/slskd.nix),
-[lidarr](../modules/server/containers/lidarr.nix),
-[audiomuse](../modules/server/containers/audiomuse.nix).
+Nix owns the containers: [jellyfin](../modules/server/containers/media/jellyfin.nix),
+[slskd](../modules/server/containers/media/slskd.nix),
+[Lidarr and the arr services](../modules/server/containers/media/arr.nix),
+[audiomuse](../modules/server/containers/media/audiomuse.nix).
 
 ## Lidarr + Tubifarry + slskd
 
@@ -43,7 +43,7 @@ Nix owns the containers: [jellyfin](../modules/server/containers/jellyfin.nix),
 Completed Soulseek grabs land under `/downloads/complete`. Lidarr imports them
 into `/music`; Jellyfin picks them up on the next library scan.
 
-See [Media setup](docker.md#media-setup) for Prowlarr, qBittorrent, Cantinarr,
+See [Media setup](media.md#setup) for Prowlarr, qBittorrent, Cantinarr,
 and the movie, TV, ebook, and audiobook services.
 
 See [container operations](docker.md#check-and-restart) for logs and restarts.

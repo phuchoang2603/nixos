@@ -17,6 +17,18 @@ let
       image = "lscr.io/linuxserver/sonarr:latest";
       port = 8989;
     };
+    # Lidarr (plugins-capable nightly) for catalog/wanted lists. Pair with Tubifarry
+    # in the UI for Soulseek via slskd, plus optional YouTube and lyrics helpers.
+    # Shared `/downloads` with slskd so Lidarr can import without remote-path mapping.
+    lidarr = {
+      # 3.1.6+ on nightly/develop includes plugin support; Tubifarry 2.3 needs >= 3.1.6.0.
+      image = "ghcr.io/hotio/lidarr:nightly";
+      port = 8686;
+      extraVolumes = [
+        "${lab.media}/music:/music:rw"
+        "${lab.appdata}/slskd/downloads:/downloads:rw"
+      ];
+    };
     chaptarr = {
       image = "chaptarr/chaptarr:latest";
       port = 8789;
@@ -82,7 +94,8 @@ in
       volumes = [
         "${lab.appdata}/${name}/config:/config:rw"
       ]
-      ++ lib.optional (name != "prowlarr") "${lab.media}:/data:rw";
+      ++ lib.optional (name != "prowlarr") "${lab.media}:/data:rw"
+      ++ (app.extraVolumes or [ ]);
       traefik = {
         inherit name;
         inherit (app) port;

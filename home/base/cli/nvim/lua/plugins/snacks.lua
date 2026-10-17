@@ -27,21 +27,6 @@ Snacks.setup({
 	},
 
 	picker = {
-		actions = {
-			sidekick_send = function(...)
-				return require("sidekick.cli.picker.snacks").send(...)
-			end,
-		},
-		win = {
-			input = {
-				keys = {
-					["<a-a>"] = {
-						"sidekick_send",
-						mode = { "n", "i" },
-					},
-				},
-			},
-		},
 		sources = {
 			files = {
 				hidden = true,
@@ -406,39 +391,6 @@ local keymaps = {
 			end
 		end,
 		desc = "Toggle Code Lenses",
-	},
-	{
-		"<leader>uc",
-		function()
-			local copilot_active = false
-			local clients = vim.lsp.get_clients({ name = "copilot" })
-			if #clients > 0 then
-				copilot_active = true
-			end
-
-			local next_state = not copilot_active
-
-			if next_state then
-				vim.lsp.enable("copilot")
-				vim.lsp.inline_completion.enable(true)
-				require("sidekick.nes").enable()
-			else
-				for _, client in ipairs(clients) do
-					client:stop(false)
-				end
-				vim.lsp.inline_completion.enable(false)
-				require("sidekick.nes").disable()
-			end
-
-			local status_text = next_state and "ON" or "OFF"
-			local icon = next_state and "󰚩 " or "󱚧 "
-			vim.notify(
-				string.format("%s Copilot LSP: %s", icon, status_text),
-				vim.log.levels.INFO,
-				{ title = "LSP Completion" }
-			)
-		end,
-		desc = "Toggle Copilot LSP & Suggestions",
 	},
 }
 

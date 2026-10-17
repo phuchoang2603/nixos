@@ -90,13 +90,16 @@ since Hermes's plugin updater cannot replace read-only mounts.
 
 ## Other agent services
 
-CLIProxyAPI's UI manages provider accounts and settings. Its persistent state is in
-`/mnt/storage/container/cliproxyapi/`: `config/`, `auths/`, `logs/`, and `plugins/`.
-Inside Docker, its model endpoint is `http://cli-proxy-api:8317/v1`.
+CLIProxyAPI runs [CLIProxyAPIPlus](https://github.com/jc01rho/CLIProxyAPIPlus)
+(MIT fork with a native OpenCode Zen executor). The UI manages provider accounts
+and settings. Persistent state is in `/mnt/storage/container/cliproxyapi/`:
+`config/`, `auths/`, `logs/`, and `plugins/`. Inside Docker, its model endpoint
+is `http://cli-proxy-api:8317/v1`. OpenCode free models use the `opencode`
+provider group with `api-key: public`.
 
 Executor's UI manages MCP integrations. State lives in
 `/mnt/storage/container/executor/data/`. Its [image definition](../modules/server/containers/executor.nix)
-bundles Excalidraw, Karakeep, and Proxmox MCP packages. Stdio integrations use `bun`
+bundles Excalidraw and Karakeep MCP packages. Stdio integrations use `bun`
 with `/mcp/node_modules/<package>/<bin>` as the argument.
 
 `speaker` and `speaker-player` provide speech and music tools through Executor.

@@ -63,7 +63,6 @@ in
           signColumn = true;
         };
       };
-      opencode.enable = false;
       rofi = {
         enable = false;
       };

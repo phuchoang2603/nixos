@@ -13,7 +13,6 @@
     ./hermes-desktop.nix
     ./hindsight.nix
     ./jellyfin.nix
-    ./slskd.nix
     ./lidarr.nix
     ./audiomuse.nix
   ];

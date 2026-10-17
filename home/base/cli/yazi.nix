@@ -6,10 +6,6 @@
     enableZshIntegration = true;
     shellWrapperName = "y";
 
-    plugins = {
-      clipboard = pkgs.yaziPlugins.clipboard;
-    };
-
     keymap = {
       mgr.prepend_keymap = [
         {

@@ -8,7 +8,6 @@ let
     "hindsight.env"
     "karakeep.env"
     "newt.env"
-    "speaker.env"
     "terraform-agent.env"
     "traefik.env"
     "vaultwarden.env"

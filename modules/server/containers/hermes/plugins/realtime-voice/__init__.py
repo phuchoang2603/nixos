@@ -8,7 +8,7 @@ API server, which also owns memory and session search. When a call ends, its tra
 retained in Hindsight, the same memory bank the agent recalls from.
 
 Audio receive reuses the Discord adapter's ``VoiceReceiver`` (transport + DAVE decryption, Opus
-decode); this plugin only drains its per-speaker PCM buffers. Everything else touching Hermes
+decode); this plugin only drains its per-participant PCM buffers. Everything else touching Hermes
 internals is confined to ``_adapter`` and ``_receiver_cls``.
 """
 
@@ -56,13 +56,12 @@ You are talking with Felix in a Discord voice channel. Speak naturally and brief
 on a call, and stop talking when interrupted. Everything you say is heard, not read: no markdown,
 lists, code, or URLs.
 
-Handle anything that takes one to a few tool calls yourself; don't hand it off. The speaker_*,
-gmail_*, calendar_* and tasks_* functions call those integrations directly, so playing or
-controlling music, reading his email, calendar or tasks, and adding a task are all yours. For any
-other integration listed below, call mcp__executor__search with its integration, owner and
-connection plus a few words for the action, then mcp__executor__invoke with the returned id and
-arguments. Never guess a result; wait for the tool. Before a call that may take more than a moment,
-say in a few words what you're doing.
+Handle anything that takes one to a few tool calls yourself; don't hand it off. The gmail_*,
+calendar_* and tasks_* functions call those integrations directly, so reading his email,
+calendar or tasks, and adding a task are all yours. For any other integration listed below, call
+mcp__executor__search with its integration, owner and connection plus a few words for the action,
+then mcp__executor__invoke with the returned id and arguments. Never guess a result; wait for the
+tool. Before a call that may take more than a moment, say in a few words what you're doing.
 
 Use ask_hermes, which hands the request to the full Hermes agent, only when:
 - the task takes many steps, research across several sources, or more than a minute;
@@ -97,12 +96,6 @@ VOICE_TOOLS = {"web_search", "skill_view", "mcp__executor__search", "mcp__execut
 # None keeps them all; "a.b" keeps field b of object parameter a. Google's APIs list a dozen
 # transport parameters on every call, which would otherwise dominate the session.
 EXECUTOR_TOOLS = {
-    "speaker_search": ("tools.speaker.user.personalSpeaker.search", None),
-    "speaker_play": ("tools.speaker.user.personalSpeaker.play", None),
-    "speaker_control": ("tools.speaker.user.personalSpeaker.control", None),
-    "speaker_volume": ("tools.speaker.user.personalSpeaker.volume", None),
-    "speaker_status": ("tools.speaker.user.personalSpeaker.status", None),
-    "speaker_say": ("tools.speaker.user.personalSpeaker.say", None),
     "gmail_list_messages": ("tools.google_gmail.user.xuanphucA1gv.gmail.users.messages.list",
                             ["userId", "q", "maxResults", "labelIds"]),
     "gmail_get_message": ("tools.google_gmail.user.xuanphucA1gv.gmail.users.messages.get",
@@ -615,11 +608,11 @@ class _Call:
                 self.responding = False
             logger.warning("Realtime voice error: %s", event.get("error"))
 
-    def _heard(self, role: str, speaker: str, text: str) -> None:
+    def _heard(self, role: str, who: str, text: str) -> None:
         text = text.strip()
         if text:
-            self.transcript.append(f"{speaker}: {text}")
-            self.spoken.append({"role": role, "content": f"{speaker}: {text}",
+            self.transcript.append(f"{who}: {text}")
+            self.spoken.append({"role": role, "content": f"{who}: {text}",
                                 "timestamp": datetime.now(timezone.utc).isoformat()})
 
     async def _create_response(self, response: dict | None = None) -> bool:

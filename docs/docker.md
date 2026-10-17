@@ -15,17 +15,18 @@ Web names below use `.home.phuchoang.sbs`.
 | `vaultwarden` | Password vault | `vaultwarden` |
 | `karakeep`, `karakeep-meilisearch` | Bookmarks and search | `karakeep` |
 | `jellyfin` | Media library | `jellyfin` |
-| `explo` | Music discovery and downloads | `explo` |
+| `slskd` | Soulseek client and music download staging | — |
+| `lidarr` | Music catalog; Tubifarry uses it with slskd | `lidarr` |
 | `audiomuse`, `audiomuse-db`, `audiomuse-worker` | Music analysis and recommendations | `audiomuse` |
 | `hermes` | Agent gateway and dashboard | `hermes` |
 | `hermes-desktop`, `hermes-desktop-vnc` | Agent desktop and browser viewer | `desktop` |
 | `cli-proxy-api` | Model API gateway | `cliproxyapi` |
 | `executor` | MCP integrations and tools | `mcp` |
 | `hindsight`, `hindsight-db` | Agent long-term memory | `hindsight` |
-| `speaker`, `speaker-player` | Speech and music playback | — |
 | `excalidraw` | Drawing canvas | `excalidraw` |
 
 See [Hermes and agent tools](hermes.md) for the agent services.
+See [Music stack](music.md) for Jellyfin, Lidarr, slskd, and AudioMuse.
 
 ## Files and storage
 

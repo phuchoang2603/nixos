@@ -39,7 +39,7 @@ in the applications' persistent settings.
 | Radarr | `http://radarr:7878` | `/data/movies` |
 | Sonarr | `http://sonarr:8989` | `/data/tv` |
 | Chaptarr | `http://chaptarr:8789` | `/data/books` and `/data/audiobooks` |
-| Lidarr | `http://lidarr:8686` | `/data/music` (existing `/music` remains available) |
+| Lidarr | `http://lidarr:8686` | `/data/music` |
 | Prowlarr | `http://prowlarr:9696` | — |
 | qBittorrent | `http://qbittorrent:8080` | `/data/downloads/torrents` |
 | FlareSolverr | `http://flaresolverr:8191` | — |
@@ -82,10 +82,10 @@ in the applications' persistent settings.
 
 The managers mount `/mnt/storage/media` as `/data`; qBittorrent mounts only
 its torrent subtree at the same path. Downloads and imports share the NFS
-filesystem, allowing hardlinks where the NAS supports them. Existing Lidarr
-Soulseek paths are preserved. For torrent hardlinks in an existing Lidarr
-library, change its root from `/music` to `/data/music` in the UI and choose
-not to move files: both paths already refer to the same host directory.
+filesystem, allowing hardlinks where the NAS supports them. Lidarr and slskd
+share Soulseek staging at `/downloads`. When changing an existing Lidarr root
+to `/data/music`, choose not to move files; the library remains in
+`/mnt/storage/media/music`.
 
 qBittorrent uses the host's normal internet connection. Peer TCP/UDP port
 `6881` is published; its web UI is reached through Traefik. Usenet is an

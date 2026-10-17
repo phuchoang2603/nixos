@@ -17,8 +17,8 @@ Jellyfin Music library for recommendations.
 
 | Path | Role |
 | --- | --- |
-| `/mnt/storage/media/music` | Library root; Jellyfin scans it, Lidarr imports into `/music` |
-| `/mnt/storage/media` | Also mounted as `/data` in Lidarr for shared torrent downloads and libraries |
+| `/mnt/storage/media/music` | Library root; Jellyfin scans it, Lidarr imports into `/data/music` |
+| `/mnt/storage/media` | Mounted as `/data` in Lidarr for shared torrent downloads and libraries |
 | `/mnt/storage/container/slskd/downloads` | Shared staging; mounted as `/downloads` in both slskd and Lidarr |
 | `/mnt/storage/container/slskd/config` | slskd app data (API key under Options) |
 | `/mnt/storage/container/lidarr/config` | Lidarr config and Tubifarry plugin state |
@@ -32,7 +32,7 @@ Nix owns the containers: [jellyfin](../modules/server/containers/media/jellyfin.
 
 ## Lidarr + Tubifarry + slskd
 
-1. Open Lidarr, finish the wizard, and set the root folder to `/music`.
+1. Open Lidarr, finish the wizard, and set the root folder to `/data/music`.
 2. Install Tubifarry: **System → Plugins**, enter `Tubifarry@TypNull#develop`.
 3. Add Slskd as an **indexer** and **download client** (URL `http://slskd:5030`,
    API key from slskd Options if set). Prefer Soulseek over YouTube; YouTube
@@ -41,7 +41,7 @@ Nix owns the containers: [jellyfin](../modules/server/containers/media/jellyfin.
    and add `lrc` under **Media Management → Import Extra Files**.
 
 Completed Soulseek grabs land under `/downloads/complete`. Lidarr imports them
-into `/music`; Jellyfin picks them up on the next library scan.
+into `/data/music`; Jellyfin picks them up on the next library scan.
 
 See [Media setup](media.md#setup) for Prowlarr, qBittorrent, Cantinarr,
 and the movie, TV, ebook, and audiobook services.

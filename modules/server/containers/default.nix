@@ -12,10 +12,7 @@
     ./hermes.nix
     ./hermes-desktop.nix
     ./hindsight.nix
-    ./jellyfin.nix
-    ./slskd.nix
-    ./lidarr.nix
-    ./audiomuse.nix
+    ./media
   ];
 
   _module.args.lab = import ./lab.nix { inherit lib pkgs; };

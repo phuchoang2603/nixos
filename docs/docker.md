@@ -14,10 +14,6 @@ Web names below use `.home.phuchoang.sbs`.
 | `newt` | Pangolin tunnel | — |
 | `vaultwarden` | Password vault | `vaultwarden` |
 | `karakeep`, `karakeep-meilisearch` | Bookmarks and search | `karakeep` |
-| `jellyfin` | Media library | `jellyfin` |
-| `slskd` | Soulseek client and music download staging | — |
-| `lidarr` | Music catalog; Tubifarry uses it with slskd | `lidarr` |
-| `audiomuse`, `audiomuse-db`, `audiomuse-worker` | Music analysis and recommendations | `audiomuse` |
 | `hermes` | Agent gateway and dashboard | `hermes` |
 | `hermes-desktop`, `hermes-desktop-vnc` | Agent desktop and browser viewer | `desktop` |
 | `cli-proxy-api` | Model API gateway | `cliproxyapi` |
@@ -26,14 +22,15 @@ Web names below use `.home.phuchoang.sbs`.
 | `excalidraw` | Drawing canvas | `excalidraw` |
 
 See [Hermes and agent tools](hermes.md) for the agent services.
-See [Music stack](music.md) for Jellyfin, Lidarr, slskd, and AudioMuse.
+See [Media stack](media.md) for playback, requests, downloads, and music analysis.
 
 ## Files and storage
 
 | Path | What to change or store |
 | --- | --- |
 | `modules/server/containers/<app>.nix` | Container infrastructure and declared app settings |
-| `modules/server/containers/default.nix` | Which app modules are enabled |
+| `modules/server/containers/default.nix` | Which app modules and groups are enabled |
+| `modules/server/containers/media/` | Media services and their group imports |
 | `modules/server/containers/lab.nix` | Shared container and image helpers |
 | `modules/server/docker.nix` | Docker daemon, network, and startup dependencies |
 | `modules/server/lib.nix` | Shared NAS address, paths, and domain |

@@ -38,12 +38,12 @@ in the applications' persistent settings.
 | --- | --- | --- |
 | Radarr | `http://radarr:7878` | `/data/movies` |
 | Sonarr | `http://sonarr:8989` | `/data/tv` |
-| Chaptarr | `http://chaptarr:8789` | `/data/books` and `/data/audiobooks` |
+| Chaptarr | `http://chaptarr:8789` | `/data/books/ebooks` and `/data/books/audiobooks` |
 | Lidarr | `http://lidarr:8686` | `/data/music` |
 | Prowlarr | `http://prowlarr:9696` | — |
 | qBittorrent | `http://qbittorrent:8080` | `/data/downloads/torrents` |
 | FlareSolverr | `http://flaresolverr:8191` | — |
-| Jellyfin | `http://jellyfin:8096` | `/media/movies`, `/media/tv`, `/media/music`, `/media/books`, `/media/audiobooks` |
+| Jellyfin | `http://jellyfin:8096` | `/media/movies`, `/media/tv`, `/media/music`, `/media/books` |
 
 1. In qBittorrent, sign in as `admin` with the temporary password from
    `docker logs qbittorrent`, then save a permanent password. The initial
@@ -66,11 +66,11 @@ in the applications' persistent settings.
    protection is detected. FlareSolverr is internal-only and does not
    reliably solve arbitrary CAPTCHAs.
 4. Set the library roots above. Chaptarr handles both book formats in one
-   instance with separate roots and profiles. In Jellyfin, add movie, TV,
-   music, ebook, and audiobook libraries using the paths above. Use the
-   **Books** library type for ebooks and audiobooks, keeping their libraries
-   separate. Jellyfin's media mount is read-only; imports belong to the
-   managers.
+   instance with separate roots and profiles. Ebooks and audiobooks live in
+   `/mnt/storage/media/books/ebooks` and `/mnt/storage/media/books/audiobooks`.
+   In Jellyfin, add movie, TV, and music libraries using the paths above,
+   plus one **Books** library at `/media/books` covering both subfolders.
+   Jellyfin's media mount is read-only; imports belong to the managers.
 5. In Cantinarr, use **Settings → Add Instance** to connect Radarr, Sonarr,
    Chaptarr, and Lidarr with their internal URLs and API keys. Use Chaptarr's
    base URL, without `/ebook` or `/audiobook`. Connect qBittorrent and Jellyfin
@@ -82,8 +82,8 @@ in the applications' persistent settings.
    community relay. For completed-file downloads, Cantinarr mounts media
    read-only at `/media`: map `/data/movies` to `/media/movies` in Radarr,
    `/data/tv` to `/media/tv` in Sonarr, `/data/music` to `/media/music` in
-   Lidarr, and both `/data/books` and `/data/audiobooks` to their corresponding
-   `/media` paths in Chaptarr.
+   Lidarr, and `/data/books/ebooks` to `/media/books/ebooks` plus
+   `/data/books/audiobooks` to `/media/books/audiobooks` in Chaptarr.
 
 The managers mount `/mnt/storage/media` as `/data`; qBittorrent mounts only
 its torrent subtree at the same path. Downloads and imports share the NFS

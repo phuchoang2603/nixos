@@ -19,8 +19,13 @@ in
       CANTINARR_SERVER_NAME = "Home media";
       CANTINARR_ARR_CALLBACK_URL = "http://cantinarr:8585";
       CANTINARR_OAUTH_ISSUER = "https://${lab.fqdn "cantinarr"}";
+      CANTINARR_PUSH_GATEWAY_URL = "https://push.cantinarr.com";
+      CANTINARR_MEDIA_ROOTS = "/media";
     };
-    volumes = [ "${state}/config:/config:rw" ];
+    volumes = [
+      "${state}/config:/config:rw"
+      "${lab.media}:/media:ro"
+    ];
     traefik = {
       name = "cantinarr";
       port = 8585;

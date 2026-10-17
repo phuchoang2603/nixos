@@ -78,7 +78,12 @@ in the applications' persistent settings.
    `https://cantinarr.home.phuchoang.sbs`, choose default instances and
    profiles, and explicitly assign users to the book and music instances.
    Check that **Instant updates** succeeds; callbacks use
-   `http://cantinarr:8585`.
+   `http://cantinarr:8585`. Free mobile push notifications use Cantinarr's
+   community relay. For completed-file downloads, Cantinarr mounts media
+   read-only at `/media`: map `/data/movies` to `/media/movies` in Radarr,
+   `/data/tv` to `/media/tv` in Sonarr, `/data/music` to `/media/music` in
+   Lidarr, and both `/data/books` and `/data/audiobooks` to their corresponding
+   `/media` paths in Chaptarr.
 
 The managers mount `/mnt/storage/media` as `/data`; qBittorrent mounts only
 its torrent subtree at the same path. Downloads and imports share the NFS

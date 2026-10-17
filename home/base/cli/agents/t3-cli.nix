@@ -31,7 +31,7 @@ in
 
   src = fetchurl {
     url = "https://github.com/pingdotgg/t3code/releases/download/v${platform.version}/t3-${platform.version}-${platform.releasePlatform}.tar.gz";
-    inherit (platform) hash;
+    sha256 = platform.hash;
   };
 
   nativeBuildInputs = lib.optionals stdenv.hostPlatform.isLinux [ autoPatchelfHook ];

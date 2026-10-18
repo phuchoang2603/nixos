@@ -21,6 +21,8 @@ in
       CANTINARR_OAUTH_ISSUER = "https://${lab.fqdn "cantinarr"}";
       CANTINARR_PUSH_GATEWAY_URL = "https://push.cantinarr.com";
       CANTINARR_MEDIA_ROOTS = "/media";
+      CANTINARR_AI_PROVIDER = "local_openai";
+      CANTINARR_AI_MODEL = "gemini-3.8-flash";
     };
     volumes = [
       "${state}/config:/config:rw"

@@ -85,6 +85,12 @@ in the applications' persistent settings.
    Lidarr, and `/data/books/ebooks` to `/media/books/ebooks` plus
    `/data/books/audiobooks` to `/media/books/audiobooks` in Chaptarr.
 
+Cantinarr's Nix environment defaults to **Local (OpenAI-compatible)** with
+`gemini-3.8-flash`. Under **Settings → Providers & Credentials**, set its base
+URL to `http://cli-proxy-api:8317/v1` and save the proxy token there. Cantinarr
+stores the endpoint and encrypted token in its database; saved provider/model
+settings override the environment defaults.
+
 The managers mount `/mnt/storage/media` as `/data`; qBittorrent mounts only
 its torrent subtree at the same path. Downloads and imports share the NFS
 filesystem, allowing hardlinks where the NAS supports them. Lidarr and slskd

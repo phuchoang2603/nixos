@@ -7,5 +7,6 @@
     ./qbittorrent.nix
     ./flaresolverr.nix
     ./cantinarr.nix
+    ./ytmusic.nix
   ];
 }

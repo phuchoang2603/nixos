@@ -1,6 +1,6 @@
 # Media stack
 
-Jellyfin serves movies, shows, ebooks, and audiobooks. Radarr, Sonarr, and
+Jellyfin serves movies, shows, music, ebooks, and audiobooks. Radarr, Sonarr, and
 Chaptarr manage the libraries; Prowlarr supplies indexers and
 qBittorrent downloads torrents. Cantinarr provides requests and management.
 FlareSolverr assists protected indexers.
@@ -38,7 +38,7 @@ in the applications' persistent settings.
 | Prowlarr | `http://prowlarr:9696` | — |
 | qBittorrent | `http://qbittorrent:8080` | `/data/downloads/torrents` |
 | FlareSolverr | `http://flaresolverr:8191` | — |
-| Jellyfin | `http://jellyfin:8096` | `/media/movies`, `/media/tv`, `/media/books` |
+| Jellyfin | `http://jellyfin:8096` | `/media/movies`, `/media/tv`, `/media/music`, `/media/books` |
 
 1. In qBittorrent, sign in as `admin` with the temporary password from
    `docker logs qbittorrent`, then save a permanent password. The initial
@@ -64,7 +64,9 @@ in the applications' persistent settings.
    instance with separate roots and profiles. Ebooks and audiobooks live in
    `/mnt/storage/media/books/ebooks` and `/mnt/storage/media/books/audiobooks`.
    In Jellyfin, add movie and TV libraries using the paths above,
-   plus one **Books** library at `/media/books` covering both subfolders.
+   plus a **Music** library at `/media/music` and one **Books** library at
+   `/media/books` covering both subfolders. The configured YouTube playlists
+   sync to `/mnt/storage/media/music` daily at 03:00.
    Jellyfin's media mount is read-only; imports belong to the managers.
 5. In Cantinarr, use **Settings → Add Instance** to connect Radarr, Sonarr,
    and Chaptarr with their internal URLs and API keys. Use Chaptarr's

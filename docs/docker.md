@@ -22,7 +22,7 @@ Web names below use `.home.phuchoang.sbs`.
 | `excalidraw` | Drawing canvas | `excalidraw` |
 
 See [Hermes and agent tools](hermes.md) for the agent services.
-See [Media stack](media.md) for playback, requests, downloads, and music analysis.
+See [Media stack](media.md) for playback, requests, and downloads.
 
 ## Files and storage
 

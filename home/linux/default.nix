@@ -4,7 +4,6 @@
   imports = [
     ../base/cli.nix
     ../base/gui.nix
-    ./rclone.nix
     ./fcitx5.nix
     ./espanso.nix
     ./mimeapps.nix

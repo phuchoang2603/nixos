@@ -6,10 +6,7 @@ in
 {
   stylix = {
     enable = true;
-    image = pkgs.fetchurl {
-      url = "https://media.githubusercontent.com/media/phuchoang2603/nixos/refs/heads/main/wallpapers/orange-girl-nature.png";
-      hash = "sha256-upZ9zonKq02fcvznWhUD+5Nn3WTgUuNMg9lUI9FV0DI=";
-    };
+    image = ../../../wallpapers/orange-girl-nature.png;
     polarity = "dark";
 
     cursor = lib.mkIf (!isDarwin) {

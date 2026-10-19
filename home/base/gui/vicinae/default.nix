@@ -68,6 +68,7 @@ in
             "${config.home.homeDirectory}/${config.targets.darwin.copyApps.directory}/Vicinae.app/Contents/MacOS/Vicinae"
           ];
           EnvironmentVariables = {
+            VICINAE_NODE_BIN = lib.getExe pkgs.nodejs;
             VICINAE_OVERRIDES = "${config.xdg.configHome}/vicinae/base.json";
             PATH = "/etc/profiles/per-user/${config.home.username}/bin:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin";
           };

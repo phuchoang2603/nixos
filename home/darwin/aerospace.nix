@@ -77,6 +77,9 @@
         alt-shift-n = "workspace --wrap-around next";
         alt-shift-p = "workspace --wrap-around prev";
 
+        alt-shift-s = "exec-and-forget /usr/sbin/screencapture -i -c -s";
+        alt-shift-w = "exec-and-forget /usr/sbin/screencapture -i -c -w";
+
         # Move window to workspace
         alt-shift-1 = [
           "move-node-to-workspace 1"
@@ -127,6 +130,11 @@
       };
 
       "on-window-detected" = [
+        {
+          "if".app-id = "com.vicinaehq.Vicinae";
+          run = [ "layout floating" ];
+          check-further-callbacks = false;
+        }
         {
           "if".app-id = "com.microsoft.edgemac";
           run = [

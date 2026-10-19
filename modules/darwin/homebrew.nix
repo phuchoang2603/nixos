@@ -37,7 +37,6 @@
       "microsoft-excel"
       "microsoft-powerpoint"
       "google-drive"
-      "raycast"
       "obsidian"
       "zalo"
       "telegram"

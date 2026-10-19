@@ -1,7 +1,4 @@
-{
-  pkgs,
-  ...
-}:
+{ ... }:
 
 {
   services.mako = {
@@ -19,11 +16,5 @@
       icons = true;
       max-icon-size = 32;
     };
-  };
-
-  services.cliphist = {
-    enable = true;
-    clipboardPackage = pkgs.wl-clipboard;
-    allowImages = true;
   };
 }

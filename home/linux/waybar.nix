@@ -15,8 +15,6 @@ let
 
     modules-left = [
       "clock"
-      "custom/todoist"
-      "custom/docker"
     ];
     modules-center = [ "hyprland/workspaces" ];
     modules-right = [
@@ -45,7 +43,7 @@ let
         critical = 60;
       };
       tooltip = true;
-      on-click = "gnome-system-monitor";
+      on-click = "missioncenter";
     };
 
     "memory" = {
@@ -53,7 +51,7 @@ let
       interval = 15;
       tooltip = true;
       tooltip-format = "Used: {used:0.1f}GB / {total:0.1f}GB\nSwap: {swapUsed:0.1f}GB / {swapTotal:0.1f}GB";
-      on-click = "gnome-system-monitor";
+      on-click = "missioncenter";
     };
 
     "pulseaudio" = {
@@ -144,21 +142,6 @@ let
       tooltip = false;
     };
 
-    "custom/docker" = {
-      format = "🐳 {}";
-      return-type = "json";
-      exec = "waybar-docker";
-      interval = 15;
-      tooltip = true;
-    };
-
-    "custom/todoist" = {
-      format = " {}";
-      return-type = "json";
-      exec = "waybar-todoist";
-      interval = 60;
-      tooltip = true;
-    };
   }
   // lib.optionalAttrs (waybarOutput != null) { output = waybarOutput; };
 in
@@ -196,8 +179,6 @@ in
           }
 
           #clock,
-          #custom-docker,
-          #custom-todoist,
           #workspaces button,
           #mpris,
           #tray,

@@ -33,7 +33,8 @@ from the encrypted `siyuan.env` secret. The complete workspace is stored at
 flashcards, and review history. The Docker edition is accessed through a browser.
 
 Use one notebook named `Học tập`, with a parent document per course and lesson
-documents beneath it. Each course has its own flashcard deck. Add and edit notes
+documents beneath it. Review by lesson, by course, or across the notebook;
+the native built-in deck keeps one review schedule per card. Add and edit notes
 in SiYuan after importing; the original source repository is not needed to study.
 
 The installed `siyuan-import` command imports Markdown and attached source files

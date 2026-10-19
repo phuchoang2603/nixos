@@ -13,6 +13,9 @@ from urllib.parse import quote, unquote, urlsplit
 from urllib.request import Request, urlopen
 
 
+BUILTIN_DECK_ID = "20230218211946-2kw8jgx"
+
+
 class ImportFailure(Exception):
     pass
 
@@ -239,15 +242,14 @@ class CourseImport:
         if self.state.get("notebook_id", notebook["id"]) != notebook["id"]:
             raise ImportFailure("The original notebook is missing; restore its backup before importing")
         self.state["notebook_id"] = notebook["id"]
-        decks = self.api.call("riff/getRiffDecks")
-        deck = next((d for d in decks if d["id"] == self.state.get("deck_id")), None)
-        if self.state.get("deck_id") and deck is None:
-            raise ImportFailure("The original flashcard deck is missing; restore it before importing")
-        if deck is None:
-            if any(d["name"] == self.args.course_name for d in decks):
-                raise ImportFailure("A deck with this course name already exists; choose a distinct course name")
-            deck = self.api.call("riff/createRiffDeck", {"name": self.args.course_name})
-        self.state["deck_id"] = deck["id"]
+        if self.state.get("deck_id", BUILTIN_DECK_ID) != BUILTIN_DECK_ID:
+            raise ImportFailure("This import uses a separate deck; migrate its review history before importing again")
+        if self.state.get("card_count", 0):
+            course_id = self.state["documents"]["@course"]["id"]
+            count = self.api.call("riff/getTreeRiffCards", {"id": course_id, "page": 1, "pageSize": 1})["total"]
+            if count < self.state["card_count"]:
+                raise ImportFailure("Previously imported cards are missing; inspect or restore them before importing")
+        self.state["deck_id"] = BUILTIN_DECK_ID
         self.save()
         course_path = "/" + title_segment(self.args.course_name)
         course = self.document("@course", course_path, digest(self.args.course_id.encode()))
@@ -260,7 +262,8 @@ class CourseImport:
             self.upload(attachment)
         course_md = (f"Các bài học của môn **{self.args.course_name}** nằm dưới tài liệu này. "
                      "Đọc và sửa trực tiếp trong từng bài; ôn các câu hỏi bằng tính năng thẻ ghi nhớ.\n\n"
-                     f"Mỗi môn có bộ thẻ riêng. Bạn có thể ôn một bài, một môn hoặc toàn bộ sổ tay {self.args.notebook}.\n")
+                     f"Bạn có thể ôn một bài, một môn hoặc toàn bộ sổ tay {self.args.notebook}. "
+                     "Các cách ôn dùng chung tiến độ của từng thẻ.\n")
         self.populate(course, course_md)
         expected_total = 0
         for lesson in lessons:
@@ -293,14 +296,16 @@ class CourseImport:
             if len(blocks) != len(lesson["cards"]):
                 raise ImportFailure(f"Flashcard block count differs for {lesson['filename']}")
             if blocks:
-                self.api.call("riff/addRiffCards", {"deckID": deck["id"], "blockIDs": [b["id"] for b in blocks]})
+                self.api.call("riff/addRiffCards", {"deckID": BUILTIN_DECK_ID, "blockIDs": [b["id"] for b in blocks]})
             expected_total += len(blocks)
             print(f"{lesson['title']}: {len(blocks)} cards", flush=True)
         self.api.flush()
-        deck = next(d for d in self.api.call("riff/getRiffDecks") if d["id"] == deck["id"])
-        if deck["size"] < expected_total:
-            raise ImportFailure("The deck contains fewer cards than were imported")
-        result = {"notebook": notebook["id"], "course": course["id"], "deck": deck["id"],
+        count = self.api.call("riff/getTreeRiffCards", {"id": course["id"], "page": 1, "pageSize": 1})["total"]
+        if count < expected_total:
+            raise ImportFailure("The course contains fewer cards than were imported")
+        self.state["card_count"] = expected_total
+        self.save()
+        result = {"notebook": notebook["id"], "course": course["id"], "deck": BUILTIN_DECK_ID,
                   "lessons": len(lessons), "cards": expected_total, "assets": len(self.state["assets"])}
         print(json.dumps(result, ensure_ascii=False, indent=2))
         return result

@@ -1,7 +1,12 @@
 import importlib.util
+import json
+import os
 from pathlib import Path
 import tempfile
+from types import SimpleNamespace
 import unittest
+from urllib.parse import urlsplit
+import uuid
 
 
 spec = importlib.util.spec_from_file_location("import_course", Path(__file__).with_name("import_course.py"))
@@ -63,6 +68,54 @@ class CourseImportTests(unittest.TestCase):
 
     def test_title_does_not_accidentally_create_nested_documents(self):
         self.assertEqual(module.title_segment("  Sinh lý / Giải phẫu  "), "Sinh lý ／ Giải phẫu")
+
+
+@unittest.skipUnless(os.environ.get("SIYUAN_TEST_URL"), "requires an isolated SiYuan instance")
+class NativeReviewTests(unittest.TestCase):
+    def test_multiple_courses_share_one_schedule_without_losing_edits(self):
+        url = os.environ["SIYUAN_TEST_URL"]
+        self.assertIn(urlsplit(url).hostname, ("127.0.0.1", "localhost", "::1"))
+        token = Path(os.environ["SIYUAN_TEST_TOKEN_FILE"]).read_text().strip()
+        api = module.API(url, token)
+        suffix = uuid.uuid4().hex
+        notebook_name = "Import test " + suffix
+        course_ids = []
+        try:
+            with tempfile.TemporaryDirectory() as directory:
+                source = Path(directory) / "01.md"
+                source.write_text("# Bài mẫu\n\nNội dung cần giữ.")
+                lesson = module.parse_lesson(source, [{"question": "Câu hỏi?", "answer": "Đáp án."}])
+                before = api.call("riff/getRiffDueCards", {"deckID": ""})["unreviewedCount"]
+                imports = []
+                for index in range(2):
+                    args = SimpleNamespace(course_id=f"test-{suffix}-{index}", course_name=f"Môn {index} {suffix}",
+                                           notebook=notebook_name, attach=[])
+                    course_ids.append(args.course_id)
+                    importer = module.CourseImport(api, args)
+                    result = importer.run([lesson], {})
+                    imports.append((args, result, importer))
+                    self.assertEqual(api.call("riff/getTreeRiffCards", {"id": result["course"], "page": 1})["total"], 1)
+                self.assertEqual(api.call("riff/getRiffDueCards", {"deckID": ""})["unreviewedCount"], before + 2)
+                args, result, importer = imports[0]
+                due = api.call("riff/getTreeRiffDueCards", {"rootID": result["course"]})
+                card = due["cards"][0]
+                api.call("riff/reviewRiffCard", {"deckID": card["deckID"], "cardID": card["cardID"], "rating": 4})
+                document = importer.state["documents"][source.name]["id"]
+                api.call("block/appendBlock", {"parentID": document, "dataType": "markdown", "data": "Ghi chú riêng."})
+                module.CourseImport(api, args).run([lesson], {})
+                self.assertEqual(api.call("riff/getTreeRiffDueCards", {"rootID": result["course"]})["unreviewedCount"], 0)
+                self.assertEqual(api.call("riff/getRiffDueCards", {"deckID": ""})["unreviewedCount"], before + 1)
+                self.assertIn("Ghi chú riêng.", api.call("export/exportMdContent", {"id": document})["content"])
+                source.write_text("# Bài mẫu\n\nNguồn thay đổi.")
+                with self.assertRaises(module.ImportFailure):
+                    module.CourseImport(api, args).run([module.parse_lesson(source, [])], {})
+        finally:
+            for course_id in course_ids:
+                api.call("file/removeFile", {"path": "/data/storage/course-imports/" + course_id + ".json"})
+            notebooks = api.call("notebook/lsNotebooks")["notebooks"]
+            for notebook in notebooks:
+                if notebook["name"] == notebook_name:
+                    api.call("notebook/removeNotebook", {"notebook": notebook["id"]})
 
 
 if __name__ == "__main__":

@@ -5,7 +5,6 @@
     ../base/cli.nix
     ../base/gui.nix
     ./fcitx5.nix
-    ./espanso.nix
     ./mimeapps.nix
     ./hyprland.nix
     ./hyprpaper.nix
@@ -14,7 +13,6 @@
     ./hyprshot.nix
     ./wlsunset.nix
     ./mako.nix
-    ./rofi.nix
     ./waybar.nix
     ./scripts.nix
     ./packages.nix

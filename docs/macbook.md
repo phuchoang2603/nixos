@@ -35,6 +35,30 @@ cd /path/to/nixos
 sudo darwin-rebuild switch --flake .#macbook
 ```
 
+## Vicinae
+
+Vicinae is installed from nixpkgs into `~/Applications/Home Manager Apps` and
+started by a Home Manager LaunchAgent.
+Use **Option + Space** to open it, **Option + C** for the calculator,
+**Option + V** for clipboard history, **Option + F** for file search, and
+**Option + S** for Process Manager.
+
+In **System Settings → Privacy & Security**, allow Vicinae **Accessibility** for
+snippet expansion and pasting, and **Full Disk Access** for searching protected
+folders. Restart Vicinae after granting access.
+
+The configuration disables Spotlight's keyboard shortcuts and Siri suggestions,
+not its indexing. Vicinae uses the Spotlight index for file search. Check it with:
+
+```bash
+mdutil -s /
+```
+
+If indexing is disabled, enable it with `sudo mdutil -i on /`. In
+**System Settings → Spotlight → Search Privacy**, make sure your disk and desired
+search folders are not excluded. On older macOS versions, this is under
+**Siri & Spotlight → Spotlight Privacy**.
+
 ## Edit server secrets
 
 ```bash

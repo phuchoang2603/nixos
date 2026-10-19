@@ -9,7 +9,6 @@
     obsidian
     inotify-tools
     vlc
-    todoist
     libreoffice-fresh
     playerctl
     gimp

@@ -1,6 +1,8 @@
 { pkgs, ... }:
 
 {
+  hardware.uinput.enable = true;
+
   services = {
     # Login manager (TTY) for Hyprland
     greetd = {
@@ -34,6 +36,12 @@
 
   # Security/Authentication
   security = {
+    wrappers.vicinae-input-server = {
+      source = "${pkgs.vicinae}/libexec/vicinae/vicinae-input-server";
+      capabilities = "cap_dac_override+ep";
+      owner = "root";
+      group = "root";
+    };
     polkit.enable = true;
     pam.services.login.enableGnomeKeyring = true;
     pam.services.greetd.enableGnomeKeyring = true;

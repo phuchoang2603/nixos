@@ -20,36 +20,9 @@ Web names below use `.home.phuchoang.sbs`.
 | `executor` | MCP integrations and tools | `mcp` |
 | `hindsight`, `hindsight-db` | Agent long-term memory | `hindsight` |
 | `excalidraw` | Drawing canvas | `excalidraw` |
-| `siyuan` | Course notes and spaced-repetition flashcards | `siyuan` |
 
 See [Hermes and agent tools](hermes.md) for the agent services.
 See [Media stack](media.md) for playback, requests, and downloads.
-
-## SiYuan
-
-Open `https://siyuan.home.phuchoang.sbs` in a browser and use the access code
-from the encrypted `siyuan.env` secret. The complete workspace is stored at
-`/mnt/storage/container/siyuan/workspace`; it includes source files, diagrams,
-flashcards, and review history. The Docker edition is accessed through a browser.
-
-Use one notebook named `Học tập`, with a parent document per course and lesson
-documents beneath it. Review by lesson, by course, or across the notebook;
-the native built-in deck keeps one review schedule per card. Add and edit notes
-in SiYuan after importing; the original source repository is not needed to study.
-
-The installed `siyuan-import` command imports Markdown and attached source files
-through the authenticated SiYuan API. Run `siyuan-import --help` for options.
-It creates native question-and-answer flashcards and refuses to overwrite an
-existing document with changed source content. Keep the API token in a private
-file and pass its path with `--token-file`; never commit it.
-
-`siyuan-backup.timer` makes a daily backup, briefly stopping only SiYuan for a
-consistent copy. Archives under `/mnt/storage/container/siyuan/backups` include
-the entire workspace and are retained for 30 days. To back up immediately, run
-`sudo systemctl start siyuan-backup.service`. To restore, stop `docker-siyuan`,
-keep a copy of the current workspace, extract a chosen archive into the SiYuan
-state directory, and restart `docker-siyuan`. These backups share the application
-storage; copy an archive to separate storage for protection against disk loss.
 
 ## Files and storage
 

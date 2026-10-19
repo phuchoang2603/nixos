@@ -33,16 +33,6 @@ in
     };
   };
 
-  environment.systemPackages = [
-    (pkgs.writeShellApplication {
-      name = "siyuan-import";
-      runtimeInputs = [ pkgs.python3 ];
-      text = ''
-        exec python3 ${./siyuan/import_course.py} "$@"
-      '';
-    })
-  ];
-
   systemd.services.siyuan-backup = {
     description = "Back up the complete SiYuan workspace with the application stopped";
     requires = [ "docker.service" ];

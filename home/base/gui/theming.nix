@@ -6,7 +6,7 @@ in
 {
   stylix = {
     enable = true;
-    image = ../../../wallpapers/orange-girl-nature.png;
+    image = ../../../wallpapers/3d-cartoon-night-sky.jpg;
     polarity = "dark";
 
     cursor = lib.mkIf (!isDarwin) {

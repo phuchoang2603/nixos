@@ -7,6 +7,7 @@ let
     "hindsight.env"
     "karakeep.env"
     "newt.env"
+    "siyuan.env"
     "terraform-agent.env"
     "traefik.env"
     "vaultwarden.env"

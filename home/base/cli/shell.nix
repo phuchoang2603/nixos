@@ -108,17 +108,6 @@
       enableZshIntegration = true;
     };
 
-    # Atuin - shell history
-    atuin = {
-      enable = true;
-      enableZshIntegration = true;
-      settings = {
-        enter_accept = false;
-        keymap_mode = "auto";
-        scroll_exits = false;
-      };
-    };
-
     # FZF - fuzzy finder
     fzf = {
       enable = true;
@@ -144,8 +133,6 @@
           "--preview 'eza -1 --color=always {} || ls --color=always {}'"
         ];
       };
-
-      historyWidget.command = "";
     };
 
     # Zoxide - smart cd

@@ -50,7 +50,10 @@
             useUserPackages = true;
             backupFileExtension = "backup";
             extraSpecialArgs = { inherit inputs user; };
-            sharedModules = nixpkgs.lib.optionals stylix [ inputs.stylix.homeModules.stylix ];
+            sharedModules = nixpkgs.lib.optionals stylix [
+              inputs.stylix.homeModules.stylix
+              { stylix.overlays.enable = false; }
+            ];
             users.${user}.imports = modules;
           };
         };

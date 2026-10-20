@@ -16,6 +16,7 @@ in
     {
       programs.vicinae.extensions = [
         inputs.vicinae-extensions.packages.${pkgs.stdenv.hostPlatform.system}.nix
+        inputs.vicinae-extensions.packages.${pkgs.stdenv.hostPlatform.system}.process-manager
       ]
       ++ lib.optionals isDarwin [
         (pkgs.callPackage ./system-monitor.nix { })
@@ -29,6 +30,7 @@ in
           "snippets:manage"
           "files:search"
           "core:search-emojis"
+          "@leonkohli/vicinae-extension-process-manager-0:processes"
         ]
         ++ lib.optionals isDarwin [
           "@hossammourad/store.raycast.raycast-system-monitor:system-monitor"
@@ -38,6 +40,11 @@ in
           calculator.entrypoints.history.shortcut = "alt+c";
           clipboard.entrypoints.history.shortcut = "alt+v";
           files.entrypoints.search.shortcut = "alt+f";
+          "@leonkohli/vicinae-extension-process-manager-0".preferences = {
+            refresh-interval = "2000";
+            show-system-processes = true;
+            process-limit = "500";
+          };
         }
         // lib.optionalAttrs isDarwin {
           "@hossammourad/store.raycast.raycast-system-monitor" = {

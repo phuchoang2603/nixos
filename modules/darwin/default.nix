@@ -3,6 +3,7 @@
     ./system.nix
     ./homebrew.nix
     ./custom-user-preferences.nix
+    ./privacy.nix
     ./dock.nix
     ./trackpad.nix
     ./finder.nix

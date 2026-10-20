@@ -62,6 +62,23 @@ If indexing is disabled, enable it with `sudo mdutil -i on /`. In
 search folders are not excluded. On older macOS versions, this is under
 **Siri & Spotlight → Spotlight Privacy**.
 
+## Privacy settings
+
+Nix generates `/etc/privacy.mobileconfig` to disable Mac Analytics, personalized ads,
+Improve Siri and Dictation, Improve Search, Spotlight internet results, Look Up
+suggestions, Safari search suggestions, Apple Music, and the Book Store.
+
+The profile also disables Siri, external AI integrations such as ChatGPT, Writing
+Tools, Genmoji, Image Playground, Mail smart replies, and summaries in Mail, Notes,
+and Safari. These are individual feature restrictions, not a global Apple
+Intelligence switch. Apple deprecates these restriction keys starting in macOS 26.4
+in favor of declarative device management.
+
+After rebuilding, run `open /etc/privacy.mobileconfig` and approve installation in
+**System Settings → General → Device Management**. macOS requires this manual step;
+rebuilding alone does not install or update the profile. Reinstall it after changing
+the profile settings in Nix.
+
 ## Edit server secrets
 
 ```bash

@@ -14,11 +14,12 @@ in
 {
   config = lib.mkMerge [
     {
-      programs.vicinae.extensions =
-        with inputs.vicinae-extensions.packages.${pkgs.stdenv.hostPlatform.system}; [
-          process-manager
-          nix
-        ];
+      programs.vicinae.extensions = [
+        inputs.vicinae-extensions.packages.${pkgs.stdenv.hostPlatform.system}.nix
+      ]
+      ++ lib.optionals isDarwin [
+        (pkgs.callPackage ./system-monitor.nix { })
+      ];
       programs.vicinae.settings = {
         search_files_in_root = false;
         pop_to_root_on_close = true;
@@ -28,19 +29,26 @@ in
           "snippets:manage"
           "files:search"
           "core:search-emojis"
-          "@leonkohli/vicinae-extension-process-manager-0:processes"
+        ]
+        ++ lib.optionals isDarwin [
+          "@hossammourad/store.raycast.raycast-system-monitor:system-monitor"
         ];
         global_shortcuts.toggle = "alt+space";
         providers = {
           calculator.entrypoints.history.shortcut = "alt+c";
           clipboard.entrypoints.history.shortcut = "alt+v";
           files.entrypoints.search.shortcut = "alt+f";
-          "@leonkohli/vicinae-extension-process-manager-0".entrypoints.processes.shortcut = "alt+s";
-        };
-        providers."@leonkohli/vicinae-extension-process-manager-0".preferences = {
-          refresh-interval = "2000";
-          show-system-processes = true;
-          process-limit = "500";
+        }
+        // lib.optionalAttrs isDarwin {
+          "@hossammourad/store.raycast.raycast-system-monitor" = {
+            entrypoints.system-monitor.shortcut = "alt+s";
+            preferences = {
+              defaultView = "system-info";
+              displayModeCpu = "used";
+              displayModeMemory = "used";
+              displayModeDisk = "used";
+            };
+          };
         };
       };
     }

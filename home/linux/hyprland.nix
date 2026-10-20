@@ -153,7 +153,6 @@
         "ALT SHIFT, F, togglefloating,"
         "ALT, I, setprop, active opaque toggle"
         "ALT, C, exec, vicinae 'vicinae://toggle?fallbackText=%3D'"
-        "ALT, S, exec, vicinae vicinae://launch/@leonkohli/vicinae-extension-process-manager-0/processes"
         "ALT, V, exec, vicinae vicinae://launch/clipboard/history"
         "ALT, W, killactive,"
         "ALT SHIFT, A, exec, hyprshot -m region --raw | swappy -f -"

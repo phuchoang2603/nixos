@@ -40,12 +40,15 @@ sudo darwin-rebuild switch --flake .#macbook
 Vicinae is installed from nixpkgs into `~/Applications/Home Manager Apps` and
 started by a Home Manager LaunchAgent.
 Use **Option + Space** to open it, **Option + C** for the calculator,
-**Option + V** for clipboard history, **Option + F** for file search, and
-**Option + S** for Process Manager.
+**Option + V** for clipboard history, **Option + F** for file search,
+and **Option + S** for System Monitor.
 
 In **System Settings → Privacy & Security**, allow Vicinae **Accessibility** for
 snippet expansion and pasting, and **Full Disk Access** for searching protected
 folders. Restart Vicinae after granting access.
+
+**Option + O** selects a screen region, recognizes English text locally with Tesseract,
+and copies it to the clipboard. Allow screen recording when macOS prompts.
 
 The configuration disables Spotlight's keyboard shortcuts and Siri suggestions,
 not its indexing. Vicinae uses the Spotlight index for file search. Check it with:

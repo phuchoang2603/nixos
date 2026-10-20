@@ -41,7 +41,7 @@ Vicinae is installed from nixpkgs into `~/Applications/Home Manager Apps` and
 started by a Home Manager LaunchAgent.
 Use **Option + Space** to open it, **Option + C** for the calculator,
 **Option + V** for clipboard history, **Option + F** for file search,
-and **Option + S** for System Monitor.
+**Option + W** to switch windows, and **Option + S** for System Monitor.
 
 In **System Settings → Privacy & Security**, allow Vicinae **Accessibility** for
 snippet expansion and pasting, and **Full Disk Access** for searching protected

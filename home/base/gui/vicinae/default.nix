@@ -40,6 +40,7 @@ in
           calculator.entrypoints.history.shortcut = "alt+c";
           clipboard.entrypoints.history.shortcut = "alt+v";
           files.entrypoints.search.shortcut = "alt+f";
+          wm.entrypoints.switch-windows.shortcut = "alt+w";
           "@leonkohli/vicinae-extension-process-manager-0".preferences = {
             refresh-interval = "2000";
             show-system-processes = true;

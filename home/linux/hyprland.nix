@@ -154,7 +154,7 @@
         "ALT, I, setprop, active opaque toggle"
         "ALT, C, exec, vicinae 'vicinae://toggle?fallbackText=%3D'"
         "ALT, V, exec, vicinae vicinae://launch/clipboard/history"
-        "ALT, W, killactive,"
+        "ALT, W, exec, vicinae vicinae://launch/wm/switch-windows"
         "ALT SHIFT, A, exec, hyprshot -m region --raw | swappy -f -"
         "ALT SHIFT, S, exec, hyprshot -m region"
         "ALT SHIFT, W, exec, hyprshot -m window"

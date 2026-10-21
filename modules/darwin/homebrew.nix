@@ -41,14 +41,10 @@
       "zalo"
       "telegram"
       "karabiner-elements"
-      "bettertouchtool"
       "yaak"
       "vlc"
       "stremio"
       "tailscale-app"
-      "utm"
-      "localsend"
-      "transmission"
     ];
   };
 }

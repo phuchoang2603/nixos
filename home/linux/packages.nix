@@ -3,7 +3,6 @@
 {
   home.packages = with pkgs; [
     microsoft-edge
-    vscode
     jetbrains.datagrip
     yaak
     obsidian

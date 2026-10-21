@@ -46,20 +46,20 @@
         "custom.t3code-darwin-arm64"
       ],
       "groupName": "T3 Code",
-      "ignoreUnstable": false
+      "ignoreUnstable": true
     }
   ],
   "customDatasources": {
     "t3code-linux-x64": {
-      "defaultRegistryUrlTemplate": "https://api.github.com/repos/pingdotgg/t3code/releases",
+      "defaultRegistryUrlTemplate": "https://api.github.com/repos/pingdotgg/t3code/releases?per_page=100",
       "transformTemplates": [
-        "{\"releases\": $map($filter($, function($r) { $contains($r.tag_name, '-nightly.') }), function($r) { {\"version\": $substring($r.tag_name, 2), \"digest\": $substringAfter($filter($r.assets, function($a) { $contains($a.name, 'linux-x64.tar.gz') })[0].digest, 'sha256:')} })}"
+        "{\"releases\": [$[draft = false and prerelease = false].($version := $substringAfter(tag_name, 'v'); $asset := assets[name = 't3-' & $version & '-linux-x64.tar.gz'][0]; $exists($asset.digest) ? {\"version\": $version, \"digest\": $substringAfter($asset.digest, 'sha256:')})]}"
       ]
     },
     "t3code-darwin-arm64": {
-      "defaultRegistryUrlTemplate": "https://api.github.com/repos/pingdotgg/t3code/releases",
+      "defaultRegistryUrlTemplate": "https://api.github.com/repos/pingdotgg/t3code/releases?per_page=100",
       "transformTemplates": [
-        "{\"releases\": $map($filter($, function($r) { $contains($r.tag_name, '-nightly.') }), function($r) { {\"version\": $substring($r.tag_name, 2), \"digest\": $substringAfter($filter($r.assets, function($a) { $contains($a.name, 'darwin-arm64.tar.gz') })[0].digest, 'sha256:')} })}"
+        "{\"releases\": [$[draft = false and prerelease = false].($version := $substringAfter(tag_name, 'v'); $asset := assets[name = 't3-' & $version & '-darwin-arm64.tar.gz'][0]; $exists($asset.digest) ? {\"version\": $version, \"digest\": $substringAfter($asset.digest, 'sha256:')})]}"
       ]
     }
   }

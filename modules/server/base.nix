@@ -5,6 +5,13 @@
 }:
 
 {
+  swapDevices = [
+    {
+      device = "/var/lib/swapfile";
+      size = 8 * 1024;
+    }
+  ];
+
   users.users.${user} = {
     isNormalUser = true;
     description = user;

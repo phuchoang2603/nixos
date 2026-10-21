@@ -16,6 +16,8 @@ The build runner has a fresh workspace and reuses the host's Nix store. Ubuntu
 runners restore a GitHub cache with a 12 GB store target. CI validates automation
 files and builds NixOS; it does not test application health or build custom Docker
 images. Those images are prepared on the server before their containers start.
+CI runs one build at a time with two cores per build. The server has an 8 GB swap
+file, and its build runner restarts automatically after failures.
 
 A separate deployment runner activates the tested commit through
 `nixos-deploy@COMMIT.service`. Its only privileged permission is starting that
@@ -41,7 +43,8 @@ configured alongside Cachix.
 
 ## Dependency updates
 
-Renovate opens overnight updates for flake dependencies and T3 Code releases.
+Renovate refreshes the flake lock file on Mondays between midnight and 6 a.m.
+America/New_York time. T3 Code updates remain scheduled overnight each day.
 T3 Code's version and GitHub release asset hash update together in
 `home/base/cli/agents/t3-cli.nix`. Docker images and GitHub Actions are not managed
 by Renovate. Renovate PRs, including major updates, merge after required checks pass.

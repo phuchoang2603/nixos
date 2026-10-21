@@ -24,7 +24,7 @@ jobs:
     env:
       NIX_CONFIG: |
         experimental-features = nix-command flakes
-        max-jobs = 2
+        max-jobs = 1
         cores = 2
     steps:
       - name: Check out repository

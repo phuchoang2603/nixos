@@ -1,5 +1,6 @@
 {
   config,
+  lib,
   pkgs,
   ...
 }:
@@ -68,6 +69,10 @@ in
   # exits after its job; the module then restarts it with the new configuration.
   systemd.services.github-runner-nixos-server.restartIfChanged = false;
   systemd.services.github-runner-nixos-server-build.restartIfChanged = false;
+  systemd.services.github-runner-nixos-server-build.serviceConfig = {
+    Restart = lib.mkForce "always";
+    RestartSec = "10s";
+  };
 
   # The runner retains the module's sandbox. Its only privileged operation is
   # starting this service. GitHub Actions gates deployment on successful CI.

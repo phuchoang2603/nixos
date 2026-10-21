@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ ... }:
 
 let
   sharedContext = ./AGENTS.md;
@@ -12,9 +12,6 @@ in
     ./excalidraw.nix
   ];
 
-  home.packages = with pkgs; [
-    openspec
-  ];
   # Shared MCP Servers
   programs.mcp = {
     enable = true;

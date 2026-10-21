@@ -21,6 +21,7 @@ in
           multiArch = false;
           targetPkgs =
             p: with p; [
+              stdenv.cc.cc.lib
               glib
               nss
               nspr

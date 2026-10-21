@@ -43,6 +43,10 @@ in
   # The executable carries its JS payload inside the ELF/Mach-O; stripping or
   # re-signing would corrupt it.
   dontStrip = true;
+  dontAutoPatchelf = true;
+  postFixup = lib.optionalString stdenv.hostPlatform.isLinux ''
+    autoPatchelf $out/libexec/t3/node_modules $out/libexec/t3/resource-monitor
+  '';
   dontBuild = true;
   dontFixup = stdenv.hostPlatform.isDarwin;
 

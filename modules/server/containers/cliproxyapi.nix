@@ -1,34 +1,17 @@
-{ lab, pkgs, ... }:
+{ lab, lib, pkgs, ... }:
 
 let
   data = "${lab.appdata}/cliproxyapi";
 
-  # MIT fork of CLIProxyAPI with a dedicated OpenCode Zen/Go executor (free-tier
-  # identity + tool shaping). Prefer this over opaque third-party patches.
-  plusVersion = "8.0.31-1";
-  plusTarball = "CLIProxyAPI_${plusVersion}_linux_amd64.tar.gz";
-  plusUrl = "https://github.com/jc01rho/CLIProxyAPIPlus/releases/download/v${plusVersion}/${plusTarball}";
-
-  localImage = lab.mkImage {
-    name = "cli-proxy-api-plus";
-    # Image name differs from the oci-container unit name.
-    containers = [ "cli-proxy-api" ];
-    revision = 1;
-    dockerfile = pkgs.writeText "cli-proxy-api-plus.Dockerfile" ''
-      FROM debian:bookworm-slim
-      RUN apt-get update \
-        && apt-get install -y --no-install-recommends ca-certificates tzdata curl \
-        && rm -rf /var/lib/apt/lists/*
-      WORKDIR /CLIProxyAPI
-      RUN curl -fsSL -o /tmp/plus.tar.gz ${plusUrl} \
-        && tar -xzf /tmp/plus.tar.gz -C /CLIProxyAPI \
-        && rm /tmp/plus.tar.gz \
-        && ln -sf cli-proxy-api CLIProxyAPI \
-        && test -x ./cli-proxy-api \
-        && ./cli-proxy-api -h 2>&1 | grep -q 'CLIProxyAPI Version'
-      EXPOSE 8317
-    '';
+  kiroVersion = "0.9.13";
+  kiroArchive = pkgs.fetchurl {
+    url = "https://github.com/nguyenha935/kiro-cpa-plugin/releases/download/v${kiroVersion}/kiro-ha-linux-amd64.tar.gz";
+    sha256 = "a5ffc6d7419ba7178216985eabc24cd180bbb97cf7289dbcf31da9d4949b5b77";
   };
+  kiroPlugin = pkgs.runCommand "kiro-ha-${kiroVersion}" { } ''
+    mkdir -p "$out"
+    tar -xzf ${kiroArchive} -C "$out" kiro-ha.so
+  '';
 in
 {
   systemd.tmpfiles.rules = [
@@ -38,13 +21,20 @@ in
     "d ${data}/plugins 0755 root root -"
   ];
 
-  systemd.services.docker-image-cli-proxy-api = localImage.service;
+  systemd.services.docker-cli-proxy-api.preStart = lib.mkBefore ''
+    cp -an ${data}/config/config.yaml ${data}/config/config.yaml.before-kiro-ha
+    ${lib.getExe pkgs.yq-go} -i '
+      .plugins.enabled = true |
+      .plugins.dir = "/CLIProxyAPI/plugins" |
+      .plugins.configs.kiro-ha.enabled = true |
+      .plugins.configs.kiro-ha.priority = 1
+    ' ${data}/config/config.yaml
+  '';
 
   virtualisation.oci-containers.containers.cli-proxy-api = lab.mkContainer {
-    inherit (localImage) image;
-    pull = "never";
+    image = "eceasy/cli-proxy-api:v8.0.38@sha256:113a70240fb48f5c6fd674c9de40b1af4e7ff629f7acc6a412c6014ab1922daf";
     cmd = [
-      "./cli-proxy-api"
+      "./CLIProxyAPI"
       "-config"
       "/config/config.yaml"
     ];
@@ -53,6 +43,7 @@ in
       "${data}/auths:/root/.cli-proxy-api:rw"
       "${data}/logs:/CLIProxyAPI/logs:rw"
       "${data}/plugins:/CLIProxyAPI/plugins:rw"
+      "${kiroPlugin}/kiro-ha.so:/CLIProxyAPI/plugins/linux/amd64/kiro-ha.so:ro"
     ];
     environmentFiles = [ "${lab.secrets}/cliproxyapi.env" ];
     traefik = {

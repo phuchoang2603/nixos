@@ -1,4 +1,9 @@
-{ lab, lib, pkgs, ... }:
+{
+  lab,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
   data = "${lab.appdata}/cliproxyapi";
@@ -12,6 +17,37 @@ let
     mkdir -p "$out"
     tar -xzf ${kiroArchive} -C "$out" kiro-ha.so
   '';
+  kiroAliases = pkgs.writeText "kiro-model-aliases.json" (
+    builtins.toJSON (
+      lib.concatMap
+        (
+          name:
+          map
+            (suffix: {
+              inherit name;
+              alias = "kiro-${lib.replaceStrings [ "." ] [ "-" ] name}${suffix}";
+              fork = true;
+            })
+            [
+              ""
+              "-agentic"
+            ]
+        )
+        [
+          "claude-haiku-4.5"
+          "claude-opus-4.5"
+          "claude-opus-4.6"
+          "claude-opus-4.7"
+          "claude-opus-4.8"
+          "claude-opus-5"
+          "claude-opus-5.5"
+          "claude-sonnet-4.5"
+          "claude-sonnet-4.6"
+          "claude-sonnet-5"
+          "claude-sonnet-5.5"
+        ]
+    )
+  );
 in
 {
   systemd.tmpfiles.rules = [
@@ -27,7 +63,10 @@ in
       .plugins.enabled = true |
       .plugins.dir = "/CLIProxyAPI/plugins" |
       .plugins.configs.kiro-ha.enabled = true |
-      .plugins.configs.kiro-ha.priority = 1
+      .plugins.configs.kiro-ha.priority = 1 |
+      .oauth.model-alias.kiro = (
+        ((.oauth.model-alias.kiro // []) + load("${kiroAliases}")) | unique_by(.alias)
+      )
     ' ${data}/config/config.yaml
   '';
 

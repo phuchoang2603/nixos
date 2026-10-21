@@ -19,20 +19,12 @@ let
   '';
   kiroAliases = pkgs.writeText "kiro-model-aliases.json" (
     builtins.toJSON (
-      lib.concatMap
-        (
-          name:
-          map
-            (suffix: {
-              inherit name;
-              alias = "kiro-${lib.replaceStrings [ "." ] [ "-" ] name}${suffix}";
-              fork = true;
-            })
-            [
-              ""
-              "-agentic"
-            ]
-        )
+      map
+        (name: {
+          inherit name;
+          alias = "kiro-${lib.replaceStrings [ "." ] [ "-" ] name}-agentic";
+          fork = true;
+        })
         [
           "claude-haiku-4.5"
           "claude-opus-4.5"
@@ -64,14 +56,12 @@ in
       .plugins.dir = "/CLIProxyAPI/plugins" |
       .plugins.configs.kiro-ha.enabled = true |
       .plugins.configs.kiro-ha.priority = 1 |
-      .oauth.model-alias.kiro = (
-        ((.oauth.model-alias.kiro // []) + load("${kiroAliases}")) | unique_by(.alias)
-      )
+      .oauth.model-alias.kiro = load("${kiroAliases}")
     ' ${data}/config/config.yaml
   '';
 
   virtualisation.oci-containers.containers.cli-proxy-api = lab.mkContainer {
-    image = "eceasy/cli-proxy-api:v8.0.38@sha256:113a70240fb48f5c6fd674c9de40b1af4e7ff629f7acc6a412c6014ab1922daf";
+    image = "eceasy/cli-proxy-api:latest";
     cmd = [
       "./CLIProxyAPI"
       "-config"

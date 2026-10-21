@@ -7,6 +7,7 @@ let
 in
 {
   imports = [
+    ./claude.nix
     ./codex.nix
     ./t3code.nix
     ./excalidraw.nix
@@ -24,7 +25,9 @@ in
 
   # Shared Skills
   programs.codex.skills = agentSkills;
+  programs.claude-code.skills = agentSkills;
 
   # Shared Context
   programs.codex.context = sharedContext;
+  programs.claude-code.context = sharedContext;
 }

@@ -1,1 +1,1 @@
-/nix/store/b1d23h7mprfz6jv4rccwyl5znm99agrm-home-manager-files/.claude/skills/talos-k8s/SKILL.md
+/nix/store/9a9fy0nlg8ifr3kjxflxy159fjyxzlwf-home-manager-files/.claude/skills/talos-k8s/SKILL.md

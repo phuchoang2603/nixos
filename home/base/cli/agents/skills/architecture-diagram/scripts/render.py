@@ -23,7 +23,7 @@ def render(data):
     ids = [node["id"] for node in data["nodes"]]
     if len(ids) != len(set(ids)):
         raise ValueError("Node IDs must be unique")
-    parts = [f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}" role="img" aria-labelledby="title description">', f'<title id="title">{esc(data["title"])}</title>', f'<desc id="description">{esc(data["description"])}</desc>', '<defs>']
+    parts = [f'<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 {width} {height}" preserveAspectRatio="xMidYMid meet" role="img" aria-labelledby="title description">', f'<title id="title">{esc(data["title"])}</title>', f'<desc id="description">{esc(data["description"])}</desc>', '<defs>']
     for name, color in COLORS.items():
         parts.append(f'<marker id="arrow-{name}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 Z" fill="{color}"/></marker>')
     parts.extend(['</defs>', f'<rect width="{width}" height="{height}" fill="#f7f8fa"/>'])

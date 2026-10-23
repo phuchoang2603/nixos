@@ -1,1 +1,0 @@
-/nix/store/b1d23h7mprfz6jv4rccwyl5znm99agrm-home-manager-files/.claude/skills/excalidraw-skill/references/cheatsheet.md

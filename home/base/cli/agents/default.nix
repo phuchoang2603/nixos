@@ -10,7 +10,6 @@ in
     ./claude.nix
     ./codex.nix
     ./t3code.nix
-    ./excalidraw.nix
   ];
 
   # Shared MCP Servers

@@ -19,7 +19,6 @@ Web names below use `.home.phuchoang.sbs`.
 | `cli-proxy-api` | Model API gateway | `cliproxyapi` |
 | `executor` | MCP integrations and tools | `mcp` |
 | `hindsight`, `hindsight-db` | Agent long-term memory | `hindsight` |
-| `excalidraw` | Drawing canvas | `excalidraw` |
 
 See [Hermes and agent tools](hermes.md) for the agent services.
 See [Media stack](media.md) for playback, requests, and downloads.

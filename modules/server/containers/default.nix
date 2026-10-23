@@ -8,7 +8,6 @@
     ./newt.nix
     ./cliproxyapi.nix
     ./executor.nix
-    ./excalidraw.nix
     ./siyuan.nix
     ./hermes.nix
     ./hermes-desktop.nix

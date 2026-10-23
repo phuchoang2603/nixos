@@ -1,0 +1,14 @@
+{
+  "width": 800,
+  "height": 360,
+  "eyebrow": "EXAMPLE · REQUEST FLOW",
+  "title": "Browser to application",
+  "description": "A browser sends HTTPS requests to a web application inside the application namespace.",
+  "zones": [{"box": [410, 100, 350, 210], "label": "NAMESPACE app"}],
+  "nodes": [
+    {"id": "browser", "box": [35, 160, 220, 100], "title": "Browser", "tag": "actor", "icon": "browser", "lines": ["shopper / seller"]},
+    {"id": "web", "box": [470, 160, 230, 100], "title": "Web", "tag": "service", "lines": ["HTTP edge", "server-rendered pages"]}
+  ],
+  "edges": [{"id": "H1", "flow": "web", "points": [[255, 210], [470, 210]], "badge": [360, 210], "label": [360, 185, "HTTPS requests"]}],
+  "notes": [{"x": 35, "y": 335, "text": "H · Web requests / arrows show calls", "size": 13}]
+}

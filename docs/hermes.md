@@ -98,7 +98,7 @@ is `http://cli-proxy-api:8317/v1`.
 
 Executor's UI manages MCP integrations. State lives in
 `/mnt/storage/container/executor/data/`. Its [image definition](../modules/server/containers/executor.nix)
-bundles Excalidraw and Karakeep MCP packages. Stdio integrations use `bun`
+bundles the Karakeep MCP package. Stdio integrations use `bun`
 with `/mcp/node_modules/<package>/<bin>` as the argument.
 
 See [container operations](docker.md#check-and-restart) for logs and restarts,

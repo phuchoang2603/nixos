@@ -7,7 +7,6 @@ Use your existing local copy of this repository.
 - [Dependency updates and server deployment](docs/deployment.md)
 - [MacBook](docs/macbook.md)
 - [Docker containers](docs/docker.md)
-- [Media stack](docs/media.md)
 - [Hermes and agent tools](docs/hermes.md)
 
 Each guide covers installation and rebuilding. The configurations use account `felix`.

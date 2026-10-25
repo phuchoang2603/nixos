@@ -21,22 +21,18 @@ Web names below use `.home.phuchoang.sbs`.
 | `hindsight`, `hindsight-db` | Agent long-term memory | `hindsight` |
 
 See [Hermes and agent tools](hermes.md) for the agent services.
-See [Media stack](media.md) for playback, requests, and downloads.
-
 ## Files and storage
 
 | Path | What to change or store |
 | --- | --- |
 | `modules/server/containers/<app>.nix` | Container infrastructure and declared app settings |
 | `modules/server/containers/default.nix` | Which app modules and groups are enabled |
-| `modules/server/containers/media/` | Media services and their group imports |
 | `modules/server/containers/lab.nix` | Shared container and image helpers |
 | `modules/server/docker.nix` | Docker daemon, network, and startup dependencies |
 | `modules/server/lib.nix` | Shared NAS address, paths, and domain |
 | `modules/server/storage.nix` | iSCSI and NFS mounts |
 | `secrets/server/*.age` | Static encrypted environment files |
 | `/mnt/storage/container/<app>/` | Persistent application data and databases on iSCSI |
-| `/mnt/storage/media/` | Media on NFS |
 | `/run/agenix/` | Root-readable decrypted environment files in RAM |
 
 Containers wait for their required mounts. Application directories are created

@@ -1,4 +1,4 @@
-{ ... }:
+{ pkgs, ... }:
 
 let
   gatewayDomain = (import ../../../../modules/server/lib.nix).domain;
@@ -6,6 +6,7 @@ in
 {
   programs.codex = {
     enable = true;
+    package = pkgs.callPackage ./codex-cli.nix { };
     enableMcpIntegration = true;
     # Keep login/auth and interactive tweaks; declared settings still win on conflict.
     mutableSettings = true;

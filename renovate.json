@@ -37,6 +37,18 @@
       "depNameTemplate": "pingdotgg/t3code-{{{assetPlatform}}}",
       "datasourceTemplate": "custom.t3code-{{{assetPlatform}}}",
       "versioningTemplate": "npm"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/^home/base/cli/agents/codex-cli\\.nix$/"
+      ],
+      "matchStrings": [
+        "releasePlatform = \"(?<assetPlatform>[^\"\\s]+)\";\\s+version = \"(?<currentValue>[^\"]+)\";\\s+hash = \"(?<currentDigest>[^\"]+)\";"
+      ],
+      "depNameTemplate": "openai/codex-{{{assetPlatform}}}",
+      "datasourceTemplate": "custom.codex-{{{assetPlatform}}}",
+      "versioningTemplate": "npm"
     }
   ],
   "packageRules": [
@@ -46,6 +58,14 @@
         "custom.t3code-darwin-arm64"
       ],
       "groupName": "T3 Code",
+      "ignoreUnstable": true
+    },
+    {
+      "matchDatasources": [
+        "custom.codex-x86_64-unknown-linux-musl",
+        "custom.codex-aarch64-apple-darwin"
+      ],
+      "groupName": "Codex",
       "ignoreUnstable": true
     }
   ],
@@ -60,6 +80,18 @@
       "defaultRegistryUrlTemplate": "https://api.github.com/repos/pingdotgg/t3code/releases?per_page=100",
       "transformTemplates": [
         "{\"releases\": [$[draft = false and prerelease = false].($version := $substringAfter(tag_name, 'v'); $asset := assets[name = 't3-' & $version & '-darwin-arm64.tar.gz'][0]; $exists($asset.digest) ? {\"version\": $version, \"digest\": $substringAfter($asset.digest, 'sha256:')})]}"
+      ]
+    },
+    "codex-x86_64-unknown-linux-musl": {
+      "defaultRegistryUrlTemplate": "https://api.github.com/repos/openai/codex/releases?per_page=100",
+      "transformTemplates": [
+        "{\"releases\": [$[draft = false and prerelease = false and $contains(tag_name, /^rust-v[0-9]+\\.[0-9]+\\.[0-9]+$/)].($version := $substringAfter(tag_name, \"rust-v\"); $asset := assets[name = \"codex-package-x86_64-unknown-linux-musl.tar.gz\"][0]; $exists($asset.digest) ? {\"version\": $version, \"digest\": $substringAfter($asset.digest, \"sha256:\")})]}"
+      ]
+    },
+    "codex-aarch64-apple-darwin": {
+      "defaultRegistryUrlTemplate": "https://api.github.com/repos/openai/codex/releases?per_page=100",
+      "transformTemplates": [
+        "{\"releases\": [$[draft = false and prerelease = false and $contains(tag_name, /^rust-v[0-9]+\\.[0-9]+\\.[0-9]+$/)].($version := $substringAfter(tag_name, \"rust-v\"); $asset := assets[name = \"codex-package-aarch64-apple-darwin.tar.gz\"][0]; $exists($asset.digest) ? {\"version\": $version, \"digest\": $substringAfter($asset.digest, \"sha256:\")})]}"
       ]
     }
   }

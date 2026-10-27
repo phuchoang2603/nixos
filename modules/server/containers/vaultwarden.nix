@@ -7,7 +7,8 @@
     environmentFiles = [ "${lab.secrets}/vaultwarden.env" ];
     environment = {
       IP_HEADER = "X-Forwarded-For";
-      PUSH_ENABLED = "true";
+      PUSH_ENABLED = "false";
+      ENABLE_WEBSOCKET = "true";
       SIGNUPS_ALLOWED = "false";
       WEB_VAULT_ENABLED = "true";
     };

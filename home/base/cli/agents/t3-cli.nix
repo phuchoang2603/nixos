@@ -11,14 +11,14 @@ let
     x86_64-linux = {
       releasePlatform = "linux-x64";
       # renovate: depName=pingdotgg/t3code-linux-x64
-      version = "0.1.3";
-      hash = "63cd0f0547eef62bb4ece27fa779bbf9e2ba8531cc68542568ba9e78838dc684";
+      version = "0.1.4";
+      hash = "8d759aff8b20f06fd2f4d20653b09b3bdffab88dee7752866582005cb4f031b9";
     };
     aarch64-darwin = {
       releasePlatform = "darwin-arm64";
       # renovate: depName=pingdotgg/t3code-darwin-arm64
-      version = "0.1.3";
-      hash = "227f7d79e0b8aef050a2430e42d95103266ef8a7f722febfe9a28cb2d266b477";
+      version = "0.1.4";
+      hash = "3a13b026366cb7095b845c6419068a21aac766b0160410fe87af1aae4a52cd68";
     };
   };
 

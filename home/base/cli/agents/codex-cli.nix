@@ -10,8 +10,8 @@ let
   platforms = {
     x86_64-linux = {
       releasePlatform = "x86_64-unknown-linux-musl";
-      version = "0.165.0";
-      hash = "e97c4463d7f146692a955d7b0e1c8cf48f97cd4d616cd45c5dcab2e8d9743316";
+      version = "0.166.0";
+      hash = "1d44b28bc4ac9937d7d3532264baa68a507ce364956a0d4ebb856f331cdee254";
     };
     aarch64-darwin = {
       releasePlatform = "aarch64-apple-darwin";

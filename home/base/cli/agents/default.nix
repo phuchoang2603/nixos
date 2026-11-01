@@ -1,4 +1,4 @@
-{ ... }:
+{ pkgs, ... }:
 
 let
   sharedContext = ./AGENTS.md;
@@ -10,6 +10,12 @@ in
     ./claude.nix
     ./codex.nix
     ./t3code.nix
+  ];
+
+  home.packages = [
+    (pkgs.writers.writePython3Bin "excalidraw-icon" { flakeIgnore = [ "E501" ]; } (
+      builtins.readFile ./scripts/excalidraw-icon.py
+    ))
   ];
 
   # Shared MCP Servers

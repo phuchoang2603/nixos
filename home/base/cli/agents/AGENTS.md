@@ -3,6 +3,11 @@
 - Use the Context7 MCP for current library/framework docs and best practices instead of relying on training data, whenever the task involves a public API, SDK, or framework.
 - Do not spawn subagents or delegate work to other agents unless the user explicitly asks for subagents, delegation, or parallel agent work.
 
+## Code style
+
+- Prefer current, native patterns and remove redundant, stale, unnecessary, or duplicate code.
+- Do not preserve legacy compatibility unless explicitly requested or required by the task.
+
 ## Comments
 
 - Do not add comments unless explicitly asked, or the logic is a non-obvious invariant, protocol quirk, or security caveat that the code cannot express.

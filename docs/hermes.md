@@ -97,8 +97,7 @@ and settings. Persistent state is in `/mnt/storage/container/cliproxyapi/`:
 is `http://cli-proxy-api:8317/v1`.
 
 Executor's UI manages MCP integrations. V2 state lives in
-`/mnt/storage/container/executor/v2/`; the previous v1 data remains in
-`/mnt/storage/container/executor/data/`. V2 requires a new administrator and
+`/mnt/storage/container/executor/v2/`. V2 requires a new administrator and
 reconnecting integrations and MCP clients. It does not support stdio MCP servers.
 
 See [container operations](docker.md#check-and-restart) for logs and restarts,

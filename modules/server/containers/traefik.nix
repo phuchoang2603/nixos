@@ -17,7 +17,6 @@
       "/var/run/docker.sock:/var/run/docker.sock:ro"
       "${./traefik/static.yaml}:/etc/traefik/traefik.yaml:ro"
       "${./traefik/dynamic.yaml}:/etc/traefik/dynamic/external-services.yml:ro"
-      "${./traefik/executor.yaml}:/etc/traefik/dynamic/executor.yml:ro"
       "${lab.appdata}/traefik/certs:/var/traefik/certs:rw"
     ];
     environmentFiles = [ "${lab.secrets}/traefik.env" ];

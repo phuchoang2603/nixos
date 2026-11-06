@@ -12,9 +12,9 @@ and a separate desktop for terminal and browser work.
 | Hindsight | https://hindsight.home.phuchoang.sbs |
 | CLIProxyAPI | https://cliproxyapi.home.phuchoang.sbs |
 | Executor | https://mcp.home.phuchoang.sbs |
-| Executor MCP | https://mcp.home.phuchoang.sbs/mcp?mode=passthrough |
+| Executor MCP | https://mcp.home.phuchoang.sbs/mcp |
 
-Traefik adds Executor's API key on the MCP route. Its web UI keeps its normal login.
+Executor v2 uses browser sign-in for MCP clients.
 
 ## What to edit
 
@@ -96,10 +96,10 @@ and settings. Persistent state is in `/mnt/storage/container/cliproxyapi/`:
 `config/`, `auths/`, `logs/`, and `plugins/`. Inside Docker, its model endpoint
 is `http://cli-proxy-api:8317/v1`.
 
-Executor's UI manages MCP integrations. State lives in
-`/mnt/storage/container/executor/data/`. Its [image definition](../modules/server/containers/executor.nix)
-bundles the Karakeep MCP package. Stdio integrations use `bun`
-with `/mcp/node_modules/<package>/<bin>` as the argument.
+Executor's UI manages MCP integrations. V2 state lives in
+`/mnt/storage/container/executor/v2/`; the previous v1 data remains in
+`/mnt/storage/container/executor/data/`. V2 requires a new administrator and
+reconnecting integrations and MCP clients. It does not support stdio MCP servers.
 
 See [container operations](docker.md#check-and-restart) for logs and restarts,
 and [secret editing](macbook.md#edit-server-secrets) for static credentials.

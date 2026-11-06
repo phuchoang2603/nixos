@@ -7,7 +7,6 @@
     ./karakeep.nix
     ./newt.nix
     ./cliproxyapi.nix
-    ./executor.nix
     ./siyuan.nix
     ./hermes.nix
     ./hermes-desktop.nix

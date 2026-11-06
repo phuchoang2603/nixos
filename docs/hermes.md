@@ -11,8 +11,8 @@ and a separate desktop for terminal and browser work.
 | Desktop viewer | https://desktop.home.phuchoang.sbs |
 | Hindsight | https://hindsight.home.phuchoang.sbs |
 | CLIProxyAPI | https://cliproxyapi.home.phuchoang.sbs |
-| Executor | https://mcp.home.phuchoang.sbs |
-| Executor MCP | https://mcp.home.phuchoang.sbs/mcp |
+| Executor | https://executor.sh |
+| Executor MCP | https://mcp.executor.sh/mcp |
 
 Executor v2 uses browser sign-in for MCP clients.
 
@@ -96,9 +96,7 @@ and settings. Persistent state is in `/mnt/storage/container/cliproxyapi/`:
 `config/`, `auths/`, `logs/`, and `plugins/`. Inside Docker, its model endpoint
 is `http://cli-proxy-api:8317/v1`.
 
-Executor's UI manages MCP integrations. V2 state lives in
-`/mnt/storage/container/executor/v2/`. V2 requires a new administrator and
-reconnecting integrations and MCP clients. It does not support stdio MCP servers.
+Executor's hosted UI manages MCP integrations and connected accounts.
 
 See [container operations](docker.md#check-and-restart) for logs and restarts,
 and [secret editing](macbook.md#edit-server-secrets) for static credentials.

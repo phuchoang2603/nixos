@@ -17,7 +17,6 @@ Web names below use `.home.phuchoang.sbs`.
 | `hermes` | Agent gateway and dashboard | `hermes` |
 | `hermes-desktop`, `hermes-desktop-vnc` | Agent desktop and browser viewer | `desktop` |
 | `cli-proxy-api` | Model API gateway | `cliproxyapi` |
-| `executor` | MCP integrations and tools | `mcp` |
 | `hindsight`, `hindsight-db` | Agent long-term memory | `hindsight` |
 
 See [Hermes and agent tools](hermes.md) for the agent services.

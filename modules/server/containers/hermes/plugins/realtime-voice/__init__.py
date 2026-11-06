@@ -56,12 +56,10 @@ You are talking with Felix in a Discord voice channel. Speak naturally and brief
 on a call, and stop talking when interrupted. Everything you say is heard, not read: no markdown,
 lists, code, or URLs.
 
-Handle anything that takes one to a few tool calls yourself; don't hand it off. The gmail_*,
-calendar_* and tasks_* functions call those integrations directly, so reading his email,
-calendar or tasks, and adding a task are all yours. For any other integration listed below, call
-mcp__executor__search with its integration, owner and connection plus a few words for the action,
-then mcp__executor__invoke with the returned id and arguments. Never guess a result; wait for the
-tool. Before a call that may take more than a moment, say in a few words what you're doing.
+Handle anything that takes one to a few tool calls yourself; don't hand it off. Use
+mcp__executor__search to find integration tools and mcp__executor__call to invoke them.
+Never guess a result; wait for the tool. Before a call that may take more than a moment,
+say in a few words what you're doing.
 
 Use ask_hermes, which hands the request to the full Hermes agent, only when:
 - the task takes many steps, research across several sources, or more than a minute;
@@ -90,25 +88,8 @@ FALLBACK_INSTRUCTIONS = (
 TOOL_SESSION = "realtime-voice"
 # The quick-turn subset of Hermes' tools. Everything else goes through ask_hermes, which keeps
 # those schemas out of the voice session.
-VOICE_TOOLS = {"web_search", "skill_view", "mcp__executor__search", "mcp__executor__invoke"}
-
-# MCP gateway tools the voice model gets as plain functions: (tool id, parameters to keep).
-# None keeps them all; "a.b" keeps field b of object parameter a. Google's APIs list a dozen
-# transport parameters on every call, which would otherwise dominate the session.
-EXECUTOR_TOOLS = {
-    "gmail_list_messages": ("tools.google_gmail.user.xuanphucA1gv.gmail.users.messages.list",
-                            ["userId", "q", "maxResults", "labelIds"]),
-    "gmail_get_message": ("tools.google_gmail.user.xuanphucA1gv.gmail.users.messages.get",
-                          ["userId", "id", "format", "metadataHeaders"]),
-    "calendar_list_calendars": ("tools.google_calendar.user.personalGoogleCalendarApi.calendar.calendarList.list", []),
-    "calendar_list_events": ("tools.google_calendar.user.personalGoogleCalendarApi.calendar.events.list",
-                             ["calendarId", "timeMin", "timeMax", "q", "singleEvents", "orderBy", "maxResults"]),
-    "tasks_list_tasklists": ("tools.google_tasks.user.personalGoogleTasksApi.tasks.tasklists.list", []),
-    "tasks_list_tasks": ("tools.google_tasks.user.personalGoogleTasksApi.tasks.tasks.list",
-                         ["tasklist", "showCompleted", "dueMin", "dueMax", "maxResults"]),
-    "tasks_insert_task": ("tools.google_tasks.user.personalGoogleTasksApi.tasks.tasks.insert",
-                          ["tasklist", "body.title", "body.notes", "body.due"]),
-}
+VOICE_TOOLS = {"web_search", "skill_view", "mcp__executor__search", "mcp__executor__describe",
+               "mcp__executor__call", "mcp__executor__skills"}
 MAX_TOOL_OUTPUT = 16000
 
 TURN_NOTE = (
@@ -176,73 +157,6 @@ def _shorten(node, in_properties: bool = False):
     return out
 
 
-def _prune(schema: dict, keep, defs: dict | None = None) -> dict:
-    schema = _shorten(schema)
-    if keep is None:
-        return schema
-    defs = schema.get("$defs", {}) if defs is None else defs
-    props, wanted = schema.get("properties") or {}, {}
-    for path in keep:
-        name, _, field = path.partition(".")
-        if name in props:
-            wanted.setdefault(name, []).extend([field] if field else [])
-    kept = {}
-    for name, fields in wanted.items():
-        prop = props[name]
-        if fields and "$ref" in prop:
-            prop = defs.get(prop["$ref"].rsplit("/", 1)[-1], prop)
-        kept[name] = _prune(prop, fields, defs) if fields and "properties" in prop else prop
-    pruned = {**{k: v for k, v in schema.items() if k not in ("properties", "required", "$defs")},
-              "properties": kept, "required": [r for r in schema.get("required", []) if r in kept]}
-    if "$defs" in schema and '"$ref"' in json.dumps(kept):
-        pruned["$defs"] = schema["$defs"]
-    return pruned
-
-
-def _executor_result(output: str):
-    data = json.loads(output)
-    return json.loads(data["result"]) if isinstance(data.get("result"), str) else data
-
-
-def _integration_text(output: str) -> str:
-    """An integration call's result without the MCP envelope or its structured duplicate."""
-    with suppress(Exception):
-        result = _executor_result(output)
-        if isinstance(result, dict) and isinstance(result.get("content"), list):
-            texts = [c.get("text", "") for c in result["content"] if c.get("type") == "text"]
-            if texts:
-                return "\n".join(texts)
-        return json.dumps(result, ensure_ascii=False, separators=(",", ":"))
-    return output
-
-
-def _executor_context(enabled: list, disabled: list) -> dict:
-    """Plain functions for EXECUTOR_TOOLS and a list of connected integrations, as Executor has them now."""
-    tools, ids = [], {}
-    for name, (tool_id, keep) in EXECUTOR_TOOLS.items():
-        _, integration, owner, connection, *action = tool_id.split(".")
-        try:
-            found = _executor_result(_run_hermes_tool("mcp__executor__search", {
-                "integration": integration, "owner": owner, "connection": connection, "query": " ".join(action)},
-                enabled, disabled))
-            item = next(i for i in found.get("items", []) if i.get("id") == tool_id)
-        except Exception as e:
-            logger.warning("Voice tool %s unavailable: %s", name, e)
-            continue
-        parameters = _prune(item.get("inputSchema") or {}, keep)
-        parameters["type"] = "object"
-        parameters.setdefault("properties", {})
-        description = " ".join((item.get("description") or name).split())[:500]
-        tools.append({"type": "function", "name": name, "description": description, "parameters": parameters})
-        ids[name] = tool_id
-    integrations = ""
-    with suppress(Exception):
-        items = _executor_result(_run_hermes_tool("mcp__executor__integrations", {}, enabled, disabled)).get("items", [])
-        integrations = "\n".join(f"- {i['integrationName']}: integration {i['integration']}, owner {i['owner']}, "
-                                 f"connection {i['connection']}" for i in items)
-    return {"tools": tools, "ids": ids, "integrations": integrations}
-
-
 def _hermes_context() -> dict:
     """Instructions, realtime tools and how to run them, read fresh per connection."""
     import model_tools
@@ -268,7 +182,6 @@ def _hermes_context() -> dict:
     tools = [{"type": "function", "name": f["name"], "description": f.get("description", ""),
               "parameters": _shorten(f.get("parameters") or {"type": "object", "properties": {}})}
              for f in schemas if f["name"] in VOICE_TOOLS]
-    executor = _executor_context(enabled, disabled)
 
     parts = [load_soul_md() or "You are Hermes, Felix's personal assistant."]
     # Names only, without the main agent's skill-maintenance preamble.
@@ -279,13 +192,11 @@ def _hermes_context() -> dict:
     if index:
         parts.append("## Skills\n\nHermes' skills by category. Load one with skill_view(name) when it fits.\n"
                      + index.group(1).replace(" [names only]", ""))
-    if executor["integrations"]:
-        parts.append("## Integrations in the MCP gateway\n\n" + executor["integrations"])
     parts.append(VOICE_NOTE)
     parts.append(time.strftime("It is now %A, %B %d, %Y, %H:%M (%Z, UTC%z)."))
     return {"instructions": "\n\n".join(p.strip() for p in parts if p),
-            "tools": [*tools, *executor["tools"], ASK_HERMES],
-            "toolsets": (enabled, disabled), "executor_ids": executor["ids"]}
+            "tools": [*tools, ASK_HERMES],
+            "toolsets": (enabled, disabled)}
 
 
 def _run_hermes_tool(name: str, args: dict, enabled: list, disabled: list) -> str:
@@ -490,7 +401,6 @@ class _Call:
         self.user_speaking = False
         self.session_id = ""
         self.toolsets: tuple = ([], [])
-        self.executor_ids: dict = {}
         self.open_calls = 0
         self.transcript: deque = deque(maxlen=12)
         self.spoken: list = []
@@ -526,7 +436,7 @@ class _Call:
         try:
             context = await asyncio.to_thread(_hermes_context)
             instructions, tools = context["instructions"], context["tools"]
-            self.toolsets, self.executor_ids = context["toolsets"], context["executor_ids"]
+            self.toolsets = context["toolsets"]
         except Exception:
             logger.exception("Realtime voice could not load Hermes' context; only ask_hermes is available")
             instructions, tools = FALLBACK_INSTRUCTIONS, [ASK_HERMES]
@@ -700,17 +610,12 @@ class _Call:
         except ValueError:
             args = {}
         args = args if isinstance(args, dict) else {}
-        tool_id = self.executor_ids.get(name)
         try:
-            if tool_id:
-                output = await asyncio.to_thread(_run_hermes_tool, "mcp__executor__invoke",
-                                                 {"tool": tool_id, "arguments": args}, *self.toolsets)
-            else:
-                output = await asyncio.to_thread(_run_hermes_tool, name, args, *self.toolsets)
+            output = await asyncio.to_thread(_run_hermes_tool, name, args, *self.toolsets)
         except Exception as e:
             logger.warning("Voice tool %s failed: %s", name, e)
             output = json.dumps({"error": f"{name} failed: {e}"})
-        await self._tool_output(call_id, _for_voice(_integration_text(output) if tool_id else output))
+        await self._tool_output(call_id, _for_voice(output))
         mark = "❌" if _tool_failed(output) else "✅"
         call = {"function": {"name": name, "arguments": arguments}}
         await self._audit(f"{_describe_tool_call(call)} {mark} ({time.time() - started:.1f}s)")

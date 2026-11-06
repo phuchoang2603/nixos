@@ -3,8 +3,6 @@
 let
   sharedContext = ./AGENTS.md;
   agentSkills = ./skills;
-  gatewayDomain = (import ../../../../modules/server/lib.nix).domain;
-  executorUrl = "https://mcp.${gatewayDomain}/org/executor/mcp";
 in
 {
   imports = [
@@ -24,7 +22,7 @@ in
     enable = true;
     servers = {
       executor = {
-        url = executorUrl;
+        url = "https://mcp.executor.sh/mcp";
       };
     };
   };

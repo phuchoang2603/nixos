@@ -36,6 +36,7 @@
       "microsoft-word"
       "microsoft-excel"
       "microsoft-powerpoint"
+      "zoom"
       "google-drive"
       "obsidian"
       "zalo"

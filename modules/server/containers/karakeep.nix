@@ -32,11 +32,6 @@
         INFERENCE_JOB_TIMEOUT_SEC = "120";
         INFERENCE_ENABLE_AUTO_SUMMARIZATION = "true";
 
-        EMBEDDING_ENABLE_AUTO_INDEXING = "true";
-        EMBEDDING_OPENAI_BASE_URL = "https://openrouter.ai/api/v1";
-        EMBEDDING_TEXT_MODEL = "openai/text-embedding-3-small";
-        EMBEDDING_DIMENSIONS = "1536";
-        SEMANTIC_SEARCH_ENABLED = "true";
         RATE_LIMITING_ENABLED = "true";
       };
       extraOptions = [ "--cpus=1" ];

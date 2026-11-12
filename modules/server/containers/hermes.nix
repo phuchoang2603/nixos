@@ -66,9 +66,21 @@ in
     serviceConfig = {
       RuntimeDirectory = "hermes-cdp-tunnel";
       RuntimeDirectoryMode = "0700";
+      TimeoutStartSec = 90;
       Restart = "always";
       RestartSec = 5;
     };
+    preStart = ''
+      for _ in $(seq 1 60); do
+        if [ "$(${pkgs.docker}/bin/docker inspect --format '{{.State.Running}}' hermes 2>/dev/null)" = true ] \
+          && [ "$(${pkgs.docker}/bin/docker inspect --format '{{.State.Running}}' hermes-desktop 2>/dev/null)" = true ]; then
+          exit 0
+        fi
+        sleep 1
+      done
+      echo "Hermes containers did not become ready" >&2
+      exit 1
+    '';
     script = ''
       printf '[hermes-desktop]:2222 %s\n' "$(cat ${lab.appdata}/hermes-desktop/ssh/host_ed25519.pub)" > "$RUNTIME_DIRECTORY/known_hosts"
       gatewayPid=$(${pkgs.docker}/bin/docker inspect --format '{{.State.Pid}}' hermes)
@@ -79,7 +91,7 @@ in
         -o BatchMode=yes -o IdentitiesOnly=yes \
         -o StrictHostKeyChecking=yes -o 'HostKeyAlias=[hermes-desktop]:2222' \
         -o UserKnownHostsFile="$RUNTIME_DIRECTORY/known_hosts" \
-        -o ExitOnForwardFailure=yes -o ConnectTimeout=10 \
+        -o ExitOnForwardFailure=yes -o ConnectTimeout=10 -o ConnectionAttempts=10 \
         -o ServerAliveInterval=30 -o ServerAliveCountMax=3 \
         -L 127.0.0.1:9222:127.0.0.1:9222 "pn@$desktopIp"
     '';

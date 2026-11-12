@@ -45,8 +45,9 @@ If the browser is unavailable, check `/json/version` on port 9222 inside
 
 Executor's private **Job Applications** app owns hourly discovery, the applicant profile,
 application history and the single active application. Hermes's native hourly cron screens
-and applies sequentially using those records; it does not run another discovery monitor or
-synchronize Discord job threads and Google Sheets.
+and applies sequentially using those records. Executor publishes JD summaries, full JD
+attachments and status into one linked Discord task thread per job. SQLite owns the thread
+mapping and application state; Google Sheets is no longer used.
 
 ```bash
 docker exec -it --user 1000:100 --workdir /opt/hermes hermes /bin/bash
@@ -64,7 +65,7 @@ hermes cron edit --help
 
 Edit skills in Hermes; it syncs them to the desktop as needed. Desktop files persist
 under `/mnt/storage/container/hermes-desktop/home/` on the host. Old local discovery,
-Discord and Sheets state is migration evidence, not the current application tracker.
+Sheets files and local Discord state are migration evidence, not the current application tracker.
 
 Executor Resume Publisher supplies versioned sources. Hermes tailors and validates the
 per-job PDF locally and records its path, base commit and checksum in Job Applications.

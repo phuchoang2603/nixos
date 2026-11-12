@@ -60,9 +60,6 @@ in
           signColumn = true;
         };
       };
-      rofi = {
-        enable = false;
-      };
       waybar = {
         enable = false;
       };

@@ -30,11 +30,19 @@ in
     launchd.agents.vicinae = {
       enable = true;
       config = {
-        EnvironmentVariables = {
-          VICINAE_NODE_BIN = lib.getExe pkgs.nodejs;
-          VICINAE_OVERRIDES = "${config.xdg.configHome}/vicinae/base.json";
-          PATH = "/etc/profiles/per-user/${config.home.username}/bin:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin";
-        };
+        ProgramArguments = [
+          "/usr/bin/open"
+          "-g"
+          "-W"
+          "-a"
+          "${config.home.homeDirectory}/${config.targets.darwin.copyApps.directory}/Vicinae.app"
+          "--env"
+          "VICINAE_NODE_BIN=${lib.getExe pkgs.nodejs}"
+          "--env"
+          "VICINAE_OVERRIDES=${config.xdg.configHome}/vicinae/base.json"
+          "--env"
+          "PATH=/etc/profiles/per-user/${config.home.username}/bin:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+        ];
         RunAtLoad = true;
         KeepAlive = true;
         ProcessType = "Interactive";

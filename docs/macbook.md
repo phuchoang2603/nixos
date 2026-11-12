@@ -46,7 +46,7 @@ Use **Option + Space** to open it, **Option + C** for the calculator,
 and **Option + M** for System Monitor.
 
 In **System Settings → Privacy & Security**, allow Vicinae **Accessibility** for
-snippet expansion, window actions, and pasting, and **Full Disk Access** for
+window actions and pasting, and **Full Disk Access** for
 searching protected folders. Restart Vicinae after granting access.
 
 **Option + O** selects a screen region, recognizes English text locally with Tesseract,

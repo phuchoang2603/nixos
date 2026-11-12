@@ -3,7 +3,6 @@
 {
   imports = [
     ./extensions.nix
-    ./snippets.nix
     ./darwin.nix
     ./linux.nix
   ];
@@ -27,6 +26,10 @@
       clipboard.entrypoints.history.shortcut = "alt+v";
       clipboard.preferences.evictionThreshold = "604800";
       files.entrypoints.search.shortcut = "alt+f";
+      snippets = {
+        entrypoints.manage.shortcut = "alt+s";
+        preferences.enabled = false;
+      };
       wm.entrypoints.switch-windows.shortcut = "alt+w";
     };
   };

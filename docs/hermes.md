@@ -43,7 +43,10 @@ If the browser is unavailable, check `/json/version` on port 9222 inside
 
 ## Internship applications
 
-The hourly monitor is a native Hermes cron job. Manage it through Hermes or its CLI.
+Executor's private **Job Applications** app owns hourly discovery, the applicant profile,
+application history and the single active application. Hermes's native hourly cron screens
+and applies sequentially using those records; it does not run another discovery monitor or
+synchronize Discord job threads and Google Sheets.
 
 ```bash
 docker exec -it --user 1000:100 --workdir /opt/hermes hermes /bin/bash
@@ -53,22 +56,21 @@ hermes cron edit --help
 
 | Location | Purpose |
 | --- | --- |
-| `/opt/data/skills/productivity/internship-application-assistant/` | Application policy |
-| `/opt/data/skills/web/desktop-browser/` | Browser mechanics and ATS references |
-| `/home/pn/internships/profile.json` in `hermes-desktop` | Personal answers and experience |
-| `/home/pn/internships/` in `hermes-desktop` | Application configuration and progress |
-| `/home/pn/scripts/` in `hermes-desktop` | Writable automation scripts |
+| `/opt/data/skills/productivity/internship-application-assistant/` | Application policy and Executor tool workflow |
+| `/opt/data/skills/web/desktop-browser/` | Native browser mechanics and ATS references |
+| `/opt/data/scripts/job_preflight.py` | Check Executor access and refresh the local profile/resume sources before cron |
+| `/home/pn/internships/profile.json` in `hermes-desktop` | Private local snapshot of the Executor profile |
+| `/home/pn/internships/resume-kit/` in `hermes-desktop` | Resume Publisher sources and local tailoring tools |
 
 Edit skills in Hermes; it syncs them to the desktop as needed. Desktop files persist
-under `/mnt/storage/container/hermes-desktop/home/` on the host.
-The discovery script lives at `/home/pn/scripts/monitor_simplify_jobs.py` in that
-same persistent home. Hermes can edit it when the workflow needs changes; container
-restarts and Nix deployments preserve those edits. Matching rules live beside it
-in `discovery-filters.json`. Run `python3 /home/pn/scripts/test_monitor.py` for offline
-checks, then use the monitor's `--dry-run` to preview matches without posting or
-changing state. Normal runs serialize discovery, checkpoint
-confirmed Discord posts, and retry failed deliveries on the next run. Preserve the
-existing application state; `--init` is only for creating a baseline.
+under `/mnt/storage/container/hermes-desktop/home/` on the host. Old local discovery,
+Discord and Sheets state is migration evidence, not the current application tracker.
+
+Executor Resume Publisher supplies versioned sources. Hermes tailors and validates the
+per-job PDF locally and records its path, base commit and checksum in Job Applications.
+An uncertain submission stays active until portal/email evidence resolves it; it never
+expires or automatically retries. Assessments and interviews are recorded as follow-ups
+without restarting the submitted application.
 
 The `application-accounts` plugin creates dedicated credentials, stores them in
 Hermes's encrypted local vault, and fills account forms. The application workflow

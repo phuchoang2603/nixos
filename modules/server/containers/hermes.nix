@@ -9,9 +9,7 @@ let
   upstreamImage = "nousresearch/hermes-agent:latest";
   # The upstream image lacks libopus (Discord voice playback) and hindsight-client (the Hindsight
   # memory plugin); the container is recreated on every start, so runtime installs don't stick.
-  # browser_exec on a configured cdp_url can't reach a CDP endpoint inside the sandbox without the
-  # exec-stream forward, and has to bring the screen up first.
-  # The grep fails the build if upstream moves the patched code.
+  # Both native browser tools need the sandbox's loopback CDP forwarded before discovery.
   dockerfile = pkgs.writeText "hermes-agent-local.Dockerfile" ''
     FROM ${upstreamImage}
     COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
@@ -20,15 +18,21 @@ let
       && rm -rf /var/lib/apt/lists/*
     RUN uv pip install --no-cache --python /opt/hermes/.venv/bin/python 'hindsight-client>=0.10.1,<1' \
       && /opt/hermes/.venv/bin/python -c 'import hindsight_client'
-    RUN sed -i \
-        -e 's/^        _set_cdp_env(env, override)$/        from tools.bot_desktop import runtime as _bd_runtime\n        _bd_runtime.ensure_started_for_tool()\n        _set_cdp_env(env, _reach_sandbox_cdp(override))/' \
-        /opt/hermes/tools/browser_use_cli.py \
-      && grep -q '_set_cdp_env(env, _reach_sandbox_cdp(override))' /opt/hermes/tools/browser_use_cli.py
+    COPY browser_cdp_bridge.py /opt/hermes/tools/browser_cdp_bridge.py
+    COPY patch_browser.py /tmp/patch_browser.py
+    RUN /opt/hermes/.venv/bin/python /tmp/patch_browser.py && rm /tmp/patch_browser.py
   '';
 
   localImage = lab.mkImage {
     name = "hermes-agent-local";
     inherit dockerfile;
+    context = lib.fileset.toSource {
+      root = ./hermes;
+      fileset = lib.fileset.unions [
+        ./hermes/browser_cdp_bridge.py
+        ./hermes/patch_browser.py
+      ];
+    };
     containers = [ "hermes" ];
   };
 

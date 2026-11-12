@@ -81,7 +81,10 @@ let
     KbdInteractiveAuthentication no
     UsePAM no
     StrictModes no
-    AllowTcpForwarding no
+    AllowTcpForwarding local
+    PermitOpen 127.0.0.1:${toString cdpPort}
+    AllowStreamLocalForwarding no
+    GatewayPorts no
     AllowAgentForwarding no
     X11Forwarding no
     PermitTunnel no

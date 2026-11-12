@@ -9,7 +9,6 @@ let
   upstreamImage = "nousresearch/hermes-agent:latest";
   # The upstream image lacks libopus (Discord voice playback) and hindsight-client (the Hindsight
   # memory plugin); the container is recreated on every start, so runtime installs don't stick.
-  # Both native browser tools need the sandbox's loopback CDP forwarded before discovery.
   dockerfile = pkgs.writeText "hermes-agent-local.Dockerfile" ''
     FROM ${upstreamImage}
     COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
@@ -18,21 +17,11 @@ let
       && rm -rf /var/lib/apt/lists/*
     RUN uv pip install --no-cache --python /opt/hermes/.venv/bin/python 'hindsight-client>=0.10.1,<1' \
       && /opt/hermes/.venv/bin/python -c 'import hindsight_client'
-    COPY browser_cdp_bridge.py /opt/hermes/tools/browser_cdp_bridge.py
-    COPY patch_browser.py /tmp/patch_browser.py
-    RUN /opt/hermes/.venv/bin/python /tmp/patch_browser.py && rm /tmp/patch_browser.py
   '';
 
   localImage = lab.mkImage {
     name = "hermes-agent-local";
     inherit dockerfile;
-    context = lib.fileset.toSource {
-      root = ./hermes;
-      fileset = lib.fileset.unions [
-        ./hermes/browser_cdp_bridge.py
-        ./hermes/patch_browser.py
-      ];
-    };
     containers = [ "hermes" ];
   };
 
@@ -54,6 +43,47 @@ in
   systemd.services.docker-hermes.wants = [
     "docker-hindsight.service"
   ];
+
+  systemd.services.hermes-cdp-tunnel = {
+    description = "Forward desktop Chrome CDP to Hermes loopback";
+    wantedBy = [
+      "docker-hermes.service"
+      "docker-hermes-desktop.service"
+    ];
+    after = [
+      "docker-hermes.service"
+      "docker-hermes-desktop.service"
+    ];
+    bindsTo = [
+      "docker-hermes.service"
+      "docker-hermes-desktop.service"
+    ];
+    partOf = [
+      "docker-hermes.service"
+      "docker-hermes-desktop.service"
+    ];
+    startLimitIntervalSec = 0;
+    serviceConfig = {
+      RuntimeDirectory = "hermes-cdp-tunnel";
+      RuntimeDirectoryMode = "0700";
+      Restart = "always";
+      RestartSec = 5;
+    };
+    script = ''
+      printf '[hermes-desktop]:2222 %s\n' "$(cat ${lab.appdata}/hermes-desktop/ssh/host_ed25519.pub)" > "$RUNTIME_DIRECTORY/known_hosts"
+      gatewayPid=$(${pkgs.docker}/bin/docker inspect --format '{{.State.Pid}}' hermes)
+      desktopIp=$(${pkgs.docker}/bin/docker inspect --format '{{(index .NetworkSettings.Networks "${lab.proxyNetwork}").IPAddress}}' hermes-desktop)
+      exec ${pkgs.util-linux}/bin/nsenter --target "$gatewayPid" --net -- \
+        ${pkgs.openssh}/bin/ssh -F /dev/null -nNT \
+        -i ${state}/.ssh/desktop_ed25519 -p 2222 \
+        -o BatchMode=yes -o IdentitiesOnly=yes \
+        -o StrictHostKeyChecking=yes -o 'HostKeyAlias=[hermes-desktop]:2222' \
+        -o UserKnownHostsFile="$RUNTIME_DIRECTORY/known_hosts" \
+        -o ExitOnForwardFailure=yes -o ConnectTimeout=10 \
+        -o ServerAliveInterval=30 -o ServerAliveCountMax=3 \
+        -L 127.0.0.1:9222:127.0.0.1:9222 "pn@$desktopIp"
+    '';
+  };
 
   virtualisation.oci-containers.containers.hermes = lab.mkContainer {
     inherit (localImage) image;

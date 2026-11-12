@@ -71,6 +71,7 @@ let
 
   # sshd runs unprivileged as the desktop user, so the container keeps no capabilities.
   sshdConfig = pkgs.writeText "hermes-desktop-sshd_config" ''
+    ListenAddress 127.0.0.1
     Port 2222
     HostKey /etc/hermes-desktop/host_ed25519
     AuthorizedKeysFile /etc/hermes-desktop/authorized_keys
@@ -127,10 +128,14 @@ in
     find ${screen} -mindepth 1 -delete
   '';
 
+  systemd.services.docker-hermes-desktop.partOf = [ "docker-hermes.service" ];
+
+  # Shares Hermes' network namespace: sshd and Chrome's CDP port are Hermes' loopback.
   virtualisation.oci-containers.containers.hermes-desktop = lab.mkContainer {
     inherit user;
     inherit (localImage) image;
     pull = "never";
+    dependsOn = [ "hermes" ];
     entrypoint = "/bin/sh";
     cmd = [
       "-c"
@@ -153,6 +158,9 @@ in
       "--memory=3g"
       "--cpus=2"
     ];
+  }
+  // {
+    networks = [ "container:hermes" ];
   };
 
   # Browser view of the desktop for solving challenges by hand, open to anyone on the LAN. It

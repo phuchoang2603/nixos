@@ -38,12 +38,12 @@ changes through the [deployment workflow](deployment.md).
 
 Chrome keeps its profile in the desktop's persistent home. Container startup clears
 the previous container's Chrome lock files so browser automation can reconnect.
-`hermes-cdp-tunnel.service` forwards desktop Chrome to `127.0.0.1:9222` in the
-Hermes network namespace over SSH. Native `browser.cdp_url` discovery and CDP tools
-use that endpoint without modifying Hermes's browser code.
+The desktop container shares Hermes's network namespace, so desktop Chrome is at
+`127.0.0.1:9222` for Hermes's native `browser.cdp_url` discovery and CDP tools, and
+`hermes-desktop` resolves to loopback for SSH. Restarting Hermes restarts the desktop.
 
-If the browser is unavailable, check `systemctl status hermes-cdp-tunnel` and
-`/json/version` on port 9222 inside both containers before changing Hermes's settings.
+If the browser is unavailable, check `/json/version` on port 9222 inside the Hermes
+container before changing Hermes's settings.
 
 ## Internship applications
 

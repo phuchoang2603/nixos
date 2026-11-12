@@ -39,69 +39,20 @@ in
   systemd.tmpfiles.rules = [ "d ${state} 0700 ${uid} ${gid} -" ];
 
   systemd.services.docker-image-hermes = localImage.service;
-  systemd.services.docker-hermes.after = [ "docker-hindsight.service" ];
-  systemd.services.docker-hermes.wants = [
-    "docker-hindsight.service"
-  ];
-
-  systemd.services.hermes-cdp-tunnel = {
-    description = "Forward desktop Chrome CDP to Hermes loopback";
-    wantedBy = [
-      "docker-hermes.service"
-      "docker-hermes-desktop.service"
-    ];
-    after = [
-      "docker-hermes.service"
-      "docker-hermes-desktop.service"
-    ];
-    bindsTo = [
-      "docker-hermes.service"
-      "docker-hermes-desktop.service"
-    ];
-    partOf = [
-      "docker-hermes.service"
-      "docker-hermes-desktop.service"
-    ];
-    startLimitIntervalSec = 0;
-    serviceConfig = {
-      RuntimeDirectory = "hermes-cdp-tunnel";
-      RuntimeDirectoryMode = "0700";
-      TimeoutStartSec = 90;
-      Restart = "always";
-      RestartSec = 5;
-    };
-    preStart = ''
-      for _ in $(seq 1 60); do
-        if [ "$(${pkgs.docker}/bin/docker inspect --format '{{.State.Running}}' hermes 2>/dev/null)" = true ] \
-          && [ "$(${pkgs.docker}/bin/docker inspect --format '{{.State.Running}}' hermes-desktop 2>/dev/null)" = true ]; then
-          exit 0
-        fi
+  systemd.services.docker-hermes = {
+    after = [ "docker-hindsight.service" ];
+    wants = [ "docker-hindsight.service" ];
+    # The desktop joins this container's network namespace, so it must be running first.
+    postStart = ''
+      until [ "$(${pkgs.docker}/bin/docker inspect --format '{{.State.Running}}' hermes 2>/dev/null)" = true ]; do
         sleep 1
       done
-      echo "Hermes containers did not become ready" >&2
-      exit 1
-    '';
-    script = ''
-      printf '[hermes-desktop]:2222 %s\n' "$(cat ${lab.appdata}/hermes-desktop/ssh/host_ed25519.pub)" > "$RUNTIME_DIRECTORY/known_hosts"
-      gatewayPid=$(${pkgs.docker}/bin/docker inspect --format '{{.State.Pid}}' hermes)
-      desktopIp=$(${pkgs.docker}/bin/docker inspect --format '{{(index .NetworkSettings.Networks "${lab.proxyNetwork}").IPAddress}}' hermes-desktop)
-      exec ${pkgs.util-linux}/bin/nsenter --target "$gatewayPid" --net -- \
-        ${pkgs.openssh}/bin/ssh -F /dev/null -nNT \
-        -i ${state}/.ssh/desktop_ed25519 -p 2222 \
-        -o BatchMode=yes -o IdentitiesOnly=yes \
-        -o StrictHostKeyChecking=yes -o 'HostKeyAlias=[hermes-desktop]:2222' \
-        -o UserKnownHostsFile="$RUNTIME_DIRECTORY/known_hosts" \
-        -o ExitOnForwardFailure=yes -o ConnectTimeout=10 -o ConnectionAttempts=10 \
-        -o ServerAliveInterval=30 -o ServerAliveCountMax=3 \
-        -L 127.0.0.1:9222:127.0.0.1:9222 "pn@$desktopIp"
     '';
   };
 
   virtualisation.oci-containers.containers.hermes = lab.mkContainer {
     inherit (localImage) image;
     pull = "never";
-    # The desktop's preStart creates the SSH key Hermes logs in with.
-    dependsOn = [ "hermes-desktop" ];
     cmd = [
       "gateway"
       "run"
@@ -120,6 +71,7 @@ in
       REALTIME_VOICE_LOG_CHANNEL = "1558532054889660416";
     };
     extraOptions = [
+      "--add-host=hermes-desktop:127.0.0.1"
       "--shm-size=1g"
       "--memory=4g"
       "--cpus=2"

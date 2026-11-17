@@ -49,9 +49,29 @@
       "depNameTemplate": "openai/codex-{{{assetPlatform}}}",
       "datasourceTemplate": "custom.codex-{{{assetPlatform}}}",
       "versioningTemplate": "npm"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/^home/base/cli/agents/claude-cli\\.nix$/"
+      ],
+      "matchStrings": [
+        "releasePlatform = \"(?<assetPlatform>[^\"\\s]+)\";\\s+version = \"(?<currentValue>[^\"]+)\";\\s+hash = \"(?<currentDigest>[^\"]+)\";"
+      ],
+      "depNameTemplate": "anthropics/claude-code-{{{assetPlatform}}}",
+      "datasourceTemplate": "custom.claude-{{{assetPlatform}}}",
+      "versioningTemplate": "npm"
     }
   ],
   "packageRules": [
+    {
+      "matchDatasources": [
+        "custom.claude-linux-x64",
+        "custom.claude-darwin-arm64"
+      ],
+      "groupName": "Claude Code",
+      "ignoreUnstable": true
+    },
     {
       "matchDatasources": [
         "custom.t3code-linux-x64",
@@ -70,6 +90,18 @@
     }
   ],
   "customDatasources": {
+    "claude-linux-x64": {
+      "defaultRegistryUrlTemplate": "https://api.github.com/repos/anthropics/claude-code/releases?per_page=100",
+      "transformTemplates": [
+        "{\"releases\": [$[draft = false and prerelease = false].($version := $substringAfter(tag_name, \"v\"); $asset := assets[name = \"claude-linux-x64.tar.gz\"][0]; $exists($asset.digest) ? {\"version\": $version, \"digest\": $substringAfter($asset.digest, \"sha256:\")})]}"
+      ]
+    },
+    "claude-darwin-arm64": {
+      "defaultRegistryUrlTemplate": "https://api.github.com/repos/anthropics/claude-code/releases?per_page=100",
+      "transformTemplates": [
+        "{\"releases\": [$[draft = false and prerelease = false].($version := $substringAfter(tag_name, \"v\"); $asset := assets[name = \"claude-darwin-arm64.tar.gz\"][0]; $exists($asset.digest) ? {\"version\": $version, \"digest\": $substringAfter($asset.digest, \"sha256:\")})]}"
+      ]
+    },
     "t3code-linux-x64": {
       "defaultRegistryUrlTemplate": "https://api.github.com/repos/pingdotgg/t3code/releases?per_page=100",
       "transformTemplates": [

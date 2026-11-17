@@ -4,6 +4,7 @@
   stdenvNoCC,
   fetchurl,
   autoPatchelfHook,
+  vulkan-loader,
 }:
 
 let
@@ -35,7 +36,10 @@ in
   };
 
   nativeBuildInputs = lib.optionals stdenv.hostPlatform.isLinux [ autoPatchelfHook ];
-  buildInputs = lib.optionals stdenv.hostPlatform.isLinux [ stdenv.cc.cc.lib ];
+  buildInputs = lib.optionals stdenv.hostPlatform.isLinux [
+    stdenv.cc.cc.lib
+    vulkan-loader
+  ];
 
   # Bundled fff ships both glibc and musl builds; only the glibc one is loaded.
   autoPatchelfIgnoreMissingDeps = [ "libc.musl-x86_64.so.1" ];

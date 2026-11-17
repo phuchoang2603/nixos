@@ -6,7 +6,6 @@ let
 in
 {
   imports = [
-    ./antigravity.nix
     ./claude.nix
     ./codex.nix
     ./t3code.nix

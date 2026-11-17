@@ -6,6 +6,7 @@ let
 in
 {
   imports = [
+    ./antigravity.nix
     ./claude.nix
     ./codex.nix
     ./t3code.nix
@@ -30,8 +31,10 @@ in
   # Shared Skills
   programs.codex.skills = agentSkills;
   programs.claude-code.skills = agentSkills;
+  programs.antigravity-cli.skills = agentSkills;
 
   # Shared Context
   programs.codex.context = sharedContext;
   programs.claude-code.context = sharedContext;
+  programs.antigravity-cli.context.AGENTS = sharedContext;
 }

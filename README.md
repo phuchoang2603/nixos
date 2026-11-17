@@ -1,5 +1,7 @@
 # Nix setup
 
+[![Hosts, shared modules and server containers](docs/images/nixos-homelab.png)](https://phuchoang.sbs/nixos-homelab/)
+
 Use your existing local copy of this repository.
 
 - [Desktop](docs/desktop.md)

@@ -15,8 +15,8 @@ let
     };
     aarch64-darwin = {
       releasePlatform = "aarch64-apple-darwin";
-      version = "0.167.0";
-      hash = "af45ed45d940d7998809622c1c0296d3098ed7d7fad695284422c228bd454517";
+      version = "0.169.0";
+      hash = "8a232260df7a12c5e83e0b4b7659e1c8d9259b41942517bc0068d8ab55c36461";
     };
   };
 

@@ -49,9 +49,49 @@
       "depNameTemplate": "openai/codex-{{{assetPlatform}}}",
       "datasourceTemplate": "custom.codex-{{{assetPlatform}}}",
       "versioningTemplate": "npm"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/^home/base/cli/agents/claude-cli\\.nix$/"
+      ],
+      "matchStrings": [
+        "releasePlatform = \"(?<assetPlatform>[^\"\\s]+)\";\\s+version = \"(?<currentValue>[^\"]+)\";\\s+hash = \"(?<currentDigest>[^\"]+)\";"
+      ],
+      "depNameTemplate": "anthropics/claude-code-{{{assetPlatform}}}",
+      "datasourceTemplate": "custom.claude-{{{assetPlatform}}}",
+      "versioningTemplate": "npm"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/^home/base/cli/agents/agy-cli\\.nix$/"
+      ],
+      "matchStrings": [
+        "releasePlatform = \"(?<assetPlatform>[^\"\\s]+)\";\\s+version = \"(?<currentValue>[^\"]+)\";\\s+hash = \"(?<currentDigest>[^\"]+)\";"
+      ],
+      "depNameTemplate": "google-antigravity/antigravity-cli-{{{assetPlatform}}}",
+      "datasourceTemplate": "custom.agy-{{{assetPlatform}}}",
+      "versioningTemplate": "npm"
     }
   ],
   "packageRules": [
+    {
+      "matchDatasources": [
+        "custom.agy-linux_x64",
+        "custom.agy-mac_arm64"
+      ],
+      "groupName": "Antigravity CLI",
+      "ignoreUnstable": true
+    },
+    {
+      "matchDatasources": [
+        "custom.claude-linux-x64",
+        "custom.claude-darwin-arm64"
+      ],
+      "groupName": "Claude Code",
+      "ignoreUnstable": true
+    },
     {
       "matchDatasources": [
         "custom.t3code-linux-x64",
@@ -70,6 +110,18 @@
     }
   ],
   "customDatasources": {
+    "claude-linux-x64": {
+      "defaultRegistryUrlTemplate": "https://api.github.com/repos/anthropics/claude-code/releases?per_page=100",
+      "transformTemplates": [
+        "{\"releases\": [$[draft = false and prerelease = false].($version := $substringAfter(tag_name, \"v\"); $asset := assets[name = \"claude-linux-x64.tar.gz\"][0]; $exists($asset.digest) ? {\"version\": $version, \"digest\": $substringAfter($asset.digest, \"sha256:\")})]}"
+      ]
+    },
+    "claude-darwin-arm64": {
+      "defaultRegistryUrlTemplate": "https://api.github.com/repos/anthropics/claude-code/releases?per_page=100",
+      "transformTemplates": [
+        "{\"releases\": [$[draft = false and prerelease = false].($version := $substringAfter(tag_name, \"v\"); $asset := assets[name = \"claude-darwin-arm64.tar.gz\"][0]; $exists($asset.digest) ? {\"version\": $version, \"digest\": $substringAfter($asset.digest, \"sha256:\")})]}"
+      ]
+    },
     "t3code-linux-x64": {
       "defaultRegistryUrlTemplate": "https://api.github.com/repos/pingdotgg/t3code/releases?per_page=100",
       "transformTemplates": [
@@ -92,6 +144,18 @@
       "defaultRegistryUrlTemplate": "https://api.github.com/repos/openai/codex/releases?per_page=100",
       "transformTemplates": [
         "{\"releases\": [$[draft = false and prerelease = false and $contains(tag_name, /^rust-v[0-9]+\\.[0-9]+\\.[0-9]+$/)].($version := $substringAfter(tag_name, \"rust-v\"); $asset := assets[name = \"codex-package-aarch64-apple-darwin.tar.gz\"][0]; $exists($asset.digest) ? {\"version\": $version, \"digest\": $substringAfter($asset.digest, \"sha256:\")})]}"
+      ]
+    },
+    "agy-linux_x64": {
+      "defaultRegistryUrlTemplate": "https://api.github.com/repos/google-antigravity/antigravity-cli/releases?per_page=100",
+      "transformTemplates": [
+        "{\"releases\": [$[draft = false and prerelease = false].($version := tag_name; $asset := assets[name = \"agy_cli_linux_x64.tar.gz\"][0]; $exists($asset.digest) ? {\"version\": $version, \"digest\": $substringAfter($asset.digest, \"sha256:\")})]}"
+      ]
+    },
+    "agy-mac_arm64": {
+      "defaultRegistryUrlTemplate": "https://api.github.com/repos/google-antigravity/antigravity-cli/releases?per_page=100",
+      "transformTemplates": [
+        "{\"releases\": [$[draft = false and prerelease = false].($version := tag_name; $asset := assets[name = \"agy_cli_mac_arm64.tar.gz\"][0]; $exists($asset.digest) ? {\"version\": $version, \"digest\": $substringAfter($asset.digest, \"sha256:\")})]}"
       ]
     }
   }

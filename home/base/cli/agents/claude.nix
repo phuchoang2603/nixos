@@ -1,4 +1,4 @@
-{ ... }:
+{ pkgs, ... }:
 
 let
   gatewayDomain = (import ../../../../modules/server/lib.nix).domain;
@@ -6,6 +6,7 @@ in
 {
   programs.claude-code = {
     enable = true;
+    package = pkgs.callPackage ./claude-cli.nix { };
     enableMcpIntegration = true;
     mutableSettings = true;
     settings = {

@@ -39,7 +39,6 @@
       "zoom"
       "google-drive"
       "obsidian"
-      "zalo"
       "telegram"
       "karabiner-elements"
       "yaak"

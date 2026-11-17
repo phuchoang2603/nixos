@@ -9,6 +9,15 @@ let
   t3codePort = 3773;
   t3codeUnwrapped = pkgs.callPackage ./t3-cli.nix { };
   t3codePkg = config.programs.t3code.package;
+  t3codeSettings = "${config.home.homeDirectory}/.t3/userdata/settings.json";
+  # T3 only auto-finds the legacy agy_acp_server runtime; the agy CLI needs an explicit path.
+  t3codeNixSettings = (pkgs.formats.json { }).generate "t3code-settings.json" {
+    providerInstances.antigravity = {
+      driver = "antigravity";
+      enabled = true;
+      config.binaryPath = "${config.home.profileDirectory}/bin/agy";
+    };
+  };
 in
 {
   programs.t3code = {
@@ -65,4 +74,18 @@ in
     };
     Install.WantedBy = [ "default.target" ];
   };
+
+  home.activation.t3codeSettings = lib.mkIf pkgs.stdenv.hostPlatform.isLinux (
+    lib.hm.dag.entryAfter [ "linkGeneration" ] (
+      lib.hm.generators.mkImpureConfigMerger {
+        inherit pkgs;
+        format = "json";
+        empty = "{}";
+        jqOperation = "$dynamic * $static";
+        path = t3codeSettings;
+        staticSettings = t3codeNixSettings;
+        mode = "600";
+      }
+    )
+  );
 }

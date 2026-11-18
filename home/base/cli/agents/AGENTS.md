@@ -14,6 +14,8 @@
 
 ## Checks
 
+- Repos built on `devenv-modules` run static checks with `devenv tasks run repo:lint` and everything else, including tests, with `repo:check` in CI inside the same devenv. Run lint locally; do not run tests locally unless asked. Push, then read CI results with `gh`.
+- When a repo has a `verify` skill, use it before reporting a change as done.
 - Keep devenv tasks and CI steps thin: put the logic in one tracked script that both call, so local and CI run the same check.
 - When a mistake can recur, prefer a lint rule, type, test, or script check over a new prose rule.
 - Report check results as they are: never present failing, skipped, or pending checks as passing.
@@ -25,7 +27,7 @@
 
 ## Comments
 
-- Do not add comments unless explicitly asked, or the logic is a non-obvious invariant, protocol quirk, or security caveat that the code cannot express.
+- Do not add comments unless explicitly asked, or the logic is a non-obvious invariant, protocol quirk, or security caveat that the code cannot express. Prefix such a comment with `NOTE:`; the shared lint rejects other comments apart from doc comments and tool directives.
 - Do not add comments that restate the code, narrate the change (`// updated for …`, `// removed …`), or leave migration/history notes. Prefer clear names, tests, and the commit message.
 - Keep existing comments, docstrings, and license headers unless the change makes them inaccurate.
 

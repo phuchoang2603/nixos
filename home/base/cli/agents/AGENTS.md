@@ -34,7 +34,7 @@
 
 - Do not create, rewrite, reformat, or “improve” docs, READMEs, or markdown unless the user explicitly asks, or the change alters user-visible behavior / public API / config that those docs already describe.
 - When docs must change, edit only the minimal affected sections, and update existing pages instead of adding per-directory READMEs or repeating information maintained elsewhere.
-- Put repo-specific agent context in the repo's root `AGENTS.md`, and only what the code, docs and checks do not already say. Do not add it to OpenSpec config or per-repo skills.
+- Keep repo-specific knowledge in the repo's code, checks and docs. Do not add repo `AGENTS.md` files, OpenSpec config context or per-repo skills.
 
 ## OpenSpec
 

@@ -14,7 +14,6 @@ in
       env = {
         ANTHROPIC_BASE_URL = "https://cliproxyapi.${gatewayDomain}";
         ANTHROPIC_AUTH_TOKEN = "not-required";
-        DISABLE_AUTOUPDATER = "1";
       };
     };
   };

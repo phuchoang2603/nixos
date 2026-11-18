@@ -14,8 +14,8 @@
 
 ## Checks
 
-- Repos built on `devenv-modules` run static checks with `devenv tasks run repo:lint` and everything else, including tests, with `repo:check` in CI inside the same devenv. Run lint locally; do not run tests locally unless asked. Push, then read CI results with `gh`.
-- When a repo has a `verify` skill, use it before reporting a change as done.
+- Repos built on `devenv-modules` run static checks with `devenv tasks run repo:lint` and tests with `scripts/check.sh`. CI runs both inside the same devenv, so running them locally gives the same result.
+- Use the `verify` skill before reporting a change as done.
 - Keep devenv tasks and CI steps thin: put the logic in one tracked script that both call, so local and CI run the same check.
 - When a mistake can recur, prefer a lint rule, type, test, or script check over a new prose rule.
 - Report check results as they are: never present failing, skipped, or pending checks as passing.

@@ -115,13 +115,13 @@
       ]
     },
     "codex-x86_64-unknown-linux-musl": {
-      "defaultRegistryUrlTemplate": "https://api.github.com/repos/openai/codex/releases?per_page=100",
+      "defaultRegistryUrlTemplate": "https://api.github.com/repos/openai/codex/releases/latest",
       "transformTemplates": [
         "{\"releases\": [$[draft = false and prerelease = false and $contains(tag_name, /^rust-v[0-9]+\\.[0-9]+\\.[0-9]+$/)].($version := $substringAfter(tag_name, \"rust-v\"); $asset := assets[name = \"codex-package-x86_64-unknown-linux-musl.tar.gz\"][0]; $exists($asset.digest) ? {\"version\": $version, \"digest\": $substringAfter($asset.digest, \"sha256:\")})]}"
       ]
     },
     "codex-aarch64-apple-darwin": {
-      "defaultRegistryUrlTemplate": "https://api.github.com/repos/openai/codex/releases?per_page=100",
+      "defaultRegistryUrlTemplate": "https://api.github.com/repos/openai/codex/releases/latest",
       "transformTemplates": [
         "{\"releases\": [$[draft = false and prerelease = false and $contains(tag_name, /^rust-v[0-9]+\\.[0-9]+\\.[0-9]+$/)].($version := $substringAfter(tag_name, \"rust-v\"); $asset := assets[name = \"codex-package-aarch64-apple-darwin.tar.gz\"][0]; $exists($asset.digest) ? {\"version\": $version, \"digest\": $substringAfter($asset.digest, \"sha256:\")})]}"
       ]

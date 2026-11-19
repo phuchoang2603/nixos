@@ -18,13 +18,13 @@ let
   platforms = {
     x86_64-linux = {
       releasePlatform = "linux-x64";
-      version = "2.1.326";
-      hash = "30f5542005d138d74eaba6af8de7a6678e71e87dc4ba929435ac2ff9011d5a53";
+      version = "2.1.328";
+      hash = "4404b3dc35afe7dde16c572197f69c210dffdb038f05ee3c532e683732f5aa9f";
     };
     aarch64-darwin = {
       releasePlatform = "darwin-arm64";
-      version = "2.1.326";
-      hash = "4e27662f58b98ca3c5cbe67081891d2cc86461fbb285c22ed8309078a070671b";
+      version = "2.1.328";
+      hash = "04f981829d2749bac30a4fee1e533e2c8f826071926703d351fc1a30807b2655";
     };
   };
 

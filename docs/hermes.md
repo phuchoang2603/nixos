@@ -48,10 +48,12 @@ container before changing Hermes's settings.
 ## Internship applications
 
 Executor's private **Job Applications** app owns hourly discovery, the applicant profile,
-application history and the single active application. Two native Hermes crons use those
-records. The hourly prescreen job reads up to 120 new jobs from employer job descriptions
-fetched without a browser, marking plausible ones Ready and closing clear rejects. The apply
-job runs every 20 minutes in a fresh session and applies to up to two Ready jobs, sequentially. Executor publishes JD summaries, full JD
+application history and the single active application. One native Hermes cron uses those
+records. The apply job runs every 20 minutes in a fresh session. Its preflight ranks up to eight
+Ready and New jobs and fetches each New job's employer description without a browser; the agent
+then screens each New job, reading the posting in the browser when the fetch failed, closes it if
+it is ineligible or gone, and otherwise marks it Ready and applies at once, up to two applications
+per run. Executor publishes JD summaries, full JD
 attachments into one linked Discord task thread per job, then posts each status change
 or note as a reply while forum tags track the current state. SQLite owns the thread
 mapping and application state; Google Sheets is no longer used.
@@ -66,10 +68,9 @@ hermes cron edit --help
 | --- | --- |
 | `/opt/data/skills/productivity/internship-application-assistant/` | Application policy and Executor tool workflow |
 | `/opt/data/skills/web/desktop-browser/` | Native browser mechanics and ATS references |
-| `/opt/data/scripts/job_preflight.py` | Check Executor access, refresh the local profile/resume sources and stage job descriptions before cron |
-| `/opt/data/scripts/job_prescreen.py` | Fetch employer job descriptions from ATS APIs for prescreening |
+| `/opt/data/scripts/job_preflight.py` | Check Executor access, refresh the local profile/resume sources, rank the Ready and New queue and stage job descriptions before cron |
+| `/opt/data/scripts/job_fetch.py` | Fetch employer job descriptions from ATS APIs without a browser |
 | `/opt/data/skills/web/desktop-browser/scripts/formkit.py` | Form-filling helpers the apply job loads inside `browser_exec`; the agent may fix it, and the preflight restores the last good copy from `/opt/data/browser-helpers/` if an edit breaks it |
-| `/home/pn/internships/prescreen/` in `hermes-desktop` | Excerpt batches the cron agent reviews each run |
 | `/home/pn/internships/profile.json` in `hermes-desktop` | Private local snapshot of the Executor profile |
 | `/home/pn/internships/resume-kit/` in `hermes-desktop` | Resume Publisher sources and local tailoring tools |
 

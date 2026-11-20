@@ -1,7 +1,6 @@
 { pkgs }:
 
 {
-  application-accounts = ./application-accounts;
   realtime-voice = ./realtime-voice;
 
   # Catalog provider pinned to its supported revision. Keep scheduled-job

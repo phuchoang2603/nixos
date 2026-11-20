@@ -84,22 +84,25 @@ expires or automatically retries. Assessments and interviews are recorded as fol
 without restarting the submitted application.
 
 The `application-accounts` plugin creates dedicated credentials, stores them in
-Hermes's encrypted local vault, and fills account forms. The application workflow
+Hermes's encrypted local vault, fills account forms, and replaces a saved credential
+when a site's emailed reset link opens a new-password form. The application workflow
 checks results and submits forms. CAPTCHA and device approval require user help.
 
 ## Plugins
 
 [One registry](../modules/server/containers/hermes/plugins/default.nix) declares
-all three custom plugins, mounted read-only through the same pattern:
+the Nix-managed plugins, mounted read-only through the same pattern:
 
 | Plugin | Source and purpose |
 | --- | --- |
-| `application-accounts` | Local code for applicant credentials |
 | `realtime-voice` | Local code for Discord voice |
 | `hindsight` | Pinned upstream memory provider; patched to exclude cron and subagent transcripts |
 
-Enable or disable plugins through Hermes. Update their source in this repository,
-since Hermes's plugin updater cannot replace read-only mounts.
+Update those in this repository, since Hermes's plugin updater cannot replace
+read-only mounts. `application-accounts` is not in this repository: its code and
+tests live in `/opt/data/plugins/application-accounts/` (`/mnt/storage/container/hermes/plugins/`
+on the host), which persists across restarts and is edited in place. Restart Hermes
+after changing it. Enable or disable any plugin through Hermes.
 
 ## Other agent services
 

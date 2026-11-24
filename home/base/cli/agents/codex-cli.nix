@@ -10,13 +10,13 @@ let
   platforms = {
     x86_64-linux = {
       releasePlatform = "x86_64-unknown-linux-musl";
-      version = "0.171.0";
-      hash = "8391d67757496bfd14893eca6cbf0c96994bf2627566ff1f018f70600c9ef6b3";
+      version = "0.172.0";
+      hash = "63e3b00065ed7f62166d0522e17f663cb866a31d80d03e63365482ed34a1d991";
     };
     aarch64-darwin = {
       releasePlatform = "aarch64-apple-darwin";
-      version = "0.171.0";
-      hash = "58c88032ec446e72922d911d8f03773102da20c16a6059cf21f6744bce57f210";
+      version = "0.172.0";
+      hash = "0970016d48209a09c4039139629ed79b4a31c5e3d864e792c043419d98fa6466";
     };
   };
 

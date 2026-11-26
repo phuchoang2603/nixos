@@ -53,6 +53,18 @@
     {
       "customType": "regex",
       "managerFilePatterns": [
+        "/^home/base/cli/agents/executor-cli\\.nix$/"
+      ],
+      "matchStrings": [
+        "releasePlatform = \"(?<assetPlatform>[^\"\\s]+)\";\\s+version = \"(?<currentValue>[^\"]+)\";\\s+hash = \"(?<currentDigest>[^\"]+)\";"
+      ],
+      "depNameTemplate": "UsefulSoftwareCo/executor-{{{assetPlatform}}}",
+      "datasourceTemplate": "custom.executor-{{{assetPlatform}}}",
+      "versioningTemplate": "npm"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
         "/^home/base/cli/agents/claude-cli\\.nix$/"
       ],
       "matchStrings": [
@@ -71,6 +83,14 @@
       ],
       "groupName": "Claude Code",
       "ignoreUnstable": true
+    },
+    {
+      "matchDatasources": [
+        "custom.executor-linux-x64",
+        "custom.executor-darwin-arm64"
+      ],
+      "groupName": "Executor CLI",
+      "ignoreUnstable": false
     },
     {
       "matchDatasources": [
@@ -100,6 +120,18 @@
       "defaultRegistryUrlTemplate": "https://api.github.com/repos/anthropics/claude-code/releases?per_page=100",
       "transformTemplates": [
         "{\"releases\": [$[draft = false and prerelease = false].($version := $substringAfter(tag_name, \"v\"); $asset := assets[name = \"claude-darwin-arm64.tar.gz\"][0]; $exists($asset.digest) ? {\"version\": $version, \"digest\": $substringAfter($asset.digest, \"sha256:\")})]}"
+      ]
+    },
+    "executor-linux-x64": {
+      "defaultRegistryUrlTemplate": "https://api.github.com/repos/UsefulSoftwareCo/executor/releases?per_page=100",
+      "transformTemplates": [
+        "{\"releases\": [$[draft = false and $startsWith(tag_name, 'executor@')].($version := $substringAfter(tag_name, 'executor@'); $asset := assets[name = 'executor-' & $version & '-linux-x64.tgz'][0]; $exists($asset.digest) ? {\"version\": $version, \"digest\": $substringAfter($asset.digest, 'sha256:')})]}"
+      ]
+    },
+    "executor-darwin-arm64": {
+      "defaultRegistryUrlTemplate": "https://api.github.com/repos/UsefulSoftwareCo/executor/releases?per_page=100",
+      "transformTemplates": [
+        "{\"releases\": [$[draft = false and $startsWith(tag_name, 'executor@')].($version := $substringAfter(tag_name, 'executor@'); $asset := assets[name = 'executor-' & $version & '-darwin-arm64.tgz'][0]; $exists($asset.digest) ? {\"version\": $version, \"digest\": $substringAfter($asset.digest, 'sha256:')})]}"
       ]
     },
     "t3code-linux-x64": {

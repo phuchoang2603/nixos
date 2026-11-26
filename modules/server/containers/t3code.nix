@@ -64,9 +64,11 @@ in
       "${state}/home:/home/node:rw"
       "${state}/workspace:/workspace:rw"
       "${./t3code/job-applications/.agents/skills}:/workspace/job-applications/.agents/skills:ro"
+      "${./t3code/workflows}:/workflows:ro"
     ];
     environment = {
       HOME = "/home/node";
+      T3CODE_WORKFLOWS = "/workflows";
       # Docker's seccomp profile denies the user namespaces Chrome's sandbox needs;
       # the container stands in for it.
       T3CODE_SERVER_BROWSER_SANDBOX = "0";
@@ -76,8 +78,8 @@ in
       "--security-opt=no-new-privileges"
       "--pids-limit=2048"
       "--shm-size=1g"
-      "--memory=4g"
-      "--cpus=2"
+      "--memory=6g"
+      "--cpus=3"
     ];
     traefik = {
       name = "t3code";

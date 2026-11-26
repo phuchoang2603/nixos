@@ -26,7 +26,6 @@
         OPENAI_BASE_URL = "http://cli-proxy-api:8317/v1";
         OPENAI_API_KEY = "cliproxyapi";
         INFERENCE_TEXT_MODEL = "gpt-6-luna";
-        INFERENCE_IMAGE_MODEL = "agy/gemini-4-hydrogen-low";
         INFERENCE_USE_MAX_COMPLETION_TOKENS = "true";
         INFERENCE_CONTEXT_LENGTH = "8192";
         INFERENCE_JOB_TIMEOUT_SEC = "120";

@@ -70,14 +70,14 @@ tab. When you finish, submit your result with an outcome (`submitted`, `closed`,
    `python3 captcha.py recaptcha-v2|recaptcha-v3|turnstile --url <page-url> --sitekey <key>` from this
    folder. It prints a token: set it in the hidden response field (`g-recaptcha-response` or
    `cf-turnstile-response`), trigger the widget's callback and continue. hCaptcha and image puzzles
-   are unsupported; if the helper fails or the page still blocks, park the job as Needs you and go to
+   are unsupported; if the helper fails or the page still blocks, park the job (see "Not submitted") and go to
    the next one.
 7. Stuck field or button: try at least five different approaches (click by coordinates, keyboard,
    slow typing, reload and resume the saved draft) before parking. Park only for an unsolvable
    CAPTCHA, device approval, or a hard eligibility mismatch.
 
 If the brief says "DRY RUN", fill the form to the review page and stop without submitting; leave the
-tab open, mark the job Needs you with the note "dry run" and finish with outcome `dry_run`.
+tab open, park the job with the note "dry run" (see "Not submitted") and finish with outcome `dry_run`.
 
 ## Resolve
 
@@ -85,7 +85,9 @@ tab open, mark the job Needs you with the note "dry run" and finish with outcome
   `{ id, version, status: "Submitted", note, evidence, resumeReference }`. All three of `note`,
   `evidence` and `resumeReference` (PDF path plus SHA-256) are required. Then archive this
   employer's confirmation and verification mail and close that job's tabs.
-- **Not submitted**: `update_job` to Needs you (concrete blocker) or Closed (ineligible or gone),
+- **Not submitted**: for a concrete blocker, `update_job` back to Ready with `needsAttention: true` (this
+  parks it: the workflow skips flagged jobs until Felix clears the flag); for an ineligible or gone job,
+  `update_job` to Closed,
   with evidence that it was not submitted.
 - **Unknown result** or a browser interruption near submit: `mark_application_uncertain` and keep
   the tab. Never retry a submit blindly.

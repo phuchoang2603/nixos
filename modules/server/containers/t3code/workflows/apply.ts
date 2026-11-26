@@ -41,7 +41,8 @@ const loadQueue = async () => {
   const ready = (await callExecutor("list_jobs", { status: "Ready", limit: 50 })).items;
   const fresh = (await callExecutor("list_jobs", { status: "New", limit: 100 })).items;
   const oldestFirst = (a, b) => a.created_at - b.created_at;
-  return [...ready.sort(oldestFirst), ...fresh.sort(oldestFirst)]
+  const waiting = (job) => !job.needs_attention;
+  return [...ready.filter(waiting).sort(oldestFirst), ...fresh.filter(waiting).sort(oldestFirst)]
     .slice(0, MAX_JOBS_PER_RUN)
     .map((job) => ({ id: job.id, company: job.company, title: job.title }));
 };
@@ -59,7 +60,7 @@ const brief = (job, dryRun) =>
 workflow(
   "apply",
   {
-    version: 2,
+    version: 3,
     payload: Schema.Struct({ scheduledAt: Schema.String, dryRun: Schema.optional(Schema.Boolean) }),
     triggers: [every("20 minutes")],
     concurrency: 1,

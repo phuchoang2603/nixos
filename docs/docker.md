@@ -19,7 +19,6 @@ Web names below use `.home.phuchoang.sbs`.
 | `cli-proxy-api` | Model API gateway | `cliproxyapi` |
 | `hindsight`, `hindsight-db` | Agent long-term memory | `hindsight` |
 
-See [Hermes and agent tools](hermes.md) for the agent services.
 ## Files and storage
 
 | Path | What to change or store |
@@ -54,8 +53,7 @@ sudo systemctl restart docker-hermes
 ```
 
 Replace `hermes` with the container name. App-managed settings can be edited in
-the app or its persistent files. Hermes's [settings, skills, and cron jobs](hermes.md#what-to-edit)
-stay outside Nix.
+the app or its persistent files.
 
 ## Change and deploy
 

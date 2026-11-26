@@ -42,6 +42,27 @@ When a role stresses Ansible or Proxmox/VM automation over GitOps/Cilium/cloud, 
 swapping the Talos Kubernetes Platform project in `swe-devops` for `Kubernetes Proxmox Platform`
 (RKE2 on Proxmox with Ansible, Terraform, Vault and GitHub Actions) and adding Ansible to skills.
 
+## Pass the ATS and the recruiter
+
+These follow the common 2026 guides: single column, standard headings, text-based PDF, exact JD
+wording, evidence behind every keyword.
+
+1. Pull the JD's must-have terms first (languages, frameworks, tools, cloud, domain words, the role
+   title). Use each supported term exactly as the JD spells it, and give both forms when the JD uses an
+   abbreviation (for example "Retrieval-Augmented Generation (RAG)"). A term without evidence in the base
+   resume or `evidence.json` stays out; stuffing and invented skills are rejected.
+2. Put the most JD-relevant skills first in each category and the most relevant project first. The top third
+   of the page decides the first scan.
+3. Name skill categories plainly (Languages, Data & AI, Platform) and keep each category to the items that
+   matter for this JD; drop padding.
+4. Bullets read: past-tense action verb, what you built, the tools it used, the measured result. Keep
+   every measured result and its qualifier from the base. No pronouns, no "helped" or "worked on".
+5. No short wrapped lines. A bullet that wraps, or a skills category that wraps, must put at least three
+   words on the last line, or fit on one line. The build rejects anything else. Fix it by reordering or
+   dropping a skill, or by rewording the bullet; never shrink the font or margins.
+6. Read `resume.txt` after the build as a plain-text parse: sections in order, no stray symbols, nothing
+   cut off. Keep the standard headings (Education, Experience, Projects, Skills) and the single column.
+
 Fact check before building: every number, tool, employer and title in `draft.tex` must appear in the
 base resume or `evidence.json`. Remove anything that does not.
 
@@ -52,8 +73,8 @@ Record `summary`, `changes` (each with `change` and `evidence`) and `unmatched_r
 python3 tailor.py build <directory>
 ```
 
-It rejects changed identity or education, missing evidence, overflow, bullets over two lines and PDFs
-over one page, and writes `resume.pdf`, `resume.txt` and `validation.json` only after checks pass.
+It rejects changed identity or education, missing evidence, overflow, bullets over two lines, wrapped
+lines of fewer than three words and PDFs over one page, and writes `resume.pdf`, `resume.txt` and `validation.json` only after checks pass.
 Read `resume.txt` for awkward wrapping, shorten lower-priority wording and rebuild. Upload only the
 PDF a successful build returned, and use its SHA-256 from `validation.json` as the resume reference.
 Never reuse another employer's tailored file.

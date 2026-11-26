@@ -9,6 +9,7 @@ from pathlib import Path
 
 
 ROOT = Path(os.environ.get("RESUME_KIT", Path.home() / "resume-kit"))
+MIN_WRAPPED_WORDS = 3
 SOURCE_PATHS = ["resumes/swe-devops.tex", "resumes/data-engineering.tex",
                 "resumes/ai-engineer.tex", "shared/technical-preamble.tex",
                 "shared/technical-background.tex"]
@@ -85,14 +86,28 @@ def check_bullet_lines(text):
         bullets += 1
         indent = len(line) - len(line.lstrip())
         count = 1
+        last = line
         for following in lines[index + 1:]:
             if len(following) - len(following.lstrip()) <= indent:
                 break
             count += 1
+            last = following
         if count > 2:
             raise ValueError(f"A bullet spans {count} lines; shorten it to one or two: {line.strip()}")
+        if count == 2 and len(last.split()) < MIN_WRAPPED_WORDS:
+            raise ValueError(f"A bullet wraps onto a line of only {len(last.split())} word(s); shorten or extend it: {line.strip()}")
     if not bullets:
         raise ValueError("No readable bullets found in the extracted PDF text.")
+    check_skill_lines(lines)
+
+
+def check_skill_lines(lines):
+    heading = next((index for index, line in enumerate(lines) if line.strip() == "Skills"), None)
+    if heading is None:
+        raise ValueError("The PDF has no Skills heading.")
+    for line in lines[heading + 1:]:
+        if ":" not in line and len(line.split()) < MIN_WRAPPED_WORDS:
+            raise ValueError(f"A skills category wraps onto a line of only {len(line.split())} word(s): {line.strip()}. Reorder or trim skills so the line breaks later.")
 
 
 def prepare(args):

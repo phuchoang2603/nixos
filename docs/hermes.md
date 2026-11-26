@@ -110,8 +110,11 @@ after changing it. Enable or disable any plugin through Hermes.
 CLIProxyAPI runs the official [CLIProxyAPI](https://github.com/router-for-me/CLIProxyAPI)
 image with native plugins. The UI manages provider accounts
 and settings. Persistent state is in `/mnt/storage/container/cliproxyapi/`:
-`config/`, `auths/`, `logs/`, and `plugins/`. Inside Docker, its model endpoint
-is `http://cli-proxy-api:8317/v1`.
+`config/`, `auths/`, `logs/`, `plugins/`, `agy-accounts/` and `agy-config/`. Inside
+Docker, its model endpoint is `http://cli-proxy-api:8317/v1`. Antigravity models come
+from the pinned [cliproxy-antigravity](https://github.com/adeebahmad01/cliproxy-antigravity)
+plugin, which runs the official `agy` CLI; add Google accounts on the panel's
+Antigravity accounts page.
 
 Executor's hosted UI manages MCP integrations and connected accounts.
 

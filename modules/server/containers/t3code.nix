@@ -69,6 +69,7 @@ in
     environment = {
       HOME = "/home/node";
       T3CODE_WORKFLOWS = "/workflows";
+      T3_PUBLIC_URL = "https://${lab.fqdn "t3code"}";
       # Docker's seccomp profile denies the user namespaces Chrome's sandbox needs;
       # the container stands in for it.
       T3CODE_SERVER_BROWSER_SANDBOX = "0";

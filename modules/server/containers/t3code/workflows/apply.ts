@@ -1,4 +1,7 @@
 import { execFile } from "node:child_process";
+import { readFileSync } from "node:fs";
+import { homedir } from "node:os";
+import { join } from "node:path";
 
 const { workflow, step, agent, stop, skip, title, every } = T3;
 
@@ -19,6 +22,12 @@ const callExecutor = (path, input) =>
       },
     );
   });
+
+const threadUrl = (thread) => {
+  const environmentId = readFileSync(join(homedir(), ".t3/userdata/environment-id"), "utf8").trim();
+  const threadId = typeof thread === "string" ? thread : (thread.threadId ?? thread.id);
+  return `${process.env.T3_PUBLIC_URL}/${environmentId}/${threadId}`;
+};
 
 const Job = Schema.Struct({ id: Schema.String, company: Schema.String, title: Schema.String });
 const Outcome = Schema.Struct({
@@ -50,7 +59,7 @@ const brief = (job, dryRun) =>
 workflow(
   "apply",
   {
-    version: 1,
+    version: 2,
     payload: Schema.Struct({ scheduledAt: Schema.String, dryRun: Schema.optional(Schema.Boolean) }),
     triggers: [every("20 minutes")],
     concurrency: 1,
@@ -75,14 +84,24 @@ workflow(
 
     const results = yield* Effect.all(
       queue.map((job) =>
-        agent.try(`job-${job.id}`, {
-          project: "/workspace/job-applications",
-          title: `${job.company}: ${job.title}`.slice(0, 80),
-          brief: brief(job, payload.dryRun === true),
-          returns: Outcome,
-          model: { instanceId: "antigravity", model: "gemini-4-hydrogen", options: [{ id: "thought_level", value: "medium" }] },
-          runtimeMode: "full-access",
-          timeout: "40 minutes",
+        Effect.gen(function* () {
+          const result = yield* agent.try(`job-${job.id}`, {
+            project: "/workspace/job-applications",
+            title: `${job.company}: ${job.title}`.slice(0, 80),
+            brief: brief(job, payload.dryRun === true),
+            returns: Outcome,
+            model: { instanceId: "antigravity", model: "gemini-4-hydrogen", options: [{ id: "thought_level", value: "medium" }] },
+            runtimeMode: "full-access",
+            timeout: "40 minutes",
+          });
+          if (result.thread) {
+            yield* step.try(
+              `link-${job.id}`,
+              { returns: Schema.Struct({ linked: Schema.Boolean }) },
+              Effect.tryPromise({ try: () => callExecutor("link_thread", { id: job.id, url: threadUrl(result.thread) }), catch: (error) => error }),
+            );
+          }
+          return result;
         }),
       ),
       { concurrency: PARALLEL_AGENTS },

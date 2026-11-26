@@ -8,9 +8,7 @@
     ./newt.nix
     ./cliproxyapi.nix
     ./siyuan.nix
-    ./hermes.nix
-    ./hermes-desktop.nix
-    ./hindsight.nix
+    ./t3code.nix
   ];
 
   _module.args.lab = import ./lab.nix { inherit lib pkgs; };

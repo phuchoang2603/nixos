@@ -14,10 +14,8 @@ Web names below use `.home.phuchoang.sbs`.
 | `newt` | Pangolin tunnel | — |
 | `vaultwarden` | Password vault | `vaultwarden` |
 | `karakeep`, `karakeep-meilisearch` | Bookmarks and search | `karakeep` |
-| `hermes` | Agent gateway and dashboard | `hermes` |
-| `hermes-desktop`, `hermes-desktop-vnc` | Agent desktop and browser viewer | `desktop` |
+| `t3code` | T3 Code server with the Antigravity agent and a browser | `t3code` |
 | `cli-proxy-api` | Model API gateway | `cliproxyapi` |
-| `hindsight`, `hindsight-db` | Agent long-term memory | `hindsight` |
 
 ## Files and storage
 
@@ -42,17 +40,17 @@ Application-managed tokens and credentials remain in persistent app data.
 ```bash
 docker ps
 systemctl --failed
-docker logs --tail 50 hermes
-sudo journalctl -u docker-hermes -n 50 --no-pager
+docker logs --tail 50 t3code
+sudo journalctl -u docker-t3code -n 50 --no-pager
 ```
 
 Restart a chosen application through systemd:
 
 ```bash
-sudo systemctl restart docker-hermes
+sudo systemctl restart docker-t3code
 ```
 
-Replace `hermes` with the container name. App-managed settings can be edited in
+Replace `t3code` with the container name. App-managed settings can be edited in
 the app or its persistent files.
 
 ## Change and deploy

@@ -1,8 +1,9 @@
-{ pkgs, ... }:
+{ lib, pkgs, ... }:
 
 let
   sharedContext = ./AGENTS.md;
   agentSkills = ./skills;
+  executorCli = pkgs.callPackage ./executor-cli.nix { };
 in
 {
   imports = [
@@ -12,6 +13,7 @@ in
   ];
 
   home.packages = [
+    executorCli
     (pkgs.writers.writePython3Bin "excalidraw-icon" { flakeIgnore = [ "E501" ]; } (
       builtins.readFile ./scripts/excalidraw-icon.py
     ))
@@ -22,7 +24,8 @@ in
     enable = true;
     servers = {
       executor = {
-        url = "https://mcp.executor.sh/mcp";
+        command = lib.getExe executorCli;
+        args = [ "mcp" ];
       };
     };
   };

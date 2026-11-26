@@ -103,7 +103,7 @@ in
       "${data}/agy-accounts:/root/.agy-accounts:rw"
       "${data}/agy-config:/root/.config/cliproxy-antigravity:rw"
       "${agy}/antigravity:/usr/local/bin/agy:ro"
-      "${agyLean}:/usr/local/bin/agy-lean:ro"
+      "${agyLean}:/opt/agy-lean/agy:ro"
       "${agyLeanAgent}:/agy-workdir/.agents/agents/lean.md:ro"
       "${agyPlugin}/cliproxy-antigravity.so:/CLIProxyAPI/plugins/linux/amd64/cliproxy-antigravity.so:ro"
     ];

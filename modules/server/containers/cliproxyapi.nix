@@ -25,30 +25,6 @@ let
         mkdir -p $out
         tar -xzf $src -C $out
       '';
-  agyLeanAgent = pkgs.writeText "lean.md" ''
-    ---
-    name: lean
-    description: Plain chat model with no built-in tools.
-    tools: []
-    mainAgent: true
-    subagent: false
-    ---
-
-    Answer the user directly and concisely.
-  '';
-  agyLean = pkgs.writeTextFile {
-    name = "agy-lean";
-    executable = true;
-    text = ''
-      #!/bin/sh
-      for arg in "$@"; do
-        case "$arg" in
-          -p | --print | --prompt) exec /usr/local/bin/agy --agent lean "$@" ;;
-        esac
-      done
-      exec /usr/local/bin/agy "$@"
-    '';
-  };
   agyPlugin =
     pkgs.runCommand "cliproxy-antigravity-0.7.1"
       {
@@ -103,8 +79,6 @@ in
       "${data}/agy-accounts:/root/.agy-accounts:rw"
       "${data}/agy-config:/root/.config/cliproxy-antigravity:rw"
       "${agy}/antigravity:/usr/local/bin/agy:ro"
-      "${agyLean}:/opt/agy-lean/agy:ro"
-      "${agyLeanAgent}:/agy-workdir/.agents/agents/lean.md:ro"
       "${agyPlugin}/cliproxy-antigravity.so:/CLIProxyAPI/plugins/linux/amd64/cliproxy-antigravity.so:ro"
     ];
     environmentFiles = [ "${lab.secrets}/cliproxyapi.env" ];

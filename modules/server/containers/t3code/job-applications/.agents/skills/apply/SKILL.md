@@ -65,7 +65,7 @@ tab. When you finish, submit your result with an outcome (`submitted`, `closed`,
    a password, code or recovery link in a tracker note, a thread or a file under the workspace.
 5. Emailed codes: other agents are waiting on codes from other employers at the same time, so search
    Gmail for the newest message from this job's employer or ATS received after you started, read the
-   code, type it in, then archive only that email. Retry every 10 seconds for 2 minutes, then use Resend.
+   code, type it in, link it to the job (below), then archive only that email. Retry every 10 seconds for 2 minutes, then use Resend.
 6. CAPTCHA: read the sitekey from the page (`data-sitekey`, or the widget iframe URL), then run
    `python3 captcha.py recaptcha-v2|recaptcha-v3|turnstile --url <page-url> --sitekey <key>` from this
    folder. It prints a token: set it in the hidden response field (`g-recaptcha-response` or
@@ -95,9 +95,17 @@ tab open, park the job with the note "dry run" (see "Not submitted") and finish 
   failure after a submission is never a reason to submit again.
 - Check Submitted for the same employer and title before starting, to avoid duplicates.
 
+## Emails
+
+The dashboard groups mail per job. For every message you use for a job (verification code,
+confirmation, assessment, interview, rejection), call
+`executor call 'tools["job-applications"].link_email' --input '{"id","messageId","subject","sender","kind","receivedAt"}'`
+with the Gmail message id, its subject and sender, a kind (`code`, `confirmation`, `assessment`,
+`interview`, `rejection` or `other`) and `receivedAt` in milliseconds. It is safe to repeat.
+
 ## Follow-ups
 
-When a Gmail message matches a submitted job (assessment, interview, rejection), call `annotate_job`
+When a Gmail message matches a submitted job (assessment, interview, rejection), link it with `link_email`, then call `annotate_job`
 with `evidence` (required), the deadline and the message ID, and `needsAttention: true` for
 assessments and interviews. Close a matched rejection with `update_job`, keeping submission evidence.
 Do not record the same message twice.

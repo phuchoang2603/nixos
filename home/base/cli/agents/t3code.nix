@@ -65,4 +65,9 @@ in
     };
     Install.WantedBy = [ "default.target" ];
   };
+
+  # The apply workflow (see the job-applications app on Executor); T3 reloads the folder on change.
+  home.file.".t3/workflows/apply.ts" = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
+    source = ./t3-workflows/apply.ts;
+  };
 }

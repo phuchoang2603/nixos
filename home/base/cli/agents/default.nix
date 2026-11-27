@@ -14,6 +14,13 @@ in
 
   home.packages = [
     executorCli
+  ]
+  ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [
+    # The apply workflow's resume tailoring compiles LaTeX and validates the PDF.
+    pkgs.tectonic
+    (pkgs.python3.withPackages (python: [ python.pypdf ]))
+  ]
+  ++ [
     (pkgs.writers.writePython3Bin "excalidraw-icon" { flakeIgnore = [ "E501" ]; } (
       builtins.readFile ./scripts/excalidraw-icon.py
     ))

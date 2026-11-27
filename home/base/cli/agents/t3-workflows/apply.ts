@@ -7,7 +7,7 @@ const { workflow, step, agent, stop, skip, title, every, store } = T3;
 
 const MAX_JOBS_PER_RUN = 6;
 const PARALLEL_AGENTS = 3;
-const PROJECT = "/workspace/job-applications";
+const PROJECT = join(homedir(), "job-applications");
 const SKILLS_DIR = join(PROJECT, ".agents/skills");
 const MODEL = { instanceId: "antigravity", model: "gemini-4-hydrogen", options: [{ id: "thought_level", value: "medium" }] };
 
@@ -41,7 +41,7 @@ const attempt = (run) => Effect.tryPromise({ try: run, catch: (error) => error }
 const threadUrl = (thread) => {
   const environmentId = readFileSync(join(homedir(), ".t3/userdata/environment-id"), "utf8").trim();
   const threadId = typeof thread === "string" ? thread : (thread.threadId ?? thread.id);
-  return `${process.env.T3_PUBLIC_URL}/${environmentId}/${threadId}`;
+  return `https://app.t3.codes/${environmentId}/${threadId}`;
 };
 
 const Job = Schema.Struct({ id: Schema.String, company: Schema.String, title: Schema.String });

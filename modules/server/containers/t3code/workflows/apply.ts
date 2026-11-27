@@ -1,13 +1,14 @@
 import { execFile } from "node:child_process";
-import { readFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { homedir } from "node:os";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
 
 const { workflow, step, agent, stop, skip, title, every, store } = T3;
 
 const MAX_JOBS_PER_RUN = 6;
 const PARALLEL_AGENTS = 3;
 const PROJECT = "/workspace/job-applications";
+const SKILLS_DIR = join(PROJECT, ".agents/skills");
 const MODEL = { instanceId: "antigravity", model: "gemini-4-hydrogen", options: [{ id: "thought_level", value: "medium" }] };
 
 // Mail worth an agent's time: employers and applicant systems writing about an application.
@@ -26,6 +27,12 @@ const call = (path, input) =>
         if (!result?.ok) return reject(new Error(`${path} failed: ${JSON.stringify(result?.error ?? result).slice(0, 300)}`));
         resolve(result.value);
       },
+    );
+  });
+const executorJson = (args) =>
+  new Promise((resolve, reject) => {
+    execFile("executor", args, { maxBuffer: 32 * 1024 * 1024, timeout: 120000 }, (error, stdout) =>
+      error ? reject(error) : resolve(JSON.parse(stdout)),
     );
   });
 const tracker = (name, input) => call(`tools["job-applications"].${name}`, input);
@@ -50,6 +57,23 @@ const Outcome = Schema.Struct({
   note: Schema.String,
 });
 const MailResult = Schema.Struct({ linked: Schema.Number, changed: Schema.Number });
+
+// The skills live in the job-applications app on Executor. Writing them under the project is what
+// lets the Antigravity agents load them natively, so every run starts from the current text.
+const syncSkills = async () => {
+  const listed = (await executorJson(["skills", "--app", "job-applications"])).skills.filter((skill) => skill.name !== "tools");
+  for (const skill of listed) {
+    const base = ["skills", "--app", "job-applications", "--name", skill.name];
+    const head = await executorJson(base);
+    for (const file of head.files) {
+      const content = file === "SKILL.md" ? head.content : (await executorJson([...base, "--file", file])).content;
+      const target = join(SKILLS_DIR, skill.name, file);
+      mkdirSync(dirname(target), { recursive: true });
+      writeFileSync(target, content);
+    }
+  }
+  return listed.length;
+};
 
 const scanMail = async (since) => {
   const found = await call("tools.google.gmail.search", {
@@ -97,13 +121,15 @@ const lastChecked = store.entry("mail/checked-at", Schema.Number);
 workflow(
   "apply",
   {
-    version: 5,
+    version: 6,
     payload: Schema.Struct({ scheduledAt: Schema.String, dryRun: Schema.optional(Schema.Boolean) }),
     triggers: [every("20 minutes")],
     concurrency: 1,
   },
   Effect.fn(function* (payload) {
     yield* title(`Apply ${payload.scheduledAt.slice(0, 16)}`);
+
+    yield* step("skills", { returns: Schema.Number }, attempt(syncSkills));
 
     // The feed is checked with its ETag, so an unchanged feed costs nothing.
     yield* step.try(

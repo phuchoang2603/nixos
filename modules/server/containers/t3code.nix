@@ -41,6 +41,7 @@ in
     "d ${state}/workspace 0755 ${uid} ${uid} -"
     "d ${state}/workspace/job-applications 0755 ${uid} ${uid} -"
     "d ${state}/workspace/job-applications/.agents 0755 ${uid} ${uid} -"
+    "d ${state}/workspace/job-applications/.agents/skills 0755 ${uid} ${uid} -"
   ];
 
   systemd.services.docker-image-t3code = localImage.service;
@@ -63,7 +64,6 @@ in
     volumes = [
       "${state}/home:/home/node:rw"
       "${state}/workspace:/workspace:rw"
-      "${./t3code/job-applications/.agents/skills}:/workspace/job-applications/.agents/skills:ro"
       "${./t3code/workflows}:/workflows:ro"
     ];
     environment = {

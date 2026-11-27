@@ -97,7 +97,7 @@ const lastChecked = store.entry("mail/checked-at", Schema.Number);
 workflow(
   "apply",
   {
-    version: 4,
+    version: 5,
     payload: Schema.Struct({ scheduledAt: Schema.String, dryRun: Schema.optional(Schema.Boolean) }),
     triggers: [every("20 minutes")],
     concurrency: 1,
@@ -170,6 +170,26 @@ workflow(
         }),
       ),
       { concurrency: PARALLEL_AGENTS },
+    );
+
+    // An agent that ends mid-application must not leave the job in progress. Uncertain outcomes stay for a person.
+    yield* step.try(
+      "settle",
+      { returns: Schema.Number },
+      attempt(async () => {
+        const active = await tracker("active_applications", {});
+        const stuck = active.filter((job) => job.application_outcome !== "Uncertain");
+        for (const job of stuck) {
+          await tracker("update_job", {
+            id: job.id,
+            version: job.version,
+            status: "Needs review",
+            note: "The agent ended before resolving this application; check its thread.",
+            evidence: "The workflow found the application still in progress after its agent finished; nothing was recorded as submitted.",
+          });
+        }
+        return stuck.length;
+      }),
     );
 
     const failed = results.filter((result) => result.outcome === "failed").length;

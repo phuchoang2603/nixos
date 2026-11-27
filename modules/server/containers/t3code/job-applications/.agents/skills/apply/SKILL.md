@@ -35,7 +35,8 @@ tab. When you finish, submit your result with an outcome (`submitted`, `closed`,
    evidence, unless the employer is a big company. Big means a widely known large employer (Fortune 500,
    major tech, large banks and financial firms, large defense, industrial, medical and consumer
    companies). When unsure, treat it as not big. Never close a job that Felix pasted (`add_job`).
-4. Screen it, then apply (below). Stop after this one job.
+4. Screen it, then apply (below). Stop after this one job. Never finish while your job is Applying:
+   resolve it first (Submitted, Needs review, Closed or `mark_application_uncertain`).
 
 ## Screen a job (cheap checks first)
 

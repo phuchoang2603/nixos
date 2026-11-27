@@ -12,7 +12,7 @@
         PGID = "1000";
         DATA_DIR = "/data";
         MEILI_ADDR = "http://karakeep-meilisearch:7700";
-        NEXTAUTH_URL = "https://${lab.fqdn "karakeep"}";
+        NEXTAUTH_URL = "https://karakeep.phuchoang.sbs";
 
         # With no browser URL, Karakeep fetches HTML over HTTP without Chrome/JS.
         # Keep text extraction and AI/search, but skip browser-generated assets.
@@ -34,10 +34,6 @@
         RATE_LIMITING_ENABLED = "true";
       };
       extraOptions = [ "--cpus=1" ];
-      traefik = {
-        name = "karakeep";
-        port = 3000;
-      };
     };
 
     karakeep-meilisearch = lab.mkContainer {

@@ -12,9 +12,5 @@
       SIGNUPS_ALLOWED = "false";
       WEB_VAULT_ENABLED = "true";
     };
-    traefik = {
-      name = "vaultwarden";
-      port = 80;
-    };
   };
 }

@@ -11,9 +11,9 @@ Web names below use `.home.phuchoang.sbs`.
 | Containers | Purpose | Web name |
 | --- | --- | --- |
 | `traefik` | HTTPS routing and certificates | `traefik` |
-| `newt` | Pangolin tunnel | — |
-| `vaultwarden` | Password vault | `vaultwarden` |
-| `karakeep`, `karakeep-meilisearch` | Bookmarks and search | `karakeep` |
+| `cloudflared` | Cloudflare Tunnel for `vaultwarden.phuchoang.sbs` and `karakeep.phuchoang.sbs` | — |
+| `vaultwarden` | Password vault | — |
+| `karakeep`, `karakeep-meilisearch` | Bookmarks and search | — |
 | `cli-proxy-api` | Model API gateway | `cliproxyapi` |
 
 ## Files and storage

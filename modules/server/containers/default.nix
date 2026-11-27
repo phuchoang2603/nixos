@@ -5,7 +5,7 @@
     ./traefik.nix
     ./vaultwarden.nix
     ./karakeep.nix
-    ./newt.nix
+    ./cloudflared.nix
     ./cliproxyapi.nix
   ];
 

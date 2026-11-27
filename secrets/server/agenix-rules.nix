@@ -3,8 +3,8 @@ let
   macbook = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINOFe4vrl3REBGRpH4/7SbpH9fagoeeqf9ku2xxoEh1u";
   names = [
     "cliproxyapi.env"
+    "cloudflared.env"
     "karakeep.env"
-    "newt.env"
     "terraform-agent.env"
     "traefik.env"
     "vaultwarden.env"

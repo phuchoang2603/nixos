@@ -15,7 +15,6 @@ Web names below use `.home.phuchoang.sbs`.
 | `vaultwarden` | Password vault | — |
 | `karakeep`, `karakeep-meilisearch` | Bookmarks and search | — |
 | `cli-proxy-api` | Model API gateway | `cliproxyapi` |
-| `proxmox-mcp` | Read-only Proxmox MCP server for agents | `proxmox-mcp` |
 
 ## Files and storage
 

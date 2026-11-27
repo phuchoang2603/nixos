@@ -5,6 +5,7 @@ let
     "cliproxyapi.env"
     "cloudflared.env"
     "karakeep.env"
+    "proxmox-mcp.env"
     "terraform-agent.env"
     "traefik.env"
     "vaultwarden.env"

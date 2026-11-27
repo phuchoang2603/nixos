@@ -6,6 +6,7 @@
     ./vaultwarden.nix
     ./karakeep.nix
     ./cloudflared.nix
+    ./proxmox-mcp.nix
     ./cliproxyapi.nix
   ];
 

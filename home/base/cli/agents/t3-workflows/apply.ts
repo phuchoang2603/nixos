@@ -88,10 +88,11 @@ const scanMail = async (since) => {
 const loadQueue = async () => {
   const settings = await tracker("get_settings", {});
   if (!settings.applicationsEnabled) return [];
-  const ready = (await tracker("list_jobs", { status: "Ready", limit: 50 })).items;
-  const fresh = (await tracker("list_jobs", { status: "New", limit: 100 })).items;
-  const oldestFirst = (a, b) => a.created_at - b.created_at;
-  return [...ready.sort(oldestFirst), ...fresh.sort(oldestFirst)]
+  const { items } = await tracker("list_jobs", { status: "New", limit: 100 });
+  // NOTE: jobs with eligibility evidence are pasted links, which go first.
+  const pastedFirst = (a, b) => Number(Boolean(b.eligibility_evidence)) - Number(Boolean(a.eligibility_evidence)) || a.created_at - b.created_at;
+  return items
+    .sort(pastedFirst)
     .slice(0, MAX_JOBS_PER_RUN)
     .map((job) => ({ id: job.id, company: job.company, title: job.title }));
 };
@@ -130,7 +131,7 @@ const settleStuck = async () => {
 workflow(
   "apply",
   {
-    version: 9,
+    version: 10,
     payload: Schema.Struct({ scheduledAt: Schema.String, dryRun: Schema.optional(Schema.Boolean) }),
     triggers: [every("20 minutes")],
     concurrency: 1,

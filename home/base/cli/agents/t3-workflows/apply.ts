@@ -7,7 +7,8 @@ const { workflow, step, agent, stop, skip, title, every, store } = T3;
 
 const MAX_JOBS_PER_RUN = 6;
 const PARALLEL_AGENTS = 3;
-const PROJECT = join(homedir(), "job-applications");
+// The resume repo is the project: its devenv compiles the resumes and its tailor.py validates them.
+const PROJECT = join(homedir(), "repos/resume");
 const SKILLS_DIR = join(PROJECT, ".agents/skills");
 const MODEL = { instanceId: "antigravity", model: "gemini-4-hydrogen", options: [{ id: "thought_level", value: "medium" }] };
 
@@ -33,6 +34,12 @@ const executorJson = (args) =>
   new Promise((resolve, reject) => {
     execFile("executor", args, { maxBuffer: 32 * 1024 * 1024, timeout: 120000 }, (error, stdout) =>
       error ? reject(error) : resolve(JSON.parse(stdout)),
+    );
+  });
+const pullResumeSources = () =>
+  new Promise((resolve, reject) => {
+    execFile("git", ["-C", PROJECT, "pull", "--ff-only"], { timeout: 120000 }, (error, stdout) =>
+      error ? reject(error) : resolve(stdout.trim()),
     );
   });
 const tracker = (name, input) => call(`tools["job-applications"].${name}`, input);
@@ -121,7 +128,7 @@ const lastChecked = store.entry("mail/checked-at", Schema.Number);
 workflow(
   "apply",
   {
-    version: 6,
+    version: 7,
     payload: Schema.Struct({ scheduledAt: Schema.String, dryRun: Schema.optional(Schema.Boolean) }),
     triggers: [every("20 minutes")],
     concurrency: 1,
@@ -130,6 +137,8 @@ workflow(
     yield* title(`Apply ${payload.scheduledAt.slice(0, 16)}`);
 
     yield* step("skills", { returns: Schema.Number }, attempt(syncSkills));
+    // One pull per run, so the parallel agents never race on git.
+    yield* step.try("sources", { returns: Schema.String }, attempt(pullResumeSources));
 
     // The feed is checked with its ETag, so an unchanged feed costs nothing.
     yield* step.try(

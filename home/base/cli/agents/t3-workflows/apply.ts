@@ -5,14 +5,11 @@ import { dirname, join } from "node:path";
 
 const { workflow, step, agent, stop, skip, title, every, store } = T3;
 
-const MAX_APPLY_PER_RUN = 6;
-const MAX_SCREEN_PER_RUN = 15;
+const MAX_JOBS_PER_RUN = 6;
 const PARALLEL_AGENTS = 3;
 const PROJECT = join(homedir(), "repos/resume");
 const SKILLS_DIR = join(PROJECT, ".agents/skills");
-const antigravity = (model, thought) => ({ instanceId: "phucxhoang", model, options: [{ id: "thought_level", value: thought }] });
-const BROWSER_MODEL = antigravity("gemini-4-hydrogen", "medium");
-const TEXT_MODEL = antigravity("gemini-3.8-flash", "low");
+const MODEL = { instanceId: "phucxhoang", model: "gemini-4-hydrogen", options: [{ id: "thought_level", value: "medium" }] };
 
 const JOB_MAIL =
   /application|applying|applied|interview|assessment|coding challenge|hackerrank|codility|hirevue|offer|candidate|recruit|talent|careers|next steps|greenhouse|lever\.co|ashbyhq|workday|icims|smartrecruiters|taleo|successfactors|jobvite|workable|ultipro/i;
@@ -53,7 +50,6 @@ const Outcome = Schema.Struct({
   note: Schema.String,
 });
 const MailResult = Schema.Struct({ linked: Schema.Number, changed: Schema.Number });
-const ScreenResult = Schema.Struct({ ready: Schema.Number, closed: Schema.Number });
 
 const lastChecked = store.entry("mail/checked-at", Schema.Number);
 const lastSkills = store.entry("skills/revision", Schema.String);
@@ -62,7 +58,7 @@ const lastSkills = store.entry("skills/revision", Schema.String);
 const syncSkills = async (known) => {
   const listed = (await executor(["skills", "--app", "job-applications"])).skills.filter((skill) => skill.name !== "tools");
   const revision = listed[0]?.revision ?? "";
-  if (revision === known && existsSync(join(SKILLS_DIR, "screen/SKILL.md"))) return revision;
+  if (revision === known && existsSync(join(SKILLS_DIR, "apply/SKILL.md"))) return revision;
   for (const skill of listed) {
     const base = ["skills", "--app", "job-applications", "--name", skill.name];
     const head = await executor(base);
@@ -89,19 +85,15 @@ const scanMail = async (since) => {
     .map((mail) => ({ messageId: mail.messageId, from: mail.from, subject: mail.subject, date: mail.date, snippet: mail.snippet.slice(0, 300) }));
 };
 
-const listJobs = async (status, limit) => {
-  const oldestFirst = (a, b) => a.created_at - b.created_at;
-  const { items } = await tracker("list_jobs", { status, limit });
-  return items
-    .sort(oldestFirst)
-    .slice(0, limit)
-    .map((job) => ({ id: job.id, company: job.company, title: job.title }));
-};
-const loadReady = () => listJobs("Ready", MAX_APPLY_PER_RUN);
 const loadQueue = async () => {
   const settings = await tracker("get_settings", {});
-  if (!settings.applicationsEnabled) return { fresh: [], ready: [] };
-  return { fresh: await listJobs("New", MAX_SCREEN_PER_RUN), ready: await loadReady() };
+  if (!settings.applicationsEnabled) return [];
+  const ready = (await tracker("list_jobs", { status: "Ready", limit: 50 })).items;
+  const fresh = (await tracker("list_jobs", { status: "New", limit: 100 })).items;
+  const oldestFirst = (a, b) => a.created_at - b.created_at;
+  return [...ready.sort(oldestFirst), ...fresh.sort(oldestFirst)]
+    .slice(0, MAX_JOBS_PER_RUN)
+    .map((job) => ({ id: job.id, company: job.company, title: job.title }));
 };
 
 const mailBrief = (messages) =>
@@ -111,20 +103,13 @@ const mailBrief = (messages) =>
     "When you finish, submit how many messages you linked to a job and how many jobs you changed.",
   ].join("\n");
 
-const screenBrief = (jobs) =>
-  [
-    "Use the `screen` skill on exactly these New jobs and no others.",
-    JSON.stringify(jobs),
-    "When you finish, submit how many you marked Ready and how many you closed.",
-  ].join("\n");
-
 const applyBrief = (job, dryRun) =>
   [
     `Use the \`apply\` skill for exactly one job: ${job.id} (${job.company}, ${job.title}).`,
     "Other agents are working other jobs in parallel. Do not touch any other job, queue or browser tab.",
     dryRun
-      ? "DRY RUN: fill the application up to its review page and stop without submitting."
-      : "Apply to the end and record the outcome.",
+      ? "DRY RUN: screen and prepare, fill the application up to its review page and stop without submitting."
+      : "Screen it and, if it is eligible, apply to the end and record the outcome.",
     "When you finish, submit your result with the outcome and a one-line note.",
   ].join("\n");
 
@@ -145,7 +130,7 @@ const settleStuck = async () => {
 workflow(
   "apply",
   {
-    version: 8,
+    version: 9,
     payload: Schema.Struct({ scheduledAt: Schema.String, dryRun: Schema.optional(Schema.Boolean) }),
     triggers: [every("20 minutes")],
     concurrency: 1,
@@ -170,12 +155,12 @@ workflow(
         return { messages: yield* task(() => scanMail(since)), checkedAt };
       }),
     );
-    const queue = yield* step("queue", { returns: Schema.Struct({ fresh: Schema.Array(Job), ready: Schema.Array(Job) }) }, task(loadQueue));
+    const queue = yield* step("queue", { returns: Schema.Array(Job) }, task(loadQueue));
 
     // NOTE: five minutes of overlap so mail arriving mid-scan is never missed; linked mail is skipped anyway.
     const markChecked = step("mail-checked", { returns: Schema.Void }, lastChecked.set(mail.checkedAt - 5 * 60 * 1000));
 
-    if (mail.messages.length === 0 && queue.fresh.length === 0 && queue.ready.length === 0) {
+    if (mail.messages.length === 0 && queue.length === 0) {
       yield* markChecked;
       return yield* skip("nothing to do");
     }
@@ -196,41 +181,28 @@ workflow(
         title: `Mail: ${mail.messages.length} new`,
         brief: mailBrief(mail.messages),
         returns: MailResult,
-        model: TEXT_MODEL,
+        model: MODEL,
         runtimeMode: "full-access",
-        timeout: "10 minutes",
+        timeout: "30 minutes",
       });
       if (sorted.outcome === "failed") return yield* stop("mail agent failed; the same messages are checked again next run");
     }
     yield* markChecked;
 
-    let ready = queue.ready;
-    if (queue.fresh.length > 0) {
-      yield* agent.try("screen", {
-        project: PROJECT,
-        title: `Screen: ${queue.fresh.length} new`,
-        brief: screenBrief(queue.fresh),
-        returns: ScreenResult,
-        model: TEXT_MODEL,
-        runtimeMode: "full-access",
-        timeout: "20 minutes",
-      });
-      ready = yield* step("ready", { returns: Schema.Array(Job) }, task(loadReady));
-    }
-    if (ready.length === 0) return yield* skip("no job is ready to apply");
-    yield* title(`Apply ${stamp}: ${ready.length} jobs`);
+    if (queue.length === 0) return yield* skip("mail sorted; no jobs to apply to");
+    yield* title(`Apply ${stamp}: ${queue.length} jobs`);
 
     yield* step.try("sources", { returns: Schema.String }, task(() => git(["pull", "--ff-only"])));
 
     const results = yield* Effect.all(
-      ready.map((job) =>
+      queue.map((job) =>
         Effect.gen(function* () {
           const result = yield* agent.try(`job-${job.id}`, {
             project: PROJECT,
             title: `${job.company}: ${job.title}`.slice(0, 80),
             brief: applyBrief(job, payload.dryRun === true),
             returns: Outcome,
-            model: BROWSER_MODEL,
+            model: MODEL,
             runtimeMode: "full-access",
             timeout: "40 minutes",
           });
@@ -250,6 +222,6 @@ workflow(
     const failed = results.filter((result) => result.outcome === "failed").length;
     if (failed > 0) yield* step.try("settle", { returns: Schema.Number }, task(settleStuck));
     if (failed === results.length) return yield* stop(`all ${failed} agents failed`);
-    return { jobs: ready.length, failed };
+    return { jobs: queue.length, failed };
   }),
 );

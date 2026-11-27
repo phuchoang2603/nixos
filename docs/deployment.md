@@ -59,19 +59,9 @@ by Renovate. Renovate PRs, including major updates, merge after required checks 
    with repository **Administration: read and write**, for runner registration.
    The NixOS module also supports a classic token with `repo` scope. A one-hour
    runner registration token is unsuitable for ongoing runner reconfiguration.
-4. On `nixos-server`, store it outside Git and the Nix store:
-
-   ```bash
-   sudo install -d -m 0700 /var/lib/github-runner-secrets
-   sudo install -m 0600 /dev/null /var/lib/github-runner-secrets/nixos-server.token
-   read -rs 'runner_token?Runner registration PAT: '
-   printf '\n'
-   printf '%s' "$runner_token" | sudo tee /var/lib/github-runner-secrets/nixos-server.token >/dev/null
-   unset runner_token
-   ```
-
-   The `read` command above uses the server's default Zsh syntax. The file must
-   contain only the token, without a trailing newline.
+4. Encrypt it as `secrets/server/github-runner.token.age` with
+   [agenix](macbook.md#edit-server-secrets). The file must contain only the
+   token, without a trailing newline.
 
 5. Bootstrap the server once from this checkout. The build runner must be online
    before main CI can run:

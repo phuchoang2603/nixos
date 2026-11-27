@@ -42,7 +42,7 @@ in
     ephemeral = true;
     user = builderUser;
     group = builderUser;
-    tokenFile = "/var/lib/github-runner-secrets/nixos-server.token";
+    tokenFile = config.age.secrets."github-runner.token".path;
     tokenType = "access";
     extraLabels = [ "nixos-server-build" ];
     extraPackages = [
@@ -59,7 +59,7 @@ in
     ephemeral = true;
     user = runnerUser;
     group = runnerUser;
-    tokenFile = "/var/lib/github-runner-secrets/nixos-server.token";
+    tokenFile = config.age.secrets."github-runner.token".path;
     tokenType = "access";
     extraLabels = [ "nixos-server-deploy" ];
     extraPackages = [ config.systemd.package ];

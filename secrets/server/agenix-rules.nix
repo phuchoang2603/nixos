@@ -3,6 +3,7 @@ let
   macbook = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINOFe4vrl3REBGRpH4/7SbpH9fagoeeqf9ku2xxoEh1u";
   names = [
     "cliproxyapi.env"
+    "github-runner.token"
     "cloudflared.env"
     "karakeep.env"
     "proxmox-mcp.env"

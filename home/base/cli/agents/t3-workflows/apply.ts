@@ -10,6 +10,7 @@ const PARALLEL_AGENTS = 2;
 const PROJECT = join(homedir(), "repos/resume");
 const SKILLS_DIR = join(PROJECT, ".agents/skills");
 const MODEL = { instanceId: "phucxhoang", model: "gemini-4-hydrogen", options: [{ id: "thought_level", value: "low" }] };
+const FALLBACK_MODEL = { instanceId: "codex", model: "gpt-6.2-sol", options: [{ id: "reasoningEffort", value: "low" }] };
 
 const JOB_MAIL =
   /application|applying|applied|interview|assessment|coding challenge|hackerrank|codility|hirevue|offer|candidate|recruit|talent|careers|next steps|greenhouse|lever\.co|ashbyhq|workday|icims|smartrecruiters|taleo|successfactors|jobvite|workable|ultipro/i;
@@ -29,6 +30,13 @@ const tracker = (name, input) => call(`tools["job-applications"].${name}`, input
 const git = (args) =>
   new Promise((resolve, reject) => {
     execFile("git", ["-C", PROJECT, ...args], { timeout: 120000 }, (error, stdout) => (error ? reject(error) : resolve(stdout.trim())));
+  });
+// NOTE: a retry is safe because the apply skill stops on any job that is no longer New, so work the first agent started is never repeated.
+const withFallback = (name, options) =>
+  Effect.gen(function* () {
+    const first = yield* agent.try(name, { ...options, model: MODEL });
+    if (first.outcome !== "failed") return first;
+    return yield* agent.try(`${name}-codex`, { ...options, model: FALLBACK_MODEL });
   });
 const task = (run) => Effect.tryPromise({ try: run, catch: (error) => error });
 
@@ -131,7 +139,7 @@ const settleStuck = async () => {
 workflow(
   "apply",
   {
-    version: 12,
+    version: 13,
     payload: Schema.Struct({ scheduledAt: Schema.String, dryRun: Schema.optional(Schema.Boolean) }),
     triggers: [every("20 minutes")],
     concurrency: 1,
@@ -177,12 +185,11 @@ workflow(
     );
 
     if (mail.messages.length > 0) {
-      const sorted = yield* agent.try("mail", {
+      const sorted = yield* withFallback("mail", {
         project: PROJECT,
         title: `Mail: ${mail.messages.length} new`,
         brief: mailBrief(mail.messages),
         returns: MailResult,
-        model: MODEL,
         runtimeMode: "full-access",
         timeout: "30 minutes",
       });
@@ -198,13 +205,12 @@ workflow(
     const results = yield* Effect.all(
       queue.map((job) =>
         Effect.gen(function* () {
-          const result = yield* agent.try(`job-${job.id}`, {
+          const result = yield* withFallback(`job-${job.id}`, {
             project: PROJECT,
             title: `${job.company}: ${job.title}`.slice(0, 80),
             brief: applyBrief(job, payload.dryRun === true),
             returns: Outcome,
-            model: MODEL,
-            runtimeMode: "full-access",
+                runtimeMode: "full-access",
             timeout: "40 minutes",
           });
           if (result.thread) {

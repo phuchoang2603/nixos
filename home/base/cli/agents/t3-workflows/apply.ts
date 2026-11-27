@@ -5,14 +5,15 @@ import { dirname, join } from "node:path";
 
 const { workflow, step, agent, stop, skip, title, every, store } = T3;
 
-const MAX_JOBS_PER_RUN = 6;
-const PARALLEL_AGENTS = 3;
+const MAX_JOBS_PER_RUN = 3;
+const PARALLEL_AGENTS = 2;
 const PROJECT = join(homedir(), "repos/resume");
 const SKILLS_DIR = join(PROJECT, ".agents/skills");
 const MODEL = { instanceId: "phucxhoang", model: "gemini-4-hydrogen", options: [{ id: "thought_level", value: "medium" }] };
 
-const JOB_MAIL =
-  /application|applying|applied|interview|assessment|coding challenge|hackerrank|codility|hirevue|offer|candidate|recruit|talent|careers|next steps|greenhouse|lever\.co|ashbyhq|workday|icims|smartrecruiters|taleo|successfactors|jobvite|workable|ultipro/i;
+const OUTCOME_MAIL =
+  /unfortunately|not (be )?(moving|proceed)|regret to|other candidates|decided to (move|pursue)|no longer (under )?consideration|not selected|invite you|invitation|schedule (a|an|your)|assessment|coding challenge|hackerrank|codility|hirevue|interview|next steps|offer/i;
+const NOISE_MAIL = /verification code|security code|one-time|password|reset your|confirm your email|activate your account|job alert|newsletter|unsubscribe/i;
 
 const executor = (args) =>
   new Promise((resolve, reject) => {
@@ -77,7 +78,10 @@ const scanMail = async (since) => {
     query: `after:${Math.floor(since / 1000)} -category:promotions -category:social`,
     max: 50,
   });
-  const candidates = found.threads.filter((mail) => JOB_MAIL.test(`${mail.from} ${mail.subject} ${mail.snippet}`));
+  const candidates = found.threads.filter((mail) => {
+    const text = `${mail.subject} ${mail.snippet}`;
+    return OUTCOME_MAIL.test(text) && !NOISE_MAIL.test(text);
+  });
   if (candidates.length === 0) return [];
   const known = new Set(await tracker("known_emails", { messageIds: candidates.map((mail) => mail.messageId) }));
   return candidates
@@ -131,7 +135,7 @@ const settleStuck = async () => {
 workflow(
   "apply",
   {
-    version: 10,
+    version: 11,
     payload: Schema.Struct({ scheduledAt: Schema.String, dryRun: Schema.optional(Schema.Boolean) }),
     triggers: [every("20 minutes")],
     concurrency: 1,

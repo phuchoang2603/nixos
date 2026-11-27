@@ -7,7 +7,6 @@
     ./karakeep.nix
     ./newt.nix
     ./cliproxyapi.nix
-    ./siyuan.nix
   ];
 
   _module.args.lab = import ./lab.nix { inherit lib pkgs; };

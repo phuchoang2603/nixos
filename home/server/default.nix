@@ -21,4 +21,13 @@ in
   imports = [ ../base/cli.nix ];
 
   programs.mcp.servers.proxmox.command = lib.getExe proxmoxMcp;
+
+  programs.mcp.servers.playwright = {
+    command = lib.getExe pkgs.playwright-mcp;
+    args = [
+      "--cdp-endpoint"
+      "http://127.0.0.1:9222"
+      "--allow-unrestricted-file-access"
+    ];
+  };
 }

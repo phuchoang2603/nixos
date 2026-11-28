@@ -116,6 +116,7 @@ const applyBrief = (job, dryRun) =>
   [
     `Use the \`apply\` skill for exactly one job: ${job.id} (${job.company}, ${job.title}).`,
     "Other agents are working other jobs in parallel. Do not touch any other job, queue or browser tab.",
+    "Drive the browser with the Playwright MCP tools in your own new tab, never the T3 preview tools. It is a shared Chrome that is already signed in.",
     dryRun
       ? "DRY RUN: screen and prepare, fill the application up to its review page and stop without submitting."
       : "Screen it and, if it is eligible, apply to the end and record the outcome.",
